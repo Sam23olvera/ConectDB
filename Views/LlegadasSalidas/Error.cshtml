@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Error Page";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+    string token = ViewData["Token"] as string;
+    string usuario = ViewData["Usuario"] as string;
+    string contraseña = ViewData["Contraseña"] as string;
+    string cveEmp = ViewData["cveEmp"] as string;
+}
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+<div class="container">
+    <main role="main">
+        <div class="container">
+            <br />
+            <div class="row text-center">
+                <div class="col-12 text-start">
+                    <h3> Folios de Viaje por Ruta</h3>
+                </div>
+            </div>
+            <br />
+            <form method="post" asp-controller="LlegadasSalidas" asp-action="Index" asp-route-cveEmp="@Convert.ToInt16(@ViewData["cveEmp"])" asp-route-UfS="@ViewData["Usuario"]" asp-route-xPa="@ViewData["contraseña"]" asp-route-XT="@ViewData["Token"]">
+                <div class="card-body">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Advertencia</strong>Revisar la seleccion de la fecha y la Ruta
+                        <a asp-controller="LlegadasSalidas" asp-action="Index" asp-route-cveEmp="@Convert.ToInt16(@ViewData["cveEmp"])" asp-route-UfS="@ViewData["Usuario"]" asp-route-xPa="@ViewData["contraseña"]" asp-route-XT="@ViewData["Token"]" class="btn-close"></a>
+                    </div>
+                    <br />
+                </div>
+            </form>
+            <form method="post" asp-controller="LlegadasSalidas" asp-action="Buscar">
+                <div class="row">
+                    <div class="col-12 col-md-2 my-2">
+                        <label>Fecha:</label>
+                    </div>
+                    <div class="col-12 col-md-2 my-2">
+                        <input type="date" class="form-control" placeholder="Fecha de ingreso:" name="fecha" disabled>
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="col-12 col-md-4 my-2">
+                        <select class="form-select" aria-label="Default select example" name="cvruta" disabled>
+                            <option selected>Selecione la Ruta</option>
+                            @foreach (var item in Model)
+                            {
+                                @for (int i = 0; i < item.CatRuta.Count; i++)
+                                {
+                                    <option value="@item.CatRuta[i].CR">@item.CatRuta[i].NR</option>
+                                }
+                            }
+                        </select>
+                        <span class="text-danger"></span>
+                    </div>
+                    <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
+                    <input type="hidden" name="usuario" id="usuario" value="@ViewData["usuario"]" />
+                    <input type="hidden" name="contraseña" id="contraseña" value="@ViewData["contraseña"]" />
+                    <input type="hidden" name="cveEmp" id="cveEmp" value="@ViewData["cveEmp"]" />
+                    <div class="col-12 col-md-4 my-2">
+                        <button type="submit" class="btn btn-primary" disabled>Buscar</button>
+                    </div>
+                </div>
+            </form>
+            <br />
+        </div>
+    </main>
+</div>

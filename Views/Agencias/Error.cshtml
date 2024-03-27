@@ -1,0 +1,57 @@
+﻿@model LogUser.Filter
+@{
+    ViewData["Title"] = "Loging";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<main role="main">
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-sm-3 d-flex align-items-center justify-content-center">
+                <br><br><br><br>
+                <form method="post" asp-controller="Loging" asp-action="logeo">
+                    <div class="card-body">
+                        <br>
+                        <h1 class="card-title text-white">Inicio de Sesion</h1>
+                        <br>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Advertencia</strong>Revisar Usuario y Contraseña
+                            <a asp-controller="Loging" asp-action="Index" class="btn-close"></a>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="usr" type="text" class="form-control custom-input" placeholder="email@tum.com.mx">
+                            <span asp-validation-for="usr" class="text-danger"></span>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input asp-for="pwd" type="password" class="form-control custom-input" placeholder="Contraseña"
+                                   autocomplete="off">
+                            <span asp-validation-for="pwd" class="text-danger"></span>
+                        </div>
+                        <br>
+                        <!--<div class="form-group" >
+                            <select class="form-select" id="Select1" disabled>
+                                <option>selecciona la empresa</option>
+                                <option>Tum Division</option>
+                                <option>Tum Logistica</option>
+                            </select>
+                        </div>-->
+                        <br />
+                        <div class="form-group">
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                @*<a class="btn btn-light oval-button" id="btnInisio" asp-controller="Loging"
+                                asp-action="logeo">Inicio Sesion </a>*@
+                                <button class="btn btn-light oval-button" type="submit" id="btnInisio">
+                                    Inicio Sesion
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br><br><br><br><br>
+            <div class="col-sm-9">
+                <img src="~/imag/baner_camiones_reco.png" class="img-fluid" alt="Bootstrap" align="right" width="85%" height="85%">
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,46 @@
+@model Reclutador
+@{
+  ViewData["Title"] = "Guardar";
+  Layout = "~/Views/Shared/_LayoutLog.cshtml";
+}
+<div class="container">
+  <main role="main">
+    <div class="container">
+      <br>
+      <div class="row text-center">
+        <h1>Reclutador</h1>
+      </div>
+      <br>
+      <div class="row">
+        <div class="container">
+          <form asp-action="Guardar" asp-controller="Reclutador" method="post">
+            <div class="col-4">
+              <label>Nombre Reclutador: </label>
+              <input asp-for="Nombre" type="text" class="form-control">
+              <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="col-4">
+              <label>Des/Hab </label>
+              <select asp-for="Activo" class="form-control">
+                <option value="true">Activo</option>
+                <option value="false">Desactivo</option>
+              </select>
+              <span asp-validation-for="Activo" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+              <label>1 Telefono: </label>
+              <input asp-for="Telefono" placeholder="##-##-##-##-##" type="text" class="form-control">
+              <label>2 Telefono: </label>
+              <input asp-for="Telefonodos" placeholder="##-##-##-##-##" type="text" class="form-control">
+            </div>
+            <br>
+            <div class="col-2">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+              <a asp-action="Index" asp-controller="Reclutador" class="btn btn-warning">volver</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

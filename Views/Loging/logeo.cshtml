@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "logeo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using ConectDB.Models;
+@using System.Collections.Generic;
+@model UsuarioModel;
+<style>
+    .form-select {
+    }
+
+    .form-select-item {
+        color: white;
+    }
+</style>
+<main role="main">
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-sm-3 d-flex align-items-center justify-content-center">
+                <br><br><br><br>
+                @foreach (var Sis in Model.Data)
+                {
+                    if (@Sis.EmpS == null)
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Advertencia</strong> @Sis.message
+                            <a asp-controller="Loging" asp-action="Index" class="btn-close"></a>
+                        </div>
+                    }
+                    else
+                    {
+                        <form.action>
+                            <div class="card-body">
+                                <br>
+                                <h1 class="card-title text-white">Inicio de Sesion</h1>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" class="form-control custom-input" placeholder="@Sis.nom" disabled>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <input type="password" class="form-control custom-input" autocomplete="off" placeholder="@Sis.message" disabled>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <br>
+                                <div class="btn-group dropend">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        selecciona la empresa
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach (var submod in Sis.EmpS)
+                                        {
+                                            <li><a class="dropdown-item" asp-action="Acceder" asp-controller="Loging" asp-route-CVEM="@submod.cveEmp" asp-route-US="@Sis.usuario" asp-route-XT="@Sis.contraseña" asp-route-Tok="@Model.Token">@submod.nomb</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </form.action>
+                    }
+                }
+            </div>
+            <br><br><br><br><br>
+            <div class="col-sm-9">
+                <img src="~/imag/baner_camiones_reco.png" class="img-fluid" alt="Bootstrap" align="right" width="85%" height="85%">
+            </div>
+        </div>
+    </div>
+</main>

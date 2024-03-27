@@ -1,0 +1,46 @@
+@model Reclutador
+@{
+    ViewData["Title"] = "Editar";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+}
+<div class="container">
+    <main role="main">
+        <div class="container">
+            <br>
+            <div class="row text-center">
+                <h1>Reclutador</h1>
+            </div>
+            <br>
+            <div class="row">
+                <div class="container">
+                    <form asp-action="Editar" asp-controller="Reclutador" method="post">
+                        <input asp-for="ClaveReclutador" type="hidden" class="form-control">
+                        <div class="col-4">
+                            <label class="form-label">Nombre</label>
+                            <input asp-for="Nombre" type="text" class="form-control">
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label>Des/Hab </label>
+                            <select asp-for="Activo" class="form-control">
+                                <option value="true">Activo</option>
+                                <option value="false">Desactivo</option>
+                            </select>
+                            <span asp-validation-for="Activo" class="text-danger"></span>
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">Telefono</label>
+                            <input asp-for="Telefono" type="text" class="form-control">
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">2 Telefono</label>
+                            <input asp-for="Telefonodos" type="text" class="form-control">
+                            <span asp-validation-for="Telefonodos" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a asp-action="Index" asp-controller="Reclutador" class="btn btn-warning">volver</a>
+                    </form>
+                </div>
+    </main>
+</div>

@@ -1,0 +1,80 @@
+@model List<Reclutador>
+@*@model Reclutador*@
+@{
+    ViewData["Title"] = "Eliminar";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+}
+<div class="container">
+    <main role="main">
+        <div class="container">
+            <br>
+            <div class="row text-center">
+                <h1>Reclutador</h1>
+            </div>
+            <br>
+            @*<form method="post" asp-action="Actualizar" asp-controller="Reclutador" >
+            <input asp-for="ClaveReclutador" type="hidden" class="form-control">
+            <div class="alert alert-danger" role="alert">
+            ¿Desea Actualizar el Reclutaor : @Html.DisplayTextFor(m => m.Nombre) ?
+            </div>
+            <button type="submit" class="btn btn-danger">Actualizar</button>
+            <a asp-action="Index" asp-controller="Reclutador" class="btn btn-warning">Volver a la
+            lista</a>
+            </form>*@
+            <form method="post" asp-action="Actualizar" asp-controller="Reclutador" >
+            <div class="row">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" aria-label="Nombre del Reclutador:"
+                            aria-describedby="button-addon2" placeholder="Nombre del Reclutador:">
+                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <button type="submit" class="btn btn-warning">
+                        Actualizar
+                    </button>
+                </div>
+                <div class="col-3">
+                    <a asp-action="Guardar" asp-controller="Reclutador" class="btn btn-success">
+                        Nuevo
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <!-- Encabezados de la tabla -->
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Hab/Desab</th>
+                                <th scope="col">Telefonos</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Nombre</td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox"
+                                            name="reclutadores[@item.ClaveReclutador].Activo"
+                                        @(item.Activo.GetValueOrDefault() ? "checked" : "")>
+                                    </td>
+                                    <td>@item.Telefono<br>@item.Telefonodos</td>
+                                    <td>
+                                        <a asp-action="Editar" asp-controller="Reclutador" class="btn btn-primary btn-sm"
+                                            asp-route-ClaveReclutador="@item.ClaveReclutador">Editar</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </form>
+        </div>
+    </main>
+</div>

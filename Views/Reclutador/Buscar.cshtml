@@ -1,0 +1,76 @@
+@model List<Reclutador>
+@{
+    ViewData["Title"] = "Buscar";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+}
+<div class="container">
+    <main role="main">
+        <div class="container">
+            <br>
+            <div class="row text-center">
+                <h1>Reclutador</h1>
+            </div>
+            <br>
+            <form>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-group mb-3">
+                                <input type="text" class="form-control" aria-label="Nombre del Reclutador:"
+                                aria-describedby="button-addon2" placeholder="Nombre del Reclutador: ">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+                            <a asp-action="Buscar" asp-controller="Reclutador" class="btn btn-Warning"> Actualizar
+                        </a>
+                        </div>
+                    </div>
+                    <div class="col-3 ">
+                        <a asp-action="Actualizar" asp-controller="Reclutador" class="btn btn-Warning">
+                            Actualizar
+                        </a>
+                    </div>
+                    <div class="col-3">
+                        <a asp-action="Guardar" asp-controller="Reclutador" class="btn btn-success">
+                            Nuevo
+                        </a>
+                    </div>
+                </div>
+            </form>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <!--<th scope="col">#</th>-->
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Hab/Desab</th>
+                                <th scope="col">Telefonos</th>
+                                <th scope="col"></th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    @*<th scope="row">@item.ClaveReclutador</th>*@
+                                    <td>@item.Nombre</td>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox"
+                                            id="activoCheckbox-@item.ClaveReclutador" name="activoCheckbox"
+                                        @(item.Activo.GetValueOrDefault() ? "checked" : "")>
+
+                                    </td>
+                                    <td>@item.Telefono<br>@item.Telefonodos</td>
+                                    <td>
+                                        <a asp-action="Editar" asp-controller="Reclutador" class="btn btn-primary btn-sm"
+                                            asp-route-ClaveReclutador="@item.ClaveReclutador">Editar</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

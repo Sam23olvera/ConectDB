@@ -1,0 +1,270 @@
+﻿@model List<ItineViajeSPM>
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+    string token = ViewData["Token"] as string;
+    string usuario = ViewData["Usuario"] as string;
+    string contraseña = ViewData["Contraseña"] as string;
+    string cveEmp = ViewData["cveEmp"] as string;
+    string CV = ViewData["CV"] as string;
+    string NR = ViewData["NR"] as string;
+    string FV = ViewData["FV"] as string;
+    string UN = ViewData["UN"] as string;
+    string ET = ViewData["ET"] as string;
+    string OP = ViewData["OP"] as string;
+    string cvruta = ViewData["cvruta"] as string;
+    string alertMessage = TempData["AlertMessage"] as string;
+    string FSEl = ViewData["FeFolVi"] as string;
+    string idus = ViewData["iduse"] as string;
+}
+<div class="container-fluid">
+    <main role="main">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <form id="miFormulario" method="post" asp-controller="LlegadasSalidas" asp-action="Guardar" asp-route-UN="@ViewData["UN"]" asp-route-ET="@ViewData["ET"]" asp-route-OP="@ViewData["OP"]" asp-route-FV="@ViewData["FV"]" asp-route-NR="@ViewData["NR"]" asp-route-CV="@ViewData["CV"]" asp-route-Tox="@ViewData["Token"]" asp-route-FeFolVi="@ViewData["FeFolVi"]" asp-route-FeSel="@Model[i].FeSel" asp-route-cveEmp="@ViewData["cveEmp"]" asp-route-xPaS="@ViewData["Contraseña"]" asp-route-UF="@ViewData["Usuario"]" asp-route-cvruta="@Model[i].cvruta" asp-route-idus="@ViewData["iduse"]">
+                <div class="container">
+                    <div class="Mensaje">
+                        <p style="color: red;">@ViewBag.ErrorMessage</p>
+                        <p style="color: green;">@ViewBag.Guardado</p>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-12 text-start">
+                            <h3>Seguimiento de Itinerario</h3>
+                            <h6>Unidad: @ViewData["UN"] Económico: @ViewData["ET"] </h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-2 my-2">
+                            Folio:
+                            <input type="text" value="@ViewData["FV"]" class="form-control" style="height:50%;" disabled>
+                        </div>
+                        <div class="col-12 col-md-2 my-2">
+                            <input asp-for="@Model[i].FeSel" type="text" id="FeSel" value="@Model[i].FeSel" hidden />
+                            Fecha Viaje:
+                            <input type="datetime" asp-for="@ViewData["FeFolVi"]" value="@ViewData["FeFolVi"]" class="form-control" style="height:50%;" readonly>
+                        </div>
+                        <div class="col-12 col-md-4 my-2">
+                            Ruta:
+                            <select asp-for="@Model[i].NR" oninvalid="@Model[i].NR" class="form-select" aria-label="Default select example" style="height:65%;" disabled>
+                                <option>@Model[i].NR</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4 my-2">
+                            Operador:
+                            <input type="text" value="@ViewData["OP"]" class="form-control" style="height:50%; width: 95%" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 my-2 text-center">
+                            <a class="btn btn-primary" asp-controller="LlegadasSalidas" asp-action="bus" asp-route-FeSel="@Model[i].FeSel" asp-route-cvruta="@ViewData["cvruta"]" asp-route-US="@ViewData["usuario"]" asp-route-XT="@ViewData["contraseña"]" asp-route-Tox="@ViewData["Token"]" asp-route-cveEmp="@ViewData["cveEmp"]"> Volver </a>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" hidden>CVERPT</th>
+                                            <th scope="col">SEC</th>
+                                            <th scope="col">DIR</th>
+                                            <th scope="col">CONC.</th>
+                                            <th scope="col">CANJES</th>
+                                            <th scope="col">A</th>
+                                            <th scope="col" class="LLegada llegada-input">CODIGO DEMORA</th>
+                                            <th scope="col">LLEGADA PROG</th>
+                                            <th scope="col" class="LLegada llegada-input">LLEGADA:  Mes/Dia/Año</th>
+                                            <th scope="col"><input type="checkbox" id="check-all-Llegadas">VALIDAR</th>
+                                            <th scope="col">SALIDA PROG</th>
+                                            <th scope="col" class="LLegada llegada-input">SALIDA:  Mes/Dia/Año</th>
+                                            <th scope="col"><input type="checkbox" id="check-all-Salidas">VALIDAR</th>
+                                            <th scope="col">ETA</th>
+                                            <th scope="col">ESTANCIA PROG</th>
+                                            <th scope="col">ESTANCIA REAL</th>
+                                            <th scope="col">TRANS SEPOMEX</th>
+                                            <th scope="col">TRANS REAL</th>
+                                            <th scope="col">DEMORA LLEGADA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int j = 0; j < Model[i].ItinerarioViajesSPM.Count; j++)
+                                        {
+                                            <tr>
+                                                <!--1-->
+                                                <td scope="col" hidden>
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].CVR" type="text" id="CVR" value="@Model[i].ItinerarioViajesSPM[j].CVR" />
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].CVR" type="number" class="form-control hidden">
+                                                    <span asp-validation-for="@Model[i].ItinerarioViajesSPM[j].CVR" class="text-danger"></span>
+                                                </td>
+                                                <!--2-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].SEC" type="text" id="SEC" value="@Model[i].ItinerarioViajesSPM[j].SEC" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].SEC
+                                                </td>
+                                                <!--3-->
+                                                @switch (@Model[i].ItinerarioViajesSPM[j].DIR)
+                                                {
+                                                    case "I":
+                                                        <td scope="col" style="background-color: #B9ECBC">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].DIR" type="text" id="DIR" value="@Model[i].ItinerarioViajesSPM[j].DIR" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].DIR
+                                                        </td>
+                                                        break;
+                                                    case "R":
+                                                        <td scope="col" style="background-color:#F1F597">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].DIR" type="text" id="DIR" value="@Model[i].ItinerarioViajesSPM[j].DIR" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].DIR
+                                                        </td>
+                                                        break;
+                                                    default:
+                                                        <td scope="col">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].DIR" type="text" id="DIR" value="@Model[i].ItinerarioViajesSPM[j].DIR" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].DIR
+                                                        </td>
+                                                        break;
+                                                }
+                                                <!--4-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].NUC" type="text" id="NUC" value="@Model[i].ItinerarioViajesSPM[j].NUC" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].NUC
+                                                </td>
+                                                <!--5-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].CAN" type="text" id="CAN" value="@Model[i].ItinerarioViajesSPM[j].CAN" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].CAN
+                                                </td>
+                                                <!--6-->
+                                                @switch (@Model[i].ItinerarioViajesSPM[j].A)
+                                                {
+                                                    case "TAR":
+                                                        <td scope="col" style="background-color:#ec5252">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].A" type="text" id="A" value="@Model[i].ItinerarioViajesSPM[j].A" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].A
+                                                        </td>
+                                                        break;
+                                                    case "OK":
+                                                        <td scope="col" style="background-color:#4c9141">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].A" type="text" id="A" value="@Model[i].ItinerarioViajesSPM[j].A" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].A
+                                                        </td>
+                                                        break;
+                                                    case "TOL":
+                                                        <td scope="col" style="background-color:#ecec53">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].A" type="text" id="A" value="@Model[i].ItinerarioViajesSPM[j].A" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].A
+                                                        </td>
+                                                        break;
+                                                    default:
+                                                        <td scope="col">
+                                                            <input asp-for="@Model[i].ItinerarioViajesSPM[j].A" type="text" id="A" value="@Model[i].ItinerarioViajesSPM[j].A" hidden />
+                                                            @Model[i].ItinerarioViajesSPM[j].A
+                                                        </td>
+                                                        break;
+                                                }
+                                                <!--7-->
+                                                <td scope="col" class="LLegada llegada-input">
+                                                    <select asp-for="@Model[i].ItinerarioViajesSPM[j].INCIDENCIA" oninvalid="@Model[i].ItinerarioViajesSPM[j].INCIDENCIA" class="form-select selectTableCod" aria-label="Default select example" id="inci">
+                                                        <option selected>[Select]</option>
+                                                        @for (int z = 0; z < Model[i].Incidencias.Count; z++)
+                                                        {
+                                                            <option>@Model[i].Incidencias[z].Codigo</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <!--8-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].LLP" type="datetime" id="LLP" value="@Model[i].ItinerarioViajesSPM[j].LLP" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].LLP.ToString("yyyy/MM/dd HH:mm:ss")
+                                                </td>
+                                                <!--9-->
+                                                <td scope="col" class="text-center LLegada llegada-input">
+                                                    <div class="input-group">
+                                                        <input asp-for="@Model[i].ItinerarioViajesSPM[j].FEG" type="text" class="form-control input-sm llegada-input" id="FEG-@Model[i].ItinerarioViajesSPM[j].CVR" value="@Model[i].ItinerarioViajesSPM[j].FEG.ToString("yyyy/MM/dd HH:mm:ss")" onclick="calendarioFEG(@Model[i].ItinerarioViajesSPM[j].CVR)" />
+                                                        @* <input asp-for="@Model[i].ItinerarioViajesSPM[j].HLG" type="time" class="form-control input-sm llegada-input" id="HLG" value="@Model[i].ItinerarioViajesSPM[j].HLG" /> *@
+                                                        <span class="text-danger"></span>
+                                                    </div>
+                                                </td>
+                                                <!--10-->
+                                                <td scope="col">
+                                                    <input type="checkbox" asp-for="@Model[i].ItinerarioViajesSPM[j].CLL" checked="@Model[i].ItinerarioViajesSPM[j].CLL" class="checkbox-group-Llegadas" />
+                                                </td>
+                                                <!--11-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].SAP" type="text" id="SAP" value="@Model[i].ItinerarioViajesSPM[j].SAP" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].SAP.ToString("yyyy/MM/dd HH:mm:ss")
+                                                </td>
+                                                <!--12-->
+                                                <td scope="col" class="text-center LLegada llegada-input">
+                                                    <div class="input-group">
+                                                        <input asp-for="@Model[i].ItinerarioViajesSPM[j].FSG" type="text" class="form-control input-sm llegada-input" id="FSG-@Model[i].ItinerarioViajesSPM[j].CVR" value="@Model[i].ItinerarioViajesSPM[j].FSG.ToString("yyyy/MM/dd HH:mm:ss")" onclick="calendarioFSG(@Model[i].ItinerarioViajesSPM[j].CVR)" />
+                                                        @* <input asp-for="@Model[i].ItinerarioViajesSPM[j].HSG" type="time" class="form-control input-sm llegada-input" id="HSG" value="@Model[i].ItinerarioViajesSPM[j].HSG" /> *@
+                                                        <span class="text-danger"></span>
+                                                    </div>
+                                                </td>
+                                                <!--13-->
+                                                <td scope="col">
+                                                    <input type="checkbox" asp-for="@Model[i].ItinerarioViajesSPM[j].CSA" checked="@Model[i].ItinerarioViajesSPM[j].CSA" class="checkbox-group-Salidas" />
+                                                </td>
+                                                <!--14-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].ETA" type="text" id="ETA" value="@Model[i].ItinerarioViajesSPM[j].ETA" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].ETA.ToString("yyyy/MM/dd HH:mm:ss")
+                                                </td>
+                                                <!--15-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].ESP" type="text" id="ESP" value="@Model[i].ItinerarioViajesSPM[j].ESP" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].ESP.ToString("HH:mm:ss")
+                                                </td>
+                                                <!--16-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].ESR" type="text" id="ESR" value="@Model[i].ItinerarioViajesSPM[j].ESR" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].ESR.ToString("HH:mm:ss")
+                                                </td>
+                                                <!--17-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].TRS" type="text" id="TRS" value="@Model[i].ItinerarioViajesSPM[j].TRS" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].TRS.ToString("HH:mm:ss")
+                                                </td>
+                                                <!--18-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].TRR" type="text" id="TRR" value="@Model[i].ItinerarioViajesSPM[j].TRR" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].TRR.ToString("HH:mm:ss")
+                                                </td>
+                                                <!--19-->
+                                                <td scope="col">
+                                                    <input asp-for="@Model[i].ItinerarioViajesSPM[j].DEM" type="text" id="DEM" value="@Model[i].ItinerarioViajesSPM[j].DEM" hidden />
+                                                    @Model[i].ItinerarioViajesSPM[j].DEM.ToString("HH:mm:ss")
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="container align-content-end">
+                            <input type="checkbox" id="checkboxMostrarOcultar"> Editar
+                        </div>
+                        <div class="llegada llegada-input">
+                            <button type="submit" id="guarda" class="btn btn-primary" onclick="validarFechas()">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+    </main>
+</div>
+<input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
+<input type="hidden" name="usuario" id="usuario" value="@ViewData["usuario"]" />
+<input type="hidden" name="contraseña" id="contraseña" value="@ViewData["contraseña"]" />
+<input type="hidden" name="cveEmp" id="cveEmp" value="@ViewData["cveEmp"]" />
+<script>
+    var alertMessage = '@alertMessage';
+    if (alertMessage) {
+        alert(alertMessage);
+    }
+</script>

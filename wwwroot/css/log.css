@@ -1,0 +1,47 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+}
+
+.dropdown:hover > .dropdown-menu,
+.dropend:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+    margin-left: 0.125em;
+}
+
+.barramenu {
+    background-color: #007588;
+    font-size: small;
+}
+.Submenus a {
+    font-size: small;
+}
+
+.selectTableCod {
+    display: block;
+    width: 80pt;
+}
+.butonsalir {
+    background-color: #007588;
+    font-size: small;
+}

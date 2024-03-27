@@ -1,0 +1,19 @@
+@using ConectDB.Models;
+@model List<Error>;
+@{
+    ViewData["Title"] = "Loging";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<main role="main">
+    <div class="container-fluid ">
+        <div class="row">
+            <h1>ERROR </h1>
+            @foreach (var item in Model)
+            {
+                <h2>@item.status</h2>
+                <h2>@item.message</h2>
+                
+            }
+        </div>
+    </div>
+</main>

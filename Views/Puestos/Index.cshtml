@@ -1,0 +1,82 @@
+@{
+    ViewData["Title"] = "Puestos";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+}
+@using ConectDB.Models;
+@model UsuarioModel
+<div class="container">
+    <main role="main">
+        <div class="container">
+            <br>
+            <div class="row text-center">
+                <h1>Puestos</h1>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <label>Descripcion</label>
+                    <input type="text" id="zDescripcion" autocomplete="off">
+                </div>
+                <div class="col-4">
+                    <label>Tipo de Empleado</label>
+                    <input type="text" id="zTipoempleado" autocomplete="off">
+                </div>
+                <div class="col-4 ">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Hab/Desab
+                        </label>
+                    </div>
+                    <label>Descripcion</label>
+                    <input type="text" id="zDescripcion" autocomplete="off">
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-sm-6 d-flex align-items-center justify-content-start">
+                    <label>Total de Plazas </label>
+                    <input type="text" id="zTotalPlazas" autocomplete="off">
+                </div>
+                <div class="col-sm-6 d-flex align-items-center justify-content-end">
+                    <button type="button" class="btn btn-outline-primary">Nuevo</button>
+                    <br>
+                    <button type="button" class="btn btn-outline-success">Guardar</button>
+                </div>
+            </div>
+            <br>
+            <div class="row text-center">
+                <h3>Detalle por tipo de Operación</h3>
+            </div>
+            <br>
+            <div class="row">
+                <div class="container overflow-hidden">
+                    <div class="row gx-5">
+                        <div class="col">
+                            <div class="p-3 border bg-light ">
+                                <label>Tipo Operación</label>
+                                <br>
+                                <div class="form-group">
+                                    <select class="form-select" id="exampleSelect1">
+                                        <option>Operación normal</option>
+                                        <option>Cto Mry</option>
+                                        <option>Server Deb</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-3 border bg-light">
+                                <label>No Plazas</label>
+                                <br>
+                                <input class="form-control" type="text" placeholder="12"
+                                    aria-label="default input example">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

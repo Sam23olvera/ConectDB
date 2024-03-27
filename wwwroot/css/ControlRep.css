@@ -1,0 +1,270 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.barramenu {
+    background-color: #007588;
+    font-size: small;
+}
+
+.Submenus a {
+    font-size: small;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+}
+
+.dropdown:hover > .dropdown-menu,
+.dropend:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+    margin-left: 0.125em;
+}
+
+.tamancla a {
+    font-size: small;
+}
+
+.nav {
+    background-color: white;
+}
+
+    .nav .seccion {
+        color: black;
+    }
+
+        .nav .seccion:hover {
+            color: white;
+            cursor: pointer;
+            background-color: #5c8b91;
+        }
+
+.nav-item:active {
+    color: white;
+    cursor: pointer;
+    background-color: #5c8b91;
+}
+
+/*p {
+    color: white;
+}*/
+
+.sidebar {
+    height: 80%;
+    width: 250px;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+}
+
+.Lateral {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+.ticket-reparacion-table {
+    width: 100%;
+}
+
+    .ticket-reparacion-table th, .ticket-reparacion-table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .ticket-reparacion-table th {
+        background-color: #5c8b91;
+        color: #f2f2f2;
+        font-size: small;
+    }
+
+    .ticket-reparacion-table td {
+        min-width: 75pt;
+    }
+
+    .ticket-reparacion-table p {
+        color: black;
+        font-size: small;
+    }
+
+.ticket-final-table {
+    width: 100%;
+}
+
+    .ticket-final-table th, .ticket-final-table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .ticket-final-table th {
+        background-color: #5c8b91;
+        color: #f2f2f2;
+        font-size: small;
+    }
+
+    .ticket-final-table td {
+        min-width: 75pt;
+    }
+
+    .ticket-final-table p {
+        color: black;
+        font-size: small;
+    }
+
+.ticket-asigna-table {
+    width: 100%;
+}
+
+    .ticket-asigna-table th, .ticket-asigna-table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .ticket-asigna-table th {
+        background-color: #5c8b91;
+        color: #f2f2f2;
+        font-size: small;
+    }
+
+    .ticket-asigna-table td {
+        min-width: 75pt;
+    }
+
+    .ticket-asigna-table p {
+        color: black;
+        font-size: small;
+    }
+
+.ticket-porasigna-table {
+    width: 100%;
+}
+
+    .ticket-porasigna-table th, .ticket-porasigna-table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .ticket-porasigna-table th {
+        background-color: #5c8b91;
+        color: #f2f2f2;
+        font-size: small;
+    }
+
+    .ticket-porasigna-table td {
+        min-width: 75pt;
+    }
+
+    .ticket-porasigna-table p {
+        color: black;
+        font-size: small;
+    }
+
+.filtros {
+    height: 25pt;
+}
+
+
+
+.ComeMotvAsig {
+    display: block;
+    font-size: small;
+    height: 45pt;
+    width: 160pt;
+}
+.selectTableUser {
+    display: block;
+    width: 230pt;
+    font-size: small;
+}
+.fecha_Table {
+    display: block;
+    height: 30pt;
+    width: 110pt;
+    font-size: small;
+}
+
+.FechEstima {
+    display: block;
+    height: 30pt;
+    width: 110pt;
+    font-size: small;
+}
+
+.NumTick_Table {
+    display: block;
+    width: 10pt;
+}
+
+.FechTick_Table {
+    display: block;
+    width: 100pt;
+}
+
+.selectTickTable {
+    display: block;
+    height: 40pt;
+    width: 100pt;
+    font-size: small;
+}
+
+.selectTipFalTable {
+    display: block;
+    height: 40pt;
+    width: 130pt;
+}
+
+.textareaTable {
+    display: block;
+    height: 75pt;
+    width: 180pt;
+}
+
+
+    .selectTableClasif {
+        display: block;
+        height: 30pt;
+        width: 110pt;
+        font-size: small;
+    }
+
+    .selectTabApoy {
+        display: block;
+        height: 30pt;
+        width: 160pt;
+        font-size: small;
+    }
+
+    .datos-bak {
+        display: none;
+        background-color: #CCD1D1;
+    }
+
+        .datos-bak h6 {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+    .letras-index {
+        font-weight: bold;
+        color: #0d6efd;
+    }

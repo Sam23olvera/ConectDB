@@ -1,0 +1,135 @@
+﻿@model Model_Buscar
+@{
+    ViewData["Title"] = "Listar";
+    Layout = "~/Views/Shared/_LayoutLog.cshtml";
+    string token = ViewData["Token"] as string;
+    string usuario = ViewData["Usuario"] as string;
+    string contraseña = ViewData["Contraseña"] as string;
+    string cveEmp = ViewData["cveEmp"] as string;
+    string cvruta = ViewData["cvruta"] as string;
+    string fecha = ViewData["fecha"] as string;
+}
+<div class="container">
+    <main role="main">
+        <div class="container">
+            <br>
+            <div class="row text-center">
+                <div class="col-12 text-start">
+                    <h3> Folios de Viaje por Ruta</h3>
+                </div>
+            </div>
+            <form method="post" asp-controller="LlegadasSalidas" asp-action="Buscar">
+                <div class="row">
+                    <div class="col-12 col-md-2 my-2">
+                        <label>Fecha:</label>
+                    </div>
+                    <div class="col-12 col-md-2 my-2">
+                        @* <input type="date" class="form-control" name="fecha" style="width: 80%" value="@Convert.ToDateTime(@ViewData["fecha"]).ToString("yyyy-MM-dd")" /> *@
+                        <input type="text" class="form-control" name="Fecha" style="width: 80%" value="@DateTime.Now.ToString("yyyy/MM/dd")" id="Fecha" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="col-12 col-md-5 my-2">
+                        <select class="form-select" aria-label="Default select example" name="cvruta">
+                            <option value="">Seleccione la Ruta</option>
+                            @foreach (var item in Model.Rutas)
+                            {
+                                foreach (var ruta in item.CatRuta)
+                                {
+                                    if (@ruta.CR == Convert.ToInt16(@ViewData["cvruta"]))
+                                    {
+                                        <option value="@ruta.CR" selected>@ruta.NR</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@ruta.CR">@ruta.NR</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
+                    <input type="hidden" name="usuario" id="usuario" value="@ViewData["usuario"]" />
+                    <input type="hidden" name="contraseña" id="contraseña" value="@ViewData["contraseña"]" />
+                    <input type="hidden" name="cveEmp" id="cveEmp" value="@ViewData["cveEmp"]" />
+                    <div class="col-12 col-md-3 my-2">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br />
+        <div class="container">
+            @foreach (var item in Model.Vias)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" hidden>CV</th>
+                                        <th scope="col">DES</th>
+                                        <th scope="col">FOLIO VIAJE</th>
+                                        <th scope="col">UNIDAD</th>
+                                        <th scope="col">FECHA VIAJE</th>
+                                        <th scope="col" hidden>NUM RUTA</th>
+                                        <th scope="col" hidden>RUTA</th>
+                                        <th scope="col">ECONOMICO</th>
+                                        <th scope="col">OPERADOR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < item.ViajesSepomex.Count; i++)
+                                    {
+                                        @if (@item.ViajesSepomex[i].ET == 0)
+                                        {
+                                            <tr>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].CV</td>
+                                                <td scope="col" hidden>
+                                                    <a asp-controller="LlegadasSalidas" asp-action="Desplegar" asp-route-CV="@item.ViajesSepomex[i].CV" asp-route-NR="@item.ViajesSepomex[0].RU" asp-route-Date="@item.Date" asp-route-Tox="@ViewData["Token"]" asp-route-UF="@ViewData["usuario"]" asp-route-xPaS="@ViewData["contraseña"]">
+                                                        <img src="~/imag/mas.png" alt="Bootstrap" width="50" height="44" style="width:60%; height:60%; align-content:center">
+                                                    </a>
+                                                </td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].FO</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].UN</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].FV</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].NR</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].RU</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].ET</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].OP</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].CV</td>
+                                                <td scope="col" style="text-align:center">
+                                                    <a asp-controller="LlegadasSalidas" asp-action="Desplegar" asp-route-FV="@item.ViajesSepomex[i].FO" asp-route-CV="@item.ViajesSepomex[i].CV" asp-route-NR="@item.ViajesSepomex[0].RU" asp-route-FeFolVi="@item.ViajesSepomex[i].FV" asp-route-FeSel="@item.Date" asp-route-cvruta="@item.cvruta" asp-route-UF="@ViewData["usuario"]" asp-route-xPaS="@ViewData["contraseña"]" asp-route-Tox="@ViewData["Token"]" asp-route-cveEmp="@ViewData["cveEmp"]" asp-route-UN="@item.ViajesSepomex[i].UN" asp-route-ET="@item.ViajesSepomex[i].ET" asp-route-OP="@item.ViajesSepomex[i].OP">
+                                                        <img src="~/imag/mas.png" alt="Bootstrap" width="50" height="44" style="width:35%; height:35%; align-content:center">
+                                                    </a>
+                                                </td>
+                                                <td scope="col">@item.ViajesSepomex[i].FO</td>
+                                                <td scope="col">@item.ViajesSepomex[i].UN</td>
+                                                <td scope="col">@item.ViajesSepomex[i].FV</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].NR</td>
+                                                <td scope="col" hidden>@item.ViajesSepomex[i].RU</td>
+                                                <td scope="col">@item.ViajesSepomex[i].ET</td>
+                                                <td scope="col">@item.ViajesSepomex[i].OP</td>
+                                            </tr>
+                                        }
+
+                                    }
+
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
+                            <input type="hidden" name="usuario" id="usuario" value="@ViewData["usuario"]" />
+                            <input type="hidden" name="contraseña" id="contraseña" value="@ViewData["contraseña"]" />
+                            <input type="hidden" name="cveEmp" id="cveEmp" value="@ViewData["cveEmp"]" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </main>
+</div>
