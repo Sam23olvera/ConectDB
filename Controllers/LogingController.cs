@@ -1,5 +1,6 @@
 using ConectDB.DB;
 using ConectDB.Models;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,10 +17,11 @@ namespace ConectDB.Controllers
             return View("Privacy");
         }
 
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Index()
         {
-            ModelState.Clear();
+            HttpContext.Session.Clear();
+            HttpContext.Response.Cookies.Delete("usuario");
+            HttpContext.Response.Cookies.Delete("contra");
             return View("Index");
         }
         public IActionResult logeo(Filter log)
@@ -28,11 +30,7 @@ namespace ConectDB.Controllers
             string contraseñaCifrada = UrlEncryptor.EncryptUrl(log.pwd);
 
             string url = "https://webportal.tum.com.mx/wsstmdv/api/logau";
-            if (log.usr == null)
-            {
-                return View("Error");
-            }
-            else if (log.pwd == null)
+            if (log.usr == null || log.pwd == null)
             {
                 return View("Error");
             }
@@ -46,17 +44,29 @@ namespace ConectDB.Controllers
                 }
                 else
                 {
-                    datos.Data[0].usuario = usuarioCifrado;
-                    datos.Data[0].contraseña = contraseñaCifrada;
+                    HttpContext.Response.Cookies.Append("usuario", usuarioCifrado);
+                    HttpContext.Response.Cookies.Append("contra", contraseñaCifrada);
+                    //datos.Data[0].usuario = usuarioCifrado;
+                    //datos.Data[0].contraseña = contraseñaCifrada;
+                    HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(datos));
                     return View(datos);
                 }
             }
         }
-        public IActionResult Acceder(int CVEM, string US, string XT, string Tok)
+        //public IActionResult Acceder(int CVEM, string US, string XT, string Tok)
+        [HttpPost]
+        public IActionResult Acceder(int CVEM,string Tok)
         {
-            string desusuario = UrlEncryptor.DecryptUrl(US);
-            string descontraseña = UrlEncryptor.DecryptUrl(XT);
-
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"])) 
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
+            string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
             string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
 
@@ -69,18 +79,20 @@ namespace ConectDB.Controllers
             else
             {
                 var model = JsonConvert.DeserializeObject<UsuarioModel>(datos);
-                model.Token = Tok;
-                model.Data[0].usuario = US;
-                model.Data[0].contraseña = XT;
+                //model.Token = Tok;
+                //model.Data[0].usuario = HttpContext.Request.Cookies["usuario"];
+                //model.Data[0].contraseña = HttpContext.Request.Cookies["contra"];
                 ViewData["UsuarioModel"] = model;
                 return View("Acceder", model);
             }
         }
         
-        
-        public  IActionResult Salir(int cveEmp, string UfS, string xPa, string XT) 
+        public  IActionResult Salir() 
         {
-            ModelState.Clear();
+            HttpContext.Session.Clear();
+            HttpContext.Response.Cookies.Delete("usuario", new CookieOptions { Path = "/" });
+            HttpContext.Response.Cookies.Delete("contra", new CookieOptions { Path = "/" });
+            TempData["Mensaje"] = "Se Cerro la Sesion";
             return RedirectToAction("Index");
         }
 

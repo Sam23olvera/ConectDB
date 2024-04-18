@@ -1,7 +1,16 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorPages();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+//builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -18,7 +27,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
 app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "Guardar",
@@ -33,5 +46,9 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "Loging",
     pattern: "{controller=Loging}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name:"default",
+    pattern: "{controller=Loging}/{action=Index}");
 
 app.Run();

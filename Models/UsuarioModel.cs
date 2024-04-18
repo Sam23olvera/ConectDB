@@ -3,12 +3,16 @@ namespace ConectDB.Models
     public class UsuarioModel
     {
         public string? Token { get; set; }
+        public string? XT { get; set; }
         public int Status { get; set; }
         public bool Success { get; set; }
         public string? Message { get; set; }
         public int? idsub { get; set; }
         public List<UserData>? Data { get; set; }
         public List<Reclutador>? recluta { get; set; }
+        public string? usuario { get; set; }
+        public string? contraseña { get; set; }
+
     }
     public class UserData
     {

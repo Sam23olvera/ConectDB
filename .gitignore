@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/wwwroot/css/ControlRep.css
+/wwwroot/css/log.css
+/wwwroot/css/RegiFal.css
+/wwwroot/css/site.css
+/wwwroot/favicon.ico
+/wwwroot/imag/baner_camiones.png
+/wwwroot/js/site.js

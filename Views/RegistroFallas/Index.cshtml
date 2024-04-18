@@ -304,8 +304,8 @@
                     <div class="col-12 col-md-10">
                         <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
 
-                        <input type="hidden" name="UF" id="usuario" value="@usuarioModel.Data[0].usuario.ToString()" />
-                        <input type="hidden" name="xPaS" id="contraseña" value="@usuarioModel.Data[0].contraseña.ToString()" />
+                        @* <input type="hidden" name="UF" id="usuario" value="@usuarioModel.Data[0].usuario.ToString()" />
+                        <input type="hidden" name="xPaS" id="contraseña" value="@usuarioModel.Data[0].contraseña.ToString()" /> *@
                         <input type="hidden" name="Emp" id="cveEmp" value="@usuarioModel.Data[0].EmpS[0].cveEmp.ToString()" />
                     </div>
                     @for (int i = 0; i < @usuarioModel.Data[0].nvaccs.Count; i++)

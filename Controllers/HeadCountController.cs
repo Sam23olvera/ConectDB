@@ -9,14 +9,21 @@ namespace ConectDB.Controllers
     public class HeadCountController : Controller
     {
         DataApi data = new DataApi();
-        
-        
-        public ActionResult Index(int cveEmp, string UfS, string xPa, string XT)
-        {
-            string desusuario = UrlEncryptor.DecryptUrl(UfS);
-            string descontraseña = UrlEncryptor.DecryptUrl(xPa);
+        private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
 
-            string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
+        public ActionResult Index(int cveEmp, string XT)
+        {
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
+            string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
+
             JObject jsdatos = JObject.Parse( "{\"data\": {\"bdCc\": 1,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_EmpUser\"},\"filter\": {\"usr\": \"" + desusuario + "\",\"pwd\": \"" + descontraseña + "\",\"idempresa\":" + cveEmp + "} }");
             var datos = data.HttpWebRequestToken("POST", url, jsdatos, XT);
             if (datos == null)
@@ -26,8 +33,6 @@ namespace ConectDB.Controllers
             else
             {
                 var model = JsonConvert.DeserializeObject<UsuarioModel>(datos);
-                model.Data[0].usuario = UfS;
-                model.Data[0].contraseña = xPa;
                 ViewData["UsuarioModel"] = model;
                 return View(model);
             }

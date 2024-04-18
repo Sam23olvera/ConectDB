@@ -13,14 +13,20 @@ namespace ConectDB.Controllers
         ConectMenuUser menu = new ConectMenuUser();
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
         
-        public ActionResult Index(int cveEmp, string UfS, string xPa, string XT)
+        public ActionResult Index(int cveEmp, string XT)
         {
-            string desusuario = UrlEncryptor.DecryptUrl(UfS);
-            string descontraseña = UrlEncryptor.DecryptUrl(xPa);
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
+            string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
             UsuarioModel model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
-            model.Data[0].usuario = UfS;
-            model.Data[0].contraseña = xPa;
             ViewData["UsuarioModel"] = model;
             ViewData["Token"] = XT;
             var oLista = con.ListaOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());
@@ -29,15 +35,24 @@ namespace ConectDB.Controllers
         }
         [HttpPost]
         
-        public IActionResult Guardar(int ClaveTipoTicket, int TipoClas, TBCATTipoFalla tipoFalla, string Dot, string Marca, string Medida, int Posis, string ComeFalla, TBCATOperador operador, string telop, TBCATUnidade unidade, TBCATRutum rutum, int opcionesRemolque1, TBCATTipoCarga carga, int cvTipoequipo, string UbiRepor, string TramCarretero, TBCATTipoApoyo tBCATTipo, string LongGps, string LatGps, string DirGPS, string FechGPS, string UF, string xPaS, string Token, string Emp)
+        public IActionResult Guardar(int ClaveTipoTicket, int TipoClas, TBCATTipoFalla tipoFalla, string Dot, string Marca, string Medida, int Posis, string ComeFalla, TBCATOperador operador, string telop, TBCATUnidade unidade, TBCATRutum rutum, int opcionesRemolque1, TBCATTipoCarga carga, int cvTipoequipo, string UbiRepor, string TramCarretero, TBCATTipoApoyo tBCATTipo, string LongGps, string LatGps, string DirGPS, string FechGPS, string Token, string Emp)
         {
-            string desusuario = UrlEncryptor.DecryptUrl(UF);
-            string descontraseña = UrlEncryptor.DecryptUrl(xPaS);
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
+            string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
+            
             try
             {
                 UsuarioModel model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(Emp), url, Token);
-                model.Data[0].usuario = UF;
-                model.Data[0].contraseña = xPaS;
+                //model.Data[0].usuario = UF;
+                //model.Data[0].contraseña = xPaS;
                 ViewData["UsuarioModel"] = model;
                 ViewData["Token"] = Token;
                 var oLista = con.ListaOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());

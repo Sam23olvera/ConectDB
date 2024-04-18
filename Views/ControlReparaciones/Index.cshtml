@@ -16,19 +16,19 @@
                 <div class="col-md-2">
                     <ul class="nav flex-column border tamancla">
                         <li class="nav-item">
-                            <a asp-action="Index" asp-controller="ControlReparaciones" asp-route-UfS="@usuarioModel.Data[0].usuario" asp-route-xPa="@usuarioModel.Data[0].contraseña" asp-route-XT="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link active seccion">Inicio</a>
+                            <a asp-action="Index" asp-controller="ControlReparaciones" asp-route-XT="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link active seccion">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-usuario="@usuarioModel.Data[0].usuario" asp-route-contraseña="@usuarioModel.Data[0].contraseña" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">Por Asignar</a>
+                            <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">Por Asignar</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-usuario="@usuarioModel.Data[0].usuario" asp-route-contraseña="@usuarioModel.Data[0].contraseña" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">Asignados</a>
+                            <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">Asignados</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-usuario="@usuarioModel.Data[0].usuario" asp-route-contraseña="@usuarioModel.Data[0].contraseña" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">En Reparación</a>
+                            <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">En Reparación</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-usuario="@usuarioModel.Data[0].usuario" asp-route-contraseña="@usuarioModel.Data[0].contraseña" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">Finalizado</a>
+                            <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion">Finalizado</a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link seccion">Indicadores</a>
