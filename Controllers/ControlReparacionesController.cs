@@ -80,6 +80,14 @@ namespace ConectDB.Controllers
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
+                    if (string.IsNullOrEmpty(FehTick))
+                    {
+                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        ViewData["FehTick"] = FehTick;
+                    }
                     oLista = con.Primer_crga_con_Catalogos(1, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
                     if (oLista[0].status == 200)
                     {
@@ -88,15 +96,6 @@ namespace ConectDB.Controllers
                         ViewBag.TotalPages = totalPages;
                         ViewBag.CurrentPage = pagina;
                         ViewData["Buscar"] = 0;
-                        if (string.IsNullOrEmpty(FehTick))
-                        {
-                            ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
-                        }
-                        else
-                        {
-                            ViewData["FehTick"] = FehTick;
-                        }
-
                     }
                     else
                     {
@@ -309,6 +308,15 @@ namespace ConectDB.Controllers
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
+                    if (FehTick == null || FehTick == DateTime.MinValue)
+                    {
+                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        // Código a ejecutar si FehTick tiene una fecha válida
+                        ViewData["FehTick"] = FehTick;
+                    }
                     oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
                     if (oLista[0].status != 200)
                     {
@@ -319,15 +327,6 @@ namespace ConectDB.Controllers
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pagina;
                     ViewData["Buscar"] = 0;
-                    if (FehTick == null || FehTick == DateTime.MinValue)
-                    {
-                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
-                    }
-                    else
-                    {
-                        // Código a ejecutar si FehTick tiene una fecha válida
-                        ViewData["FehTick"] = FehTick;
-                    }
 
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
@@ -782,15 +781,22 @@ namespace ConectDB.Controllers
                 string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
-                //model.Data[0].usuario = usuario;
-                //model.Data[0].contraseña = contraseña;
                 model.Token = Token;
                 model.idsub = idsub;
                 HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (FehTick == null || FehTick == DateTime.MinValue)
+                    {
+                        FehTick = DateTime.Now;
+                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                    }
+                    oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
                     int totalSolicitudes = oLista[0].TotalSolicitudes;
                     int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
                     ViewBag.TotalPages = totalPages;
@@ -807,6 +813,9 @@ namespace ConectDB.Controllers
                         ViewBag.TotalPages = totalPages;
                         ViewBag.CurrentPage = pagina;
                         ViewData["Buscar"] = 1;
+                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                        ViewData["TipTicket"] = TipTicket;
+                        ViewData["TipFalla"] = TipFalla;
                     }
                     else
                     {
@@ -883,8 +892,11 @@ namespace ConectDB.Controllers
                 else
                 {
                     ViewData["Title"] = "Finalizado";
-                    return View("Finalizado", oLista);
+                    ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                    ViewData["TipTicket"] = TipTicket;
+                    ViewData["TipFalla"] = TipFalla;
                 }
+                return View("Finalizado", oLista);
             }
             catch (Exception e)
             {

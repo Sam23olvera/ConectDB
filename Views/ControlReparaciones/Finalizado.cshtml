@@ -4,6 +4,7 @@
     string? title = ViewData["Title"] as string;
     Layout = "~/Views/Shared/_Layout_ControlReparaciones.cshtml";
     var usuarioModel = ViewData["UsuarioModel"] as UsuarioModel;
+    string FehTick = ViewData["FehTick"] as string;
 }
 <div class="container-fluid">
     <main role="main">
@@ -44,7 +45,7 @@
                             <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarFinalizados">
                                 <div class="row justify-content-start align-items-start">
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
                                     </div>
                                     <div class="col-md-2">
                                         <select class="form-select input-sm" aria-label="Default select example" id="TipTicket" name="TipTicket">
@@ -275,7 +276,7 @@
                                                 else
                                                 {
                                                     <li class="page-item">
-                                                        <a class="page-link" href="Fin?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@ViewData["Buscar"]&NumTicket=@ViewData["NumTicket"]&ClaveTipoFalla=@ViewData["ClaveTipoFalla"]&FehTick=@ViewData["FehTick"]&idsub=@usuarioModel.idsub">
+                                                        <a class="page-link" href="Fin?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@ViewData["Buscar"]&NumTicket=@ViewData["NumTicket"]&TipTicket=@ViewData["TipTicket"]&TipFalla=@ViewData["TipFalla"]&FehTick=@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
                                                             @i
                                                         </a>
                                                     </li>
