@@ -46,17 +46,16 @@
                                 <br>
                                 <div class="form-group">
                                     <label class="text-white">Selecciona la empresa:</label>
-                                    <select id="selectEmpresa" name="CVEM" class="form-control" >
+                                    <select id="selectEmpresa" name="CVEM" class="form-control">
                                         <option selected>Selecione una Empresa</option>
                                         @foreach (var submod in Sis.EmpS)
                                         {
                                             <option value="@submod.cveEmp">
-                                                    @submod.nomb
+                                                @submod.nomb
                                             </option>
                                         }
                                     </select>
-                                    <button type="submit" >Envio</button>
-                                    <input id="cveEmp" type="text" name="cveEmp" value="" />
+                                    <input id="cveEmp" type="hidden" name="cveEmp" value="" />
                                     <input type="hidden" name="Tok" value="@Model.Token" />
                                 </div>
                             </div>

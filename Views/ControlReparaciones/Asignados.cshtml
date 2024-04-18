@@ -50,7 +50,7 @@
                             <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarAsignados">
                                 <div class="row justify-content-start align-items-start">
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
                                     </div>
                                     <div class="col-md-3">
                                         <select class="form-select input-sm" aria-label="Default select example" name="UsAsignado" id="UsAsignado">
@@ -290,7 +290,7 @@
                                                 else
                                                 {
                                                     <li class="page-item">
-                                                        <a class="page-link" href="Asignacion?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@ViewData["Buscar"]&NumTicket=@ViewData["NumTicket"]&ClaveTipoFalla=@ViewData["ClaveTipoFalla"]&FehTick=@ViewData["FehTick"]&idsub=@usuarioModel.idsub">
+                                                        <a class="page-link" href="Asignacion?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@ViewData["Buscar"]&NumTicket=@ViewData["NumTicket"]&ClaveTipoFalla=@ViewData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
                                                             @i
                                                         </a>
                                                     </li>

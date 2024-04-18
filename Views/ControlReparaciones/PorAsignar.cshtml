@@ -49,7 +49,7 @@
                         <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarPorAsig">
                             <div class="row justify-content-start align-items-start">
                                 <div class="col-md-2">
-                                    <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                                    <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(ViewData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
                                 </div>
                                 <div class="col-md-3">
                                     <select class="form-select input-sm" aria-label="Default select example" id="ClaveTipoFalla" name="ClaveTipoFalla">

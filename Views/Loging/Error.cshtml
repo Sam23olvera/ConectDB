@@ -7,7 +7,9 @@
     <div class="container-fluid ">
         <div class="row">
             <div class="col-sm-3 d-flex align-items-center justify-content-center">
-                <br><br><br><br>
+                <br>
+                <input type="hidden" value="@TempData["Mensaje"]" id="mensaje" />
+                <br><br><br>
                 <form method="post" asp-controller="Loging" asp-action="logeo">
                     <div class="card-body">
                         <br>

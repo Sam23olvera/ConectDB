@@ -11,6 +11,7 @@ namespace ConectDB.Controllers
         DataApi data = new DataApi();
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
 
+
         public ActionResult Index(int cveEmp, string XT)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))

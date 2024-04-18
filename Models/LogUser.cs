@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ConectDB.Models
 {
     public class LogUser
@@ -14,7 +16,9 @@ namespace ConectDB.Models
 
         public class Filter
         {
+            [Required(ErrorMessage = " Se necesita el usuario")]
             public string? usr { get; set; }
+            [Required(ErrorMessage = " Se necesita la contraseña")]
             public string? pwd { get; set; }
             public int idempresa { get; set; }
         }

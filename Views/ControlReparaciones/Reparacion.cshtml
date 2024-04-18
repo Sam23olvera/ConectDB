@@ -4,6 +4,10 @@
     string? title = ViewData["Title"] as string;
     Layout = "~/Views/Shared/_Layout_ControlReparaciones.cshtml";
     var usuarioModel = ViewData["UsuarioModel"] as UsuarioModel;
+    string NumTicket = ViewData["NumTicket"] as string;
+    string Buscar = ViewData["Buscar"] as string;
+    string FehTick = ViewData["FehTick"] as string;
+    string UsAsignado = ViewData["UsAsignado"] as string;
 }
 <div class="container-fluid">
     <main role="main">
@@ -46,7 +50,7 @@
                             <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarReparacion">
                                 <div class="row justify-content-start align-items-start">
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
                                     </div>
                                     <div class="col-md-2">
                                         <select class="form-select input-sm" aria-label="Default select example" id="TipTicket" name="TipTicket">

@@ -13,6 +13,7 @@ namespace ConectDB.Controllers
         ConectApi con = new ConectApi();
         //BaseDatos con = new BaseDatos();
         DataApi data = new DataApi();
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))

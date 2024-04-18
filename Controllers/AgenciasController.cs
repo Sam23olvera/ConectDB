@@ -12,8 +12,16 @@ namespace ConectDB.Controllers
         
         public ActionResult Index(int cveEmp, string UfS, string xPa, string XT)
         {
-            string desusuario = UrlEncryptor.DecryptUrl(UfS);
-            string descontraseña = UrlEncryptor.DecryptUrl(xPa);
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+            {
+                return RedirectToAction("Index", "Loging");
+            }
+            string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
+            string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
             string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
             JObject jsdatos = JObject.Parse("{\"data\": {\"bdCc\": 1,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_EmpUser\"},\"filter\": {\"usr\": \"" + desusuario + "\",\"pwd\": \"" + descontraseña + "\",\"idempresa\":" + cveEmp + "} }");

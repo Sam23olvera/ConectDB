@@ -12,7 +12,7 @@ namespace ConectDB.Controllers
     {
         DataApi data = new DataApi();
         LogUser jsdatos = new LogUser();
-        public IActionResult Privacy() 
+        public IActionResult Privacy()
         {
             return View("Privacy");
         }
@@ -55,13 +55,13 @@ namespace ConectDB.Controllers
         }
         //public IActionResult Acceder(int CVEM, string US, string XT, string Tok)
         [HttpPost]
-        public IActionResult Acceder(int CVEM,string Tok)
+        public IActionResult Acceder(int CVEM, string Tok)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
             {
                 return RedirectToAction("Index", "Loging");
             }
-            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"])) 
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
             {
                 return RedirectToAction("Index", "Loging");
             }
@@ -79,15 +79,13 @@ namespace ConectDB.Controllers
             else
             {
                 var model = JsonConvert.DeserializeObject<UsuarioModel>(datos);
-                //model.Token = Tok;
-                //model.Data[0].usuario = HttpContext.Request.Cookies["usuario"];
-                //model.Data[0].contraseña = HttpContext.Request.Cookies["contra"];
+                model.Token = Tok;
                 ViewData["UsuarioModel"] = model;
                 return View("Acceder", model);
             }
         }
-        
-        public  IActionResult Salir() 
+
+        public IActionResult Salir()
         {
             HttpContext.Session.Clear();
             HttpContext.Response.Cookies.Delete("usuario", new CookieOptions { Path = "/" });

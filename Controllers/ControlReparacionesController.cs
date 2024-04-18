@@ -20,6 +20,7 @@ namespace ConectDB.Controllers
         List<Error> mensaje = new List<Error>();
         Error msj = new Error();
 
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT, int idsub)
         {
             try 
@@ -87,6 +88,14 @@ namespace ConectDB.Controllers
                         ViewBag.TotalPages = totalPages;
                         ViewBag.CurrentPage = pagina;
                         ViewData["Buscar"] = 0;
+                        if (string.IsNullOrEmpty(FehTick))
+                        {
+                            ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                        }
+                        else
+                        {
+                            ViewData["FehTick"] = FehTick;
+                        }
 
                     }
                     else
@@ -308,6 +317,16 @@ namespace ConectDB.Controllers
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pagina;
                     ViewData["Buscar"] = 0;
+                    if (FehTick == null || FehTick == DateTime.MinValue)
+                    {
+                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        // Código a ejecutar si FehTick tiene una fecha válida
+                        ViewData["FehTick"] = FehTick;
+                    }
+
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
@@ -518,10 +537,7 @@ namespace ConectDB.Controllers
                 string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
                 string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
-                //model.Data[0].usuario = usuario;
-                //model.Data[0].contraseña = contraseña;
                 model.Token = Token;
                 model.idsub = idsub;
                 HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));

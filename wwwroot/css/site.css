@@ -1,84 +1,96 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
+
 .barramenu {
     background-color: #007588;
+    font-size: small;
+}
+
+.CVEM {
+    display: block;
+    background-color: #007588;
+    color: #fff;
+    width: 200pt;
     font-size: small;
 }
 
 .Submenus a {
     font-size: small;
 }
+
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
-.dropdown:hover>.dropdown-menu {
-  display: block;
-  margin-top: 0.125em;
+.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
 }
 
-.dropdown:hover>.dropdown-menu,
-.dropend:hover>.dropdown-menu {
-  display: block;
-  margin-top: 0.125em;
-  margin-left: 0.125em;
-}
-
-.custom-input {
-  border: none;
-  border-bottom: 1px solid #fff; /* Color de las líneas abajo (blanco en este caso) */
-  background-color: transparent; /* Fondo transparente */
-  color: #fff; /* Color del texto (blanco en este caso) */
+.dropdown:hover > .dropdown-menu,
+.dropend:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+    margin-left: 0.125em;
 }
 
 .custom-input {
-  border: none;
-  border-bottom: 1px solid #fff; /* Color de las líneas abajo (negro en este caso) */
-  background-color: transparent; /* Fondo transparente */
-  outline: none; /* Quita el contorno al hacer clic */
-  box-shadow: none; /* Quita la sombra al hacer clic */
-  color: #fff; /* Color del texto (negro en este caso) */
+    border: none;
+    border-bottom: 1px solid #fff; /* Color de las líneas abajo (blanco en este caso) */
+    background-color: transparent; /* Fondo transparente */
+    color: #fff; /* Color del texto (blanco en este caso) */
 }
 
-/* Estilo personalizado para el placeholder */
-.custom-input::placeholder {
-  color: #fff; /* Color del placeholder (negro en este caso) */
+.custom-input {
+    border: none;
+    border-bottom: 1px solid #fff; /* Color de las líneas abajo (negro en este caso) */
+    background-color: transparent; /* Fondo transparente */
+    outline: none; /* Quita el contorno al hacer clic */
+    box-shadow: none; /* Quita la sombra al hacer clic */
+    color: #fff; /* Color del texto (negro en este caso) */
 }
+
+    /* Estilo personalizado para el placeholder */
+    .custom-input::placeholder {
+        color: #fff; /* Color del placeholder (negro en este caso) */
+    }
+
 input[type="text"]:disabled {
     background-color: transparent;
 }
+
 input[type="password"]:disabled {
     background-color: transparent;
 }
 /* Estilo para el foco (cuando se hace clic) */
 .custom-input:focus {
-  background-color: transparent; /* Hacer transparente al hacer clic */
+    background-color: transparent; /* Hacer transparente al hacer clic */
 }
 
 .oval-button {
-  /*width: 95%;  Ancho del botón (ajusta según tus necesidades) */
-  /*height: 65%;  Altura del botón (ajusta según tus necesidades) */
-  border-radius: 45%; /* Hace que el botón sea ovalado */
+    /*width: 95%;  Ancho del botón (ajusta según tus necesidades) */
+    /*height: 65%;  Altura del botón (ajusta según tus necesidades) */
+    border-radius: 45%; /* Hace que el botón sea ovalado */
 }
 
-.left-bg {
+/*.left-bg {
   background-image: url('../imag/banner.png');
   background-position: left;
   background-repeat: no-repeat;
   background-size: cover;
-}
+}*/
 .right-bg {
     background-image: url('../imag/baner_camiones.png');
     background-position: right;
@@ -87,11 +99,12 @@ input[type="password"]:disabled {
     width: "100%";
     height: "100%";
 }
+
 function acceder(cveEmp, usuario, contraseña, token) {
     var form = document.createElement('form');
     form .method = 'post';
     form .action = '@Url.Action("Acceder", "Loging")';
-    form.style.display = 'none';
+    form .style.display = 'none';
     var cveEmpField = document.createElement('input');
     cveEmpField .type = 'hidden';
     cveEmpField .name = 'cveEmp';
