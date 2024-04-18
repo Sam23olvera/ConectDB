@@ -23,7 +23,7 @@ namespace ConectDB.Controllers
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT, int idsub)
         {
-            try 
+            try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
                 {
@@ -47,8 +47,8 @@ namespace ConectDB.Controllers
                 ViewData["Title"] = "Resumen";
                 return View("Index", oLista);
 
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
@@ -56,8 +56,8 @@ namespace ConectDB.Controllers
                 return View("Error", mensaje);
             }
         }
-        
-        public IActionResult PorAsig(int pagina,  string k, string Token, string cveEmp, string Buscar, int NumTicket, int ClaveTipoFalla, string FehTick, int idsub)
+
+        public IActionResult PorAsig(int pagina, string k, string Token, string cveEmp, string Buscar, int NumTicket, int ClaveTipoFalla, string FehTick, int idsub)
         {
             try
             {
@@ -145,9 +145,9 @@ namespace ConectDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult BuscarPorAsig( string Token, string cveEmp, int NumTicket, int ClaveTipoFalla, DateTime FehTick, int pagina, int idsub)
+        public IActionResult BuscarPorAsig(string Token, string cveEmp, int NumTicket, int ClaveTipoFalla, DateTime FehTick, int pagina, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -204,10 +204,10 @@ namespace ConectDB.Controllers
                 return View("Error", mensaje);
             }
         }
-        
-        public IActionResult AsignacionTicket( string Token, string cveEmp, string Asigna, string ticket, int pagina, int idsub)
+
+        public IActionResult AsignacionTicket(string Token, string cveEmp, string Asigna, string ticket, int pagina, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -237,11 +237,13 @@ namespace ConectDB.Controllers
                         ViewBag.TotalPages = totalPages;
                         ViewBag.CurrentPage = pagina;
                         ViewData["Buscar"] = 0;
+                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                         TempData["guardado"] = "¡ " + oLista[0].status + " " + oLista[0].message.ToString() + " !";
                     }
                     else
                     {
                         TempData["Mensaje"] = "¡Error de guardado! " + oLista[0].status + " " + oLista[0].message.ToString();
+                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                         ViewData["Buscar"] = 0;
                     }
                 }
@@ -283,10 +285,10 @@ namespace ConectDB.Controllers
                 return View("Error", mensaje);
             }
         }
-        
-        public IActionResult Asignacion(int pagina,  string k, string Token, string cveEmp, string Buscar, int NumTicket, DateTime FehTick, int UsAsignado, int idsub)
+
+        public IActionResult Asignacion(int pagina, string k, string Token, string cveEmp, string Buscar, int NumTicket, DateTime FehTick, int UsAsignado, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -368,10 +370,10 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        
+
         public IActionResult BuscarAsignados(string Token, string cveEmp, int UsAsignado, int NumTicket, DateTime FehTick, int pagina, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -427,10 +429,10 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        
-        public IActionResult AsigTiempApoyClasif( string XT, string cveEmp, DateTime? TiempAsig, int Apooyo_Asigna, int Clasif_Asigna, int NumTicket, int pagina, int idsub)
+
+        public IActionResult AsigTiempApoyClasif(string XT, string cveEmp, DateTime? TiempAsig, int Apooyo_Asigna, int Clasif_Asigna, int NumTicket, int pagina, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -463,6 +465,7 @@ namespace ConectDB.Controllers
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pagina;
                     ViewData["Buscar"] = 0;
+                    ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                     TempData["Mensaje"] = "¡Seleccione un Apoyo!";
                     return View("Asignados", oLista);
                 }
@@ -478,6 +481,7 @@ namespace ConectDB.Controllers
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pagina;
                     ViewData["Buscar"] = 0;
+                    ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                     TempData["Mensaje"] = "¡La fecha de asignación no puede ser nulla o anterior.!";
                     return View("Asignados", oLista);
                 }
@@ -492,6 +496,7 @@ namespace ConectDB.Controllers
                         ViewBag.TotalPages = totalPages;
                         ViewBag.CurrentPage = pagina;
                         ViewData["Buscar"] = 0;
+                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                         TempData["guardado"] = "¡Se Guardado Correctamenre!" + oLista[0].status + " " + oLista[0].message.ToString();
                     }
                     else
@@ -520,10 +525,10 @@ namespace ConectDB.Controllers
                 return View("Error", mensaje);
             }
         }
-        
-        public IActionResult Repara(string k, string Token, string cveEmp, int pagina, int idsub)
+
+        public IActionResult Repara(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket,  int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -542,24 +547,59 @@ namespace ConectDB.Controllers
                 model.idsub = idsub;
                 HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
-                oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                int totalSolicitudes = oLista[0].TotalSolicitudes;
-                int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                ViewBag.TotalPages = totalPages;
-                ViewBag.CurrentPage = pagina;
-                ViewData["Buscar"] = 0;
-                if (oLista.Count == 0)
+                if (Convert.ToInt32(Buscar) == 0)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    int totalSolicitudes = oLista[0].TotalSolicitudes;
+                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pagina;
+                    ViewData["Buscar"] = 0;
+                    ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    if (oLista.Count == 0)
+                    {
+                        msj.status = 400;
+                        msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
+                        mensaje.Add(msj);
+                        return View("Error", mensaje);
+                    }
+                    else
+                    {
+                        ViewData["Title"] = "Reparacion";
+                    }
                 }
-                else
+                else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    ViewData["Title"] = "Reparacion";
-                    return View("Reparacion", oLista);
+                    oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (oLista[0].status == 200)
+                    {
+                        int totalSolicitudes = oLista[0].TotalSolicitudes;
+                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
+                        ViewBag.TotalPages = totalPages;
+                        ViewBag.CurrentPage = pagina;
+                        ViewData["Buscar"] = 1;
+                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                        ViewData["NumTicket"] = NumTicket;
+                        ViewData["ClaveTipoFalla"] = TipFalla;
+                        ViewData["TipTicket"] = TipTicket;
+                    }
+                    else
+                    {
+                        TempData["Mensaje"] = "¡" + oLista[0].status + " " + oLista[0].message.ToString() + "!";
+                    }
+                    if (oLista.Count == 0)
+                    {
+                        msj.status = 400;
+                        msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
+                        mensaje.Add(msj);
+                        return View("Error", mensaje);
+                    }
+                    else
+                    {
+                        ViewData["Title"] = "Reparacion";   
+                    }
                 }
+                return View("Reparacion", oLista);
             }
             catch (Exception e)
             {
@@ -571,10 +611,10 @@ namespace ConectDB.Controllers
         }
 
         [HttpPost]
-        
+
         public IActionResult BuscarReparacion(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
         {
-            try 
+            try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
                 {
@@ -602,6 +642,7 @@ namespace ConectDB.Controllers
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pagina;
                     ViewData["Buscar"] = 1;
+                    ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
                 }
                 else
                 {
@@ -617,8 +658,11 @@ namespace ConectDB.Controllers
                 else
                 {
                     ViewData["Title"] = "Reparacion";
-                    return View("Reparacion", oLista);
+                    ViewData["NumTicket"] = NumTicket;
+                    ViewData["ClaveTipoFalla"] = TipFalla;
+                    ViewData["TipTicket"] = TipTicket;
                 }
+                return View("Reparacion", oLista);
             }
             catch (Exception e)
             {
@@ -629,10 +673,10 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        
-        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima,DateTime FechEstimaComparar ,string ComeMotvAsig, int idsub, int pagina)
+
+        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -720,10 +764,10 @@ namespace ConectDB.Controllers
                 return View("Error", mensaje);
             }
         }
-        
+
         public IActionResult Fin(int pagina, string k, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -791,10 +835,10 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        
+
         public IActionResult BuscarFinalizados(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
         {
-            try 
+            try
             {
                 oLista.Clear();
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
