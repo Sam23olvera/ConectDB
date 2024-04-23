@@ -3,14 +3,18 @@ using ConectDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace ConectDB.Controllers
 {
     public class AgenciasController : Controller
     {
+        private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
         DataApi data = new DataApi();
-        
-        public ActionResult Index(int cveEmp, string UfS, string xPa, string XT)
+        UsuarioModel model = new UsuarioModel();
+        ConectMenuUser menu = new ConectMenuUser();
+
+        public ActionResult Index(int cveEmp, string XT)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
             {
@@ -23,21 +27,11 @@ namespace ConectDB.Controllers
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-            string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
-            JObject jsdatos = JObject.Parse("{\"data\": {\"bdCc\": 1,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_EmpUser\"},\"filter\": {\"usr\": \"" + desusuario + "\",\"pwd\": \"" + descontraseña + "\",\"idempresa\":" + cveEmp + "} }");
-            var datos = data.HttpWebRequestToken("POST", url, jsdatos, XT);
-            if (datos == null)
-            {
-                return RedirectToAction("Error");
-            }
-            else
-            {
-                var model = JsonConvert.DeserializeObject<UsuarioModel>(datos);
-                model.Data[0].usuario = UfS;
-                model.Data[0].contraseña = xPa;
-                ViewData["UsuarioModel"] = model;
-                return View(model);
-            }
+            model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
+            model.Data[0].usuario = HttpContext.Request.Cookies["usuario"];
+            model.Data[0].contraseña = HttpContext.Request.Cookies["contra"];
+            ViewData["UsuarioModel"] = model;
+            return View(model);
         }
         public ActionResult Agencias() => View();
     }

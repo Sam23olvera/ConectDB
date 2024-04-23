@@ -46,8 +46,6 @@ namespace ConectDB.Controllers
                 {
                     HttpContext.Response.Cookies.Append("usuario", usuarioCifrado);
                     HttpContext.Response.Cookies.Append("contra", contraseñaCifrada);
-                    //datos.Data[0].usuario = usuarioCifrado;
-                    //datos.Data[0].contraseña = contraseñaCifrada;
                     HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(datos));
                     return View(datos);
                 }

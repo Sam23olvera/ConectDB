@@ -36,20 +36,20 @@ namespace ConectDB.Models
     public class Empresa
     {
         public int cveEmp { get; set; }
-        public string nomb { get; set; }
-        public string alias { get; set; }
-        public string prefijo { get; set; }
+        public string? nomb { get; set; }
+        public string? alias { get; set; }
+        public string? prefijo { get; set; }
     }
     public class Nvacc
     {
         public int idsub { get; set; }
         public int idopsub { get; set; }
-        public string nomop { get; set; }
+        public string? nomop { get; set; }
     }
     public class per 
     {
         public int idsub { get; set; }
         public int idopsub { get; set; }
-        public string permiso { get; set; }
+        public string? permiso { get; set; }
     }
 }

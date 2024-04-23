@@ -1,18 +1,18 @@
-﻿@{
+﻿@using ConectDB.Models;
+@using System.Collections.Generic;
+@model UsuarioModel;
+@{
     ViewData["Title"] = "logeo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@using ConectDB.Models;
-@using System.Collections.Generic;
-@model UsuarioModel;
-<style>
+@* <style>
     .form-select {
     }
 
     .form-select-item {
         color: white;
     }
-</style>
+</style> *@
 <main role="main">
     <div class="container-fluid ">
         <div class="row">
@@ -56,7 +56,7 @@
                                         }
                                     </select>
                                     <input id="cveEmp" type="hidden" name="cveEmp" value="" />
-                                    <input type="hidden" name="Tok" value="@Model.Token" />
+                                    <input id="Tok"  name="Tok" type="hidden" value="@Model.Token" />
                                 </div>
                             </div>
                         </form>

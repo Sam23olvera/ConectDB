@@ -8,9 +8,10 @@ namespace ConectDB.Controllers
 {
     public class FlotaSepomexController : Controller
     {
-        DataApi data = new DataApi();
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
-
+        DataApi data = new DataApi();
+        ConectMenuUser menu = new ConectMenuUser();
+        UsuarioModel model = new UsuarioModel();
 
         public ActionResult Index(int cveEmp, string XT)
         {
@@ -25,19 +26,11 @@ namespace ConectDB.Controllers
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-            JObject jsdatos = JObject.Parse("{\"data\": {\"bdCc\": 1,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_EmpUser\"},\"filter\": {\"usr\": \"" + desusuario + "\",\"pwd\": \"" + descontraseña + "\",\"idempresa\":" + cveEmp + "} }");
-            var datos = data.HttpWebRequestToken("POST", url, jsdatos, XT);
-            if (datos == null)
-            {
-                return RedirectToAction("Error");
-            }
-            else
-            {
-                var model = JsonConvert.DeserializeObject<UsuarioModel>(datos);
-                ViewData["UsuarioModel"] = model;
-                //var oLista = con.listarReclu(usuario, contraseña, cveEmp);
-                return View("Index");
-            }
+
+            model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
+            model.Token = XT;
+            ViewData["UsuarioModel"] = model;
+            return View("Index");
         }
 
     }

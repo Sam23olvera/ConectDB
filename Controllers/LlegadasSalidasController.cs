@@ -11,8 +11,10 @@ namespace ConectDB.Controllers
     {
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
         ConectApi con = new ConectApi();
-        //BaseDatos con = new BaseDatos();
         DataApi data = new DataApi();
+        UsuarioModel model = new UsuarioModel();
+        ConectMenuUser menu = new ConectMenuUser();
+
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT)
         {
@@ -27,25 +29,17 @@ namespace ConectDB.Controllers
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-            JObject jsdatos = JObject.Parse("{\"data\": {\"bdCc\": 1,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_EmpUser\"},\"filter\": {\"usr\": \"" + desusuario + "\",\"pwd\": \"" + descontraseña + "\",\"idempresa\":" + cveEmp + "} }");
-            var datos = data.HttpWebRequestToken("POST", url, jsdatos, XT);
-            if (datos == null)
-            {
-                return RedirectToAction("Error");
-            }
-            else
-            {
-                var model = JsonConvert.DeserializeObject<UsuarioModel>(datos);
-                model.Data[0].usuario = HttpContext.Request.Cookies["usuario"];
-                model.Data[0].contraseña = HttpContext.Request.Cookies["contra"];
-                ViewData["UsuarioModel"] = model;
-                ViewData["Token"] = XT;
-                ViewData["Usuario"] = HttpContext.Request.Cookies["usuario"];
-                ViewData["Contraseña"] = HttpContext.Request.Cookies["contra"];
-                ViewData["cveEmp"] = cveEmp;
-                var oLista = con.ListarRutas();
-                return View("Index", oLista);
-            }
+            model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
+            model.Data[0].usuario = HttpContext.Request.Cookies["usuario"];
+            model.Data[0].contraseña = HttpContext.Request.Cookies["contra"];
+            model.Token = XT;
+            ViewData["UsuarioModel"] = model;
+            ViewData["Token"] = XT;
+            ViewData["Usuario"] = HttpContext.Request.Cookies["usuario"];
+            ViewData["Contraseña"] = HttpContext.Request.Cookies["contra"];
+            ViewData["cveEmp"] = cveEmp;
+            var oLista = con.ListarRutas();
+            return View("Index", oLista);
         }
 
         [HttpPost]
@@ -187,7 +181,7 @@ namespace ConectDB.Controllers
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-            
+
             JObject jsdatos = JObject.Parse("{\"data\": {\"bdCc\": 1,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_EmpUser\"},\"filter\": {\"usr\": \"" + desusuario + "\",\"pwd\": \"" + descontraseña + "\",\"idempresa\":" + cveEmp + "} }");
             string datos = "";
             if (Convert.ToDateTime(FeSel) == DateTime.MinValue)
@@ -378,7 +372,7 @@ namespace ConectDB.Controllers
             {
                 return RedirectToAction("Index", "Loging");
             }
-            
+
 
             foreach (var itinerario in sPMs)
             {

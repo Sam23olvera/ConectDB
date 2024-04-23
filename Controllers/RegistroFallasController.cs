@@ -1,17 +1,17 @@
 ﻿using ConectDB.DB;
 using ConectDB.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ConectDB.Controllers
 {
     public class RegistroFallasController : Controller
     {
-        ConectApi con = new ConectApi();
-        DataApi data = new DataApi();
-        ConectMenuUser menu = new ConectMenuUser();
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
+        ConectApi con = new ConectApi();
+        ConectMenuUser menu = new ConectMenuUser();
+        UsuarioModel model = new UsuarioModel();
+        ModelFallas oLista = new ModelFallas();
 
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT)
@@ -27,15 +27,15 @@ namespace ConectDB.Controllers
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-            UsuarioModel model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
+            model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
             ViewData["UsuarioModel"] = model;
             ViewData["Token"] = XT;
-            var oLista = con.ListaOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());
+            oLista = con.ObjetoModelOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());
             return View("Index", oLista);
 
         }
         [HttpPost]
-        
+
         public IActionResult Guardar(int ClaveTipoTicket, int TipoClas, TBCATTipoFalla tipoFalla, string Dot, string Marca, string Medida, int Posis, string ComeFalla, TBCATOperador operador, string telop, TBCATUnidade unidade, TBCATRutum rutum, int opcionesRemolque1, TBCATTipoCarga carga, int cvTipoequipo, string UbiRepor, string TramCarretero, TBCATTipoApoyo tBCATTipo, string LongGps, string LatGps, string DirGPS, string FechGPS, string Token, string Emp)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
@@ -48,15 +48,13 @@ namespace ConectDB.Controllers
             }
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
-            
+
             try
             {
-                UsuarioModel model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(Emp), url, Token);
-                //model.Data[0].usuario = UF;
-                //model.Data[0].contraseña = xPaS;
+                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(Emp), url, Token);
                 ViewData["UsuarioModel"] = model;
                 ViewData["Token"] = Token;
-                var oLista = con.ListaOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());
+                oLista = con.ObjetoModelOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());
 
                 string jsonEnvio = "{'RegistFalla':[";
                 jsonEnvio += "{";
@@ -208,29 +206,12 @@ namespace ConectDB.Controllers
                 if (cvTipoequipo == 0)
                 {
                     jsonEnvio += "'ClvTipEq': 0 ,";
-                    /*if (ClaveTipoEquipo == "0")
-                    {
-                        jsonEnvio += "'ClvTipEq': 0 ,";
-                    }
-                    else if (ClaveTipoEquipo != "0")
-                    {
-                        jsonEnvio += "'ClvTipEq':" + ClaveTipoEquipo + ",";
-                    }
-                    else 
-                    {
-                        jsonEnvio += "'ClvTipEq': 0 ,";
-                    }*/
                 }
                 else
                 {
                     jsonEnvio += "'ClvTipEq':" + cvTipoequipo + ",";
                 }
-                //ClaveEstatus
                 jsonEnvio += "'ClavEst': 1, ";
-                //DiasVencimiento
-                //jsonEnvio += "'DiaVen': 2, ";
-                //MotivoVencimiento
-                //jsonEnvio += "'MotVenci': " + "Se Vencio el plazo" + ", ";
                 if (string.IsNullOrEmpty(UbiRepor))
                 {
                     jsonEnvio += "'UbiRepor': '',";
@@ -287,11 +268,11 @@ namespace ConectDB.Controllers
                 {
                     jsonEnvio += "'FechGPS': null,";
                 }
-                if (FechGPS == "1900-01-01") 
+                if (FechGPS == "1900-01-01")
                 {
                     jsonEnvio += "'FechGPS': null,";
                 }
-                if (FechGPS == "1900-01-01T00:00:00") 
+                if (FechGPS == "1900-01-01T00:00:00")
                 {
                     jsonEnvio += "'FechGPS': null,";
                 }
@@ -304,21 +285,21 @@ namespace ConectDB.Controllers
                     + "},";
                 jsonEnvio += "]}";
                 jsonEnvio = jsonEnvio.Replace(",]}", "]}").Replace("\\", "");
-                //insertar codigo a enviar a servido
+
                 JObject js = con.GuardarFallas(jsonEnvio);
-                if (js["status"].ToString() == "400")
+                if (js["status"]?.ToString() == "400")
                 {
-                    TempData["Mensaje"] = js["message"].ToString();
+                    TempData["Mensaje"] = js["message"]?.ToString();
                     return View("Index", oLista);
                 }
-                if (js["status"].ToString() == "200")
+                if (js["status"]?.ToString() == "200")
                 {
-                    TempData["guardado"] = js["message"].ToString();
+                    TempData["guardado"] = js["message"]?.ToString();
                     return View("Index", oLista);
                 }
-                if (js["status"].ToString() == "Desconosido")
+                if (js["status"]?.ToString() == "Desconosido")
                 {
-                    TempData["Mensaje"] = js["message"].ToString();
+                    TempData["Mensaje"] = js["message"]?.ToString();
                     return View("Index", oLista);
                 }
                 else

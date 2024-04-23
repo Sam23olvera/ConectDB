@@ -8,9 +8,6 @@ namespace ConectDB.Models
         public int secu { get; set; }
         public List<UserSubmod>? submods { get; set; }
     }
-
-
-
     public class UserSubmod
     {
         public int idmod { get; set; }

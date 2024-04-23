@@ -1,20 +1,95 @@
 ﻿@{
 }
 @using ConectDB.Models;
-@model List<UserModstms>;
-<ul class="dropdown-menu">
-    @foreach (var mod in Model)
+@model SistmsModel;
+
+<div>
+    @Model.cveEmp
+    @Model.idsist
+    @Model.nomsis
+    @Model.secu
+</div>
+
+
+@* @{
+@using ConectDB.Models;
+@model UsuarioModel;
+}
+<header>
+    @foreach (var item in Model.Data)
     {
-        <li class="nav-item dropend">
-            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                @mod.nommod
-            </a>
-            <ul class="dropdown-menu">
-                @foreach (var submod in mod.submods)
+        <nav class="navbar navbar-expand-lg navbar-light bg-gradient barramenu">
+            <div class="container-fluid">
+                @switch (@item.EmpS[0].cveEmp)
                 {
-                    <li><a class="dropdown-item text-dark" href="#">@submod.nomsub</a></li>
+                    case 1:
+                        <a class="navbar-brand-center">
+                            <img src="~/imag/logo_difuminado.png" alt="Bootstrap" width="50" height="44">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        break;
+                    case 2:
+                        <a class="navbar-brand-center" >
+                            <img src="~/imag/tum-logo-jk.png" alt="Bootstrap" width="50" height="44">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        break;
+                    default:
+                        <a class="navbar-brand-center" >
+                            <img src="~/imag/logo_difuminado.png" alt="Bootstrap" width="50" height="44">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        break;
                 }
-            </ul>
-        </li>
+                @foreach (var sistema in item.sistms)
+                {
+                    <div class="collapse navbar-collapse Submenus" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @sistema.nomsis
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @foreach (var modulo in item.mods.Where(mod => mod.idsist == sistema.idsist))
+                                    {
+                                        <li class="nav-item dropend">
+                                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                @modulo.nommod
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                @foreach (var submodulo in modulo.submods)
+                                                {
+                                                    <li>
+                                                        <a asp-action="Index" asp-controller="@submodulo.nomsub.Replace(" ", "")" asp-route-cveEmp="@item.EmpS[0].cveEmp" asp-route-UfS="@item.usuario" asp-route-xPa="@item.contraseña" asp-route-XT="@Model.Token" asp-route-idsub="@submodulo.idsub" class="dropdown-item text-dark">
+                                                            @submodulo.nomsub
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                <form class="d-flex">
+                    <img src="~/imag/log_icon.png" alt="Bootstrap" width="30" height="24" />
+                    <br />
+                    <a><p>@item.nom</p></a>
+                    <br />
+                    <a style="color: white;" id="btnSalir" class="butonsalir" asp-action="Salir" asp-controller="Loging" asp-route-cveEmp="0" asp-route-UfS="null" asp-route-xPa="null" asp-route-XT="null">Salir</a>
+                </form>
+            </div>
+        </nav>
     }
-</ul>
+</header> *@

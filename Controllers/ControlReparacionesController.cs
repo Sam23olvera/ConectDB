@@ -43,7 +43,6 @@ namespace ConectDB.Controllers
                 HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 oLista = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
-                //Console.WriteLine("prueba");
                 ViewData["Title"] = "Resumen";
                 return View("Index", oLista);
 
@@ -76,7 +75,7 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
@@ -163,7 +162,7 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 oLista = con.Primer_crga_con_Catalogos(1, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, ClaveTipoFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
                 if (oLista[0].status == 200)
@@ -223,12 +222,12 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Asigna != "[Selecciona]")
                 {
                     oLista = con.Modfificador_metod(1, 2, model.Data[0].EmpS[0].cveEmp.ToString(), ticket, Asigna, 0, 0, "", "", model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub, pagina, pageSize);
-                    //oLista = con.Asigna_Ticket(model.Data[0].EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), Asigna, ticket, pagina, pageSize);
+
                     if (oLista[0].status == 200)
                     {
                         int totalSolicitudes = oLista[0].TotalSolicitudes;
@@ -304,7 +303,7 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
@@ -390,7 +389,7 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 //oLista = con.Primer_crga_con_Catalogos(int CveEstatus, string empresa, string fecha, int NumTicket, int TipoTicket, int TipoFalla, string FehTick, string CveUser, int pagina, int tamañomuestra)
                 oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, 0, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
@@ -449,7 +448,7 @@ namespace ConectDB.Controllers
 
                 model.Token = XT;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
 
                 if (Apooyo_Asigna == 0)
@@ -525,7 +524,7 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult Repara(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket,  int idsub)
+        public IActionResult Repara(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
         {
             try
             {
@@ -544,7 +543,7 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
@@ -595,7 +594,7 @@ namespace ConectDB.Controllers
                     }
                     else
                     {
-                        ViewData["Title"] = "Reparacion";   
+                        ViewData["Title"] = "Reparacion";
                     }
                 }
                 return View("Reparacion", oLista);
@@ -631,7 +630,7 @@ namespace ConectDB.Controllers
                 //model.Data[0].contraseña = contraseña;
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
                 if (oLista[0].status == 200)
@@ -694,7 +693,7 @@ namespace ConectDB.Controllers
                 //model.Data[0].contraseña = Contra;
                 model.Token = Tok;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
 
                 if (FechEstima > FechEstimaComparar && FechEstima > DateTime.Now)
@@ -783,7 +782,7 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
@@ -867,7 +866,7 @@ namespace ConectDB.Controllers
                 //model.Data[0].contraseña = contraseña;
                 model.Token = Token;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
+                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
                 if (oLista[0].status == 200)
