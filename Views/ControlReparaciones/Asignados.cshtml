@@ -80,18 +80,19 @@
                                             <caption>@ViewData["Title"]</caption>
                                             <thead>
                                                 <tr>
-                                                    <th># Ticket</th>
-                                                    <th>Fecha de creación</th>
-                                                    <th>Fecha de Asignación</th>
-                                                    <th>Tipo Ticket</th>
-                                                    <th>Falla</th>
-                                                    <th>Usuario asignado</th>
-                                                    <th>Comentario</th>
-                                                    <th>Re Clasificación</th>
-                                                    <th>Tipo Apoyo</th>
-                                                    <th>Tiempo Estimado</th>
-                                                    <th></th>
-                                                    <th></th>
+                                                    <th scope="col"># Ticket</th>
+                                                    <th scope="col">Fecha de creación</th>
+                                                    <th scope="col">Fecha de Asignación</th>
+                                                    <th scope="col">Tipo Ticket</th>
+                                                    <th scope="col">Falla</th>
+                                                    <th scope="col">Usuario asignado</th>
+                                                    <th scope="col">Comentario</th>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">Re Clasificación</th>
+                                                    <th scope="col">Tipo Apoyo</th>
+                                                    <th scope="col">Tiempo Estimado</th>
+                                                    <th scope="col"></th>
+                                                    <th scope="col"></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -101,7 +102,6 @@
                                                         <form method="post" asp-controller="ControlReparaciones" asp-action="AsigTiempApoyClasif" asp-route-XT="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-ticket="@solicitude.NumTicket" asp-route-idsub="@usuarioModel.idsub">
                                                         <td class="text-center">
                                                             <p>@solicitude.NumTicket</p>
-                                                            <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
                                                         </td>
                                                         <td class="text-center">
                                                             <p>@solicitude.FechaCreacion?.ToString("yyyy-MM-dd HH:mm")</p>
@@ -122,13 +122,53 @@
                                                             <p>@solicitude.ObsOperacion</p>
                                                         </td>
                                                         <td class="text-center">
-                                                            <select class="form-select selectTableClasif" aria-label="Default select example" name="Clasif_Asigna">
-                                                                <option selected>[Selecciona]</option>
-                                                                    @foreach (var clas in item.TBCAT_TipoClasificacion)
-                                                                    {
-                                                                    <option value="@clas.ClaveTipoClasificacion">@clas.Descripcion</option>
-                                                                    }
-                                                            </select>
+                                                            <div class="container">
+                                                                <input type="checkbox" class="form-check-input" id="ChkDisel" name="ChkDisel" checked="@solicitude.Diesel" />
+                                                                <label class="form-check-label">
+                                                                    Diesel
+                                                                </label>
+                                                                <br />
+                                                                <input type="checkbox" class="form-check-input" id="ChkGrua" name="ChkGrua" checked="@solicitude.Grua" />
+                                                                <label class="form-check-label">
+                                                                    Grua
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <div class="continer">
+                                                                <div class="col-6">
+                                                                    <select class="form-select selectTableClasif" aria-label="Default select example" name="Clasif_Asigna" id="Reclas_Asigna-@solicitude.NumTicket" onclick="mostrarllantitas('@solicitude.NumTicket')">
+                                                                        <option selected>[Selecciona]</option>
+                                                                            @foreach (var clas in item.TBCAT_TipoClasificacion)
+                                                                            {
+                                                                                @if (@clas.ClaveTipoClasificacion == @solicitude.ClaveTipoClasificacion)
+                                                                                {
+                                                                                <option selected value="@clas.ClaveTipoClasificacion">@clas.Descripcion</option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                <option value="@clas.ClaveTipoClasificacion">@clas.Descripcion</option>
+                                                                                }
+                                                                            }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <div class="container llantasTab llantitas-@solicitude.NumTicket" style="display:none">
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <input type="text" class="form-control custom-input" id="Dot" name="Dot" placeholder="Dot" value="" />
+                                                                                <br />
+                                                                                <input type="text" class="form-control custom-input" id="Marca" name="Marca" placeholder="Marca" value="" />
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <input type="text" class="form-control custom-input" id="Medida" name="Medida" placeholder="Medida" value="" />
+                                                                                <br />
+                                                                                <input type="number" class="form-control custom-input" id="Posis" name="Posis" placeholder="Posición" value="" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                         <td class="text-center">
                                                             <select class="form-select selectTabApoy" aria-label="Default select example" name="Apooyo_Asigna">

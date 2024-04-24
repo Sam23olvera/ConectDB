@@ -240,12 +240,12 @@ body {
 }
 
 
-    .selectTableClasif {
-        display: block;
-        height: 30pt;
-        width: 110pt;
-        font-size: small;
-    }
+.selectTableClasif {
+    display: block;
+    height: 30pt;
+    width: 110pt;
+    font-size: small;
+}
 
     .selectTabApoy {
         display: block;
@@ -254,6 +254,13 @@ body {
         font-size: small;
     }
 
+.llantasTab {
+    display: block;
+    width: 250pt;
+    align-content: center;
+    text-align: center;
+    font-size: small;
+}
     .datos-bak {
         display: none;
         background-color: #CCD1D1;
@@ -267,4 +274,31 @@ body {
     .letras-index {
         font-weight: bold;
         color: #0d6efd;
+    }
+
+.custom-input {
+    
+    border: none;
+    border-bottom: 1px solid black; /* Color de las líneas abajo (blanco en este caso) */
+    background-color: transparent; /* Fondo transparente */
+    color: black; /* Color del texto (blanco en este caso) */
+    width: 100pt;
+    font-size: small;
+}
+
+.custom-input {
+    
+    border: none;
+    border-bottom: 1px solid black; /* Color de las líneas abajo (negro en este caso) */
+    background-color: transparent; /* Fondo transparente */
+    outline: none; /* Quita el contorno al hacer clic */
+    box-shadow: none; /* Quita la sombra al hacer clic */
+    color: black; /* Color del texto (negro en este caso) */
+    width: 100pt;
+    font-size: small;
+}
+
+    /* Estilo personalizado para el placeholder */
+    .custom-input::placeholder {
+        color: black; /* Color del placeholder (negro en este caso) */
     }

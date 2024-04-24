@@ -36,7 +36,7 @@ namespace ConectDB.Controllers
         }
         [HttpPost]
 
-        public IActionResult Guardar(int ClaveTipoTicket, int TipoClas, TBCATTipoFalla tipoFalla, string Dot, string Marca, string Medida, int Posis, string ComeFalla, TBCATOperador operador, string telop, TBCATUnidade unidade, TBCATRutum rutum, int opcionesRemolque1, TBCATTipoCarga carga, int cvTipoequipo, string UbiRepor, string TramCarretero, TBCATTipoApoyo tBCATTipo, string LongGps, string LatGps, string DirGPS, string FechGPS, string Token, string Emp)
+        public IActionResult Guardar(int ClaveTipoTicket, int TipoClas, TBCATTipoFalla tipoFalla, string Dot, string Marca, string Medida, int Posis, string ComeFalla, TBCATOperador operador, string telop, TBCATUnidade unidade, TBCATRutum rutum, int opcionesRemolque1, TBCATTipoCarga carga, int cvTipoequipo, string UbiRepor, string TramCarretero, TBCATTipoApoyo tBCATTipo, string LongGps, string LatGps, string DirGPS, string FechGPS, string Token, string Emp, int CheckDisel, int CheckGrua)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
             {
@@ -281,7 +281,9 @@ namespace ConectDB.Controllers
                     jsonEnvio += "'FechGPS': '" + FechGPS + "',";
                 }
                 jsonEnvio += "'CvInUser':'" + model.Data[0].idus + "',";
-                jsonEnvio += "'ClvEmpresa':" + Emp + ""
+                jsonEnvio += "'ClvEmpresa':" + Emp + ",";
+                jsonEnvio += "'Diesel':" + CheckDisel + ",";
+                jsonEnvio += "'Grua':" + CheckGrua + ""
                     + "},";
                 jsonEnvio += "]}";
                 jsonEnvio = jsonEnvio.Replace(",]}", "]}").Replace("\\", "");

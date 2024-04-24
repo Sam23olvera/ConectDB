@@ -53,32 +53,27 @@ namespace ConectDB.DB
             try
             {
                 jsdat = JObject.Parse("{\"data\":{\"bdCc\":5,\"bdSch\":\"dbo\",\"bdSp\":\"SPQRY_CatalogosMantto\"},\"filter\":[{\"property\": \"ClaveEmpresa\",\"value\":\"" + empresa + "\"}]}");
-                var datos = hh.HttpWebRequest("POST", url, jsdat);
-                JObject json = JObject.Parse(datos);
+                JObject json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                 JArray? datop = json["data"] as JArray;
                 if (datop != null && datop.Count > 0)
                 {
                     if (string.IsNullOrEmpty(fecha))
                     {
-                      //jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\": " + cveEmp + " },{\"property\":\"CveEstatus\",\"value\": 2 },{\"property\":\"Fecha\",\"value\": \"" + FehTick.ToString("yyyy-MM-dd") + "\" },{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"TipoTicket\",\"value\": 0 },{\"property\":\"TipoFalla\",\"value\": 0 },{\"property\":\"CveUser\",\"value\":" + UsAsignado + "}]}");
-                        //jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + FehTick + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"TipoTicket\",\"value\":" + TipoTicket + "},{\"property\":\"TipoFalla\",\"value\": " + TipoFalla + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "}]}");
                         jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + FehTick + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"TipoTicket\",\"value\":" + TipoTicket + "},{\"property\":\"TipoFalla\",\"value\": " + TipoFalla + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "},{\"property\":\"UserFiltro\",\"value\":" + UserFiltro + "},{\"property\":\"IdSubmodulo\",\"value\":" + IdSubmodulo + "}]}");
                     }
                     else
                     {
-                        //jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + fecha + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"TipoTicket\",\"value\":" + TipoTicket + "},{\"property\":\"TipoFalla\",\"value\": " + TipoFalla + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "}]}");
                         jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + fecha + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"TipoTicket\",\"value\":" + TipoTicket + "},{\"property\":\"TipoFalla\",\"value\": " + TipoFalla + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "},{\"property\":\"UserFiltro\",\"value\":" + UserFiltro + "},{\"property\":\"IdSubmodulo\",\"value\":" + IdSubmodulo + "}]}");
                     }
-                    datos = hh.HttpWebRequest("POST", url, jsdat);
-                    json = JObject.Parse(datos);
+                    json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                     JArray? data = json["data"] as JArray;
                     pagina = (pagina - 1) * tamañomuestra;
                     if (data != null && data.Count > 0)
                     {
                         ControlFalla catfal = JsonConvert.DeserializeObject<ControlFalla>(datop[0].ToString());
-                        ControlFalla cfal = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString());
-                        catfal.TotalSolicitudes = cfal.Solicitudes.Count;
-                        catfal.Solicitudes = cfal.Solicitudes.Skip(pagina).Take(tamañomuestra).ToList();
+                        catfal.Solicitudes = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).Solicitudes;
+                        catfal.TotalSolicitudes = catfal.Solicitudes.Count;
+                        catfal.Solicitudes = catfal.Solicitudes.Skip(pagina).Take(tamañomuestra).ToList();
                         catfal.status = Convert.ToInt32(json["status"]);
                         lista.Add(catfal);
                     }
@@ -117,20 +112,17 @@ namespace ConectDB.DB
             try
             {
                 jsdat = JObject.Parse("{\"data\":{\"bdCc\":5,\"bdSch\":\"dbo\",\"bdSp\":\"SPQRY_CatalogosMantto\"},\"filter\":[{\"property\": \"ClaveEmpresa\",\"value\":\"" + empresa + "\"}]}");
-                var datos = hh.HttpWebRequest("POST", url, jsdat);
-                JObject json = JObject.Parse(datos);
+                JObject json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                 JArray? datop = json["data"] as JArray;
                 if (datop != null && datop.Count > 0)
                 {
                     jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPINS_SeguimientoReparaciones\"},\"filter\": [{\"property\": \"claveControlReparaciones\",\"value\": " + NumTicket + "},{\"property\":\"ClaveEstatusNvo\",\"value\": " + modCveEstatus + "},{\"property\":\"CveUsuarioAsignado \",\"value\": " + UseAsigna + "},{\"property\": \"ClaveTipoApoyo\",\"value\": " + TipoApoyo + "},{\"property\":\"ClaveTipoClasificacion\",\"value\": " + TipoFalla + "},{\"property\":\"FechaHoraEstimadaReparacion\",\"value\": \""+ FechaHoraEstimadaReparacion + "\"},{\"property\":\"ComentariosCambioVto\", \"value\": \""+ ComentariosCambioVto + "\"},{\"property\":\"CveUsuarioMod\",\"value\": " + CveUser + "}]}");
-                    datos = hh.HttpWebRequest("POST", url, jsdat);
-                    json = JObject.Parse(datos);
+                    json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                     if (Convert.ToInt32(json["status"]) == 200)
                     {
                         //JObject jasd = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + Fecha + "\"},{\"property\":\"NumTicket\",\"value\":" + 0 + "},{\"property\":\"TipoTicket\",\"value\":" + 0 + "},{\"property\":\"TipoFalla\",\"value\": " + 0 + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "}]}");
                         JObject jasd = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + Fecha + "\"},{\"property\":\"NumTicket\",\"value\":" + 0 + "},{\"property\":\"TipoTicket\",\"value\":" + 0 + "},{\"property\":\"TipoFalla\",\"value\": " + 0 + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "},{\"property\":\"UserFiltro\",\"value\":" + 0 + "},{\"property\":\"IdSubmodulo\",\"value\":" + idsub + "}]}");
-                        var sa = hh.HttpWebRequest("POST", url, jasd);
-                        JObject jqan = JObject.Parse(sa);
+                        JObject jqan = JObject.Parse(hh.HttpWebRequest("POST", url, jasd));
                         JArray? dega = jqan["data"] as JArray;
                         pagina = (pagina - 1) * tamañomuestra;
                         if (dega != null && dega.Count > 0)

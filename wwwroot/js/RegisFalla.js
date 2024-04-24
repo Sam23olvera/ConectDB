@@ -17,6 +17,11 @@
     var NomTipOp = document.getElementById('NomTipOp');
     var ClaveTipoEquipo = document.getElementById('ClaveTipoEquipo');
     var cvTipoequipo = document.getElementById('cvTipoequipo');
+    var ChkDisel = document.getElementById('ChkDisel');
+    var ChkGrua = document.getElementById('ChkGrua');
+    var txtCheckDisel = document.getElementById('CheckDisel');
+    var txtCheckGrua = document.getElementById('CheckGrua');
+
     function fillValues(selectedIndex, targetValue, targetText) {
         targetValue.value = selectedIndex !== -1 ? selectedIndex.options[selectedIndex.selectedIndex].value : '';
         targetText.value = selectedIndex !== -1 ? selectedIndex.options[selectedIndex.selectedIndex].text : '';
@@ -38,7 +43,7 @@
         else if (TipTicket.value == 2) {
             Tractor.style.display = "none";
             Remolque.style.display = "block";
-            //ClaveTipoEquipo.selectedIndex = 0;
+            ClaveTipoEquipo.selectedIndex = 0;
         }
         else
         {
@@ -94,6 +99,24 @@
             Ruta.disabled = false;
         }
     });
+    ChkDisel.addEventListener('change', function () {
+        if (ChkDisel.checked == true) {
+            txtCheckDisel.value = 1;
+        }
+        else if (ChkDisel.checked == false)
+        {
+            txtCheckDisel.value = 0;
+        }
+    });
+    ChkGrua.addEventListener('change', function () {
+        if (ChkGrua.checked == true) {
+            txtCheckGrua.value = 1;
+        }
+        else if (ChkGrua.checked == false) {
+            txtCheckGrua.value = 0;
+        }
+    });
+
 });
 document.addEventListener("DOMContentLoaded", function () {
 

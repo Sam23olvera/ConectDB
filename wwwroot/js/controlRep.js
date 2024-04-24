@@ -27,6 +27,7 @@ function calendario(numTicket) {
         format: 'Y/m/d H:i'
     });
 }
+
 $(document).ready(function () {
     var checkIni = document.getElementById('checkIni');
     var checkIniValue = document.getElementById('checkIniValue').value;
@@ -48,6 +49,22 @@ $(document).ready(function () {
     }
 
 });
+function mostrarllantitas(numTicket)
+{
+    var selectReclas_Asigna = "Reclas_Asigna-" + numTicket
+    var Reclas_Asigna = document.getElementById(selectReclas_Asigna);
+    var mostTab = '.llantitas-' + numTicket;
+
+    if (Reclas_Asigna.value == 2) {
+        $(mostTab).show();
+        $('.headllantitas').show();
+    }
+    else {
+        $(mostTab).hide();
+        $('.headllantitas').hide();
+    }
+}
+
 function asignarTicket(numTicket)
 {
     var selectId = "select-" + numTicket;

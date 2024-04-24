@@ -40,7 +40,6 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
                 model.Token = XT;
                 model.idsub = idsub;
-                HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 oLista = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
                 ViewData["Title"] = "Resumen";
@@ -75,7 +74,6 @@ namespace ConectDB.Controllers
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
@@ -368,7 +366,6 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-
         public IActionResult BuscarAsignados(string Token, string cveEmp, int UsAsignado, int NumTicket, DateTime FehTick, int pagina, int idsub)
         {
             try
@@ -385,11 +382,9 @@ namespace ConectDB.Controllers
                 string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
                 string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 //oLista = con.Primer_crga_con_Catalogos(int CveEstatus, string empresa, string fecha, int NumTicket, int TipoTicket, int TipoFalla, string FehTick, string CveUser, int pagina, int tamañomuestra)
                 oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, 0, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
@@ -445,12 +440,10 @@ namespace ConectDB.Controllers
                 string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
                 model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, XT);
-
                 model.Token = XT;
                 model.idsub = idsub;
                 //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
-
                 if (Apooyo_Asigna == 0)
                 {
                     oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);

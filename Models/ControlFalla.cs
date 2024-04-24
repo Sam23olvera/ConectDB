@@ -63,9 +63,12 @@
         public DateTime? FechaEvento { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaAsignacion { get; set; }
+        public bool Diesel { get; set; }
+        public bool Grua { get; set; }
         public string? DOT { get; set; }
         public string? MARCA { get; set; }
         public string? MEDIDA { get; set; }
         public int? POSICION { get; set; }
+        public int ClaveTipoFalla { get; set; }
     }
 }
