@@ -1,21 +1,18 @@
 ﻿using ConectDB.DB;
 using ConectDB.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net.Sockets;
-using System.Reflection;
-using static ConectDB.Models.LogUser;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ConectDB.Controllers
 {
     public class ControlReparacionesController : Controller
     {
-        private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
-        DataApi data = new DataApi();
-        ConectApiContrRep con = new ConectApiContrRep();
-        ConectMenuUser menu = new ConectMenuUser();
-        const int pageSize = 5;
-        List<ControlFalla> oLista = new List<ControlFalla>();
+        private readonly string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
+        private readonly ConectMenuUser menu = new ConectMenuUser();
+        private readonly DataApi data = new DataApi();
+        private readonly ConectApiContrRep con = new ConectApiContrRep();
+        private const int pageSize = 2;
+        ControlFalla controlFal = new ControlFalla();
         UsuarioModel model = new UsuarioModel();
         List<Error> mensaje = new List<Error>();
         Error msj = new Error();
@@ -25,111 +22,83 @@ namespace ConectDB.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                oLista.Clear();
-                model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), cveEmp, url, XT);
                 model.Token = XT;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                oLista = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
+                controlFal = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
                 ViewData["Title"] = "Resumen";
-                return View("Index", oLista);
+                return View("Index", controlFal);
 
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
 
-        public IActionResult PorAsig(int pagina, string k, string Token, string cveEmp, string Buscar, int NumTicket, int ClaveTipoFalla, string FehTick, int idsub)
+        public IActionResult PorAsig(int pagina, string Token, string cveEmp, int Buscar, int NumTicket, int ClaveTipoFalla, DateTime FehTick, int idsub)
         {
             try
             {
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                oLista.Clear();
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                if (Convert.ToInt32(Buscar) == 0)
+                if (Buscar == 0)
                 {
-                    if (string.IsNullOrEmpty(FehTick))
+                    if (FehTick == null || FehTick == DateTime.MinValue)
                     {
-                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                        FehTick = DateTime.Now;
                     }
-                    else
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status == 200)
                     {
-                        ViewData["FehTick"] = FehTick;
-                    }
-                    oLista = con.Primer_crga_con_Catalogos(1, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
-                    {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 0;
+                        TempData["Buscar"] = 0;
                     }
                     else
                     {
-                        TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                     }
+
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(1, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, ClaveTipoFalla, Convert.ToDateTime(FehTick).ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status == 200)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
-                        ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 1;
-                        ViewData["NumTicket"] = NumTicket;
-                        ViewData["ClaveTipoFalla"] = ClaveTipoFalla;
-                        ViewData["FehTick"] = FehTick;
+                        int totalpages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                        ViewBag.totalpages = totalpages;
+                        ViewBag.currentpage = pagina;
+                        TempData["Buscar"] = 1;
+                        TempData["NumTicket"] = NumTicket;
+                        TempData["ClaveTipoFalla"] = ClaveTipoFalla;
+                        TempData["FehTick"] = FehTick;
                     }
                     else
                     {
-                        TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                     }
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status != 200)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
-                else
-                {
-                    ViewData["Title"] = "Por Asignar";
-                    return View("PorAsignar", oLista);
-                }
+                TempData["FehTick"] = FehTick;
+                ViewData["Title"] = "Por Asignar";
+                return View("PorAsignar", controlFal);
             }
             catch (Exception e)
             {
@@ -145,52 +114,45 @@ namespace ConectDB.Controllers
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
-                oLista = con.Primer_crga_con_Catalogos(1, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, ClaveTipoFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                if (oLista[0].status == 200)
+                //con.Primer_crga_con_Catalo(1, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, ClaveTipoFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
+                controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (controlFal.status == 200)
                 {
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 1;
-                    ViewData["NumTicket"] = NumTicket;
-                    ViewData["ClaveTipoFalla"] = ClaveTipoFalla;
-                    ViewData["FehTick"] = FehTick;
-                    ViewData["Title"] = "Por Asignar";
+                    TempData["Buscar"] = 1;
+                    TempData["NumTicket"] = NumTicket;
+                    TempData["ClaveTipoFalla"] = ClaveTipoFalla;
+                    TempData["FehTick"] = FehTick;
                 }
                 else
                 {
-                    TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                    if (FehTick == null || FehTick == DateTime.MinValue)
+                    {
+                        FehTick = DateTime.Now;
+                        TempData["FehTick"] = FehTick;
+                    }
+                    else
+                    {
+                        TempData["FehTick"] = FehTick;
+                    }
+                    TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                 }
-
-                if (oLista.Count == 0)
+                if (controlFal.status != 200)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message.ToString();
+                    return View("Error", msj);
                 }
-                else
-                {
-                    return View("PorAsignar", oLista);
-                }
+                ViewData["Title"] = "Por Asignar";
+                return View("PorAsignar", controlFal);
             }
             catch (Exception e)
             {
@@ -205,164 +167,122 @@ namespace ConectDB.Controllers
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
+                DateTime FehAsignatiempo = DateTime.Now;
                 if (Asigna != "[Selecciona]")
                 {
-                    oLista = con.Modfificador_metod(1, 2, model.Data[0].EmpS[0].cveEmp.ToString(), ticket, Asigna, 0, 0, "", "", model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub, pagina, pageSize);
-
-                    if (oLista[0].status == 200)
+                    controlFal = con.ModificadorFall(1, 2, model.Data[0].EmpS[0].cveEmp.ToString(), ticket, Asigna, 0, 0, "", "", model.Data[0].idus, FehAsignatiempo.ToString("yyyy-MM-dd"), 0, idsub, pagina, pageSize, 0, 0, "", "", "", 0);
+                    if (controlFal.status == 200)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 0;
-                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
-                        TempData["guardado"] = "¡ " + oLista[0].status + " " + oLista[0].message.ToString() + " !";
+                        TempData["Buscar"] = 0;
+                        TempData["FehTick"] = FehAsignatiempo;
                     }
                     else
                     {
-                        TempData["Mensaje"] = "¡Error de guardado! " + oLista[0].status + " " + oLista[0].message.ToString();
-                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
-                        ViewData["Buscar"] = 0;
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                     }
                 }
                 else
                 {
-                    oLista = con.Primer_crga_con_Catalogos(1, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehAsignatiempo.ToString("yyyy-MM-dd"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status == 200)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 0;
-                        TempData["Mensaje"] = "¡Seleccione a un paersona a asignar!";
+                        TempData["Buscar"] = 0;
+                        TempData["FehTick"] = FehAsignatiempo;
                     }
                     else
                     {
-                        TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                     }
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status != 200)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
-                else
-                {
-                    ViewData["Title"] = "Por Asignar";
-                    return View("PorAsignar", oLista);
-                }
+                ViewData["Title"] = "Por Asignar";
+                return View("PorAsignar", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
 
-        public IActionResult Asignacion(int pagina, string k, string Token, string cveEmp, string Buscar, int NumTicket, DateTime FehTick, int UsAsignado, int idsub)
+        public IActionResult Asignacion(int pagina, string Token, string cveEmp, string Buscar, int NumTicket, DateTime FehTick, int UsAsignado, int idsub)
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
                     if (FehTick == null || FehTick == DateTime.MinValue)
                     {
-                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                        FehTick = DateTime.Now;
+                        TempData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
                     }
                     else
                     {
-                        // Código a ejecutar si FehTick tiene una fecha válida
-                        ViewData["FehTick"] = FehTick;
+                        TempData["FehTick"] = FehTick;
                     }
-                    oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status != 200)
+                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status != 200)
                     {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + oLista[0].status + " " + oLista[0].message.ToString();
+                        TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
                     }
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 0;
-
+                    TempData["Buscar"] = 0;
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, 0, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
-                    if (oLista[0].status != 200)
+                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
+                    if (controlFal.status != 200)
                     {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + oLista[0].status + " " + oLista[0].message.ToString();
+                        TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
                     }
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 1;
-                    ViewData["UsAsignado"] = UsAsignado;
-                    ViewData["FehTick"] = FehTick;
-                    ViewData["NumTicket"] = NumTicket;
+                    TempData["Buscar"] = 1;
+                    TempData["UsAsignado"] = UsAsignado;
+                    TempData["FehTick"] = FehTick;
+                    TempData["NumTicket"] = NumTicket;
                     ViewData["Title"] = "Asignados";
-                    return View("Asignados", oLista);
+                    return View("Asignados", controlFal);
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status != 200)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
-                else
-                {
-                    ViewData["Title"] = "Asignados";
-                    return View("Asignados", oLista);
-                }
+                ViewData["Title"] = "Asignados";
+                return View("Asignados", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
         [HttpPost]
@@ -370,150 +290,131 @@ namespace ConectDB.Controllers
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                //oLista = con.Primer_crga_con_Catalogos(int CveEstatus, string empresa, string fecha, int NumTicket, int TipoTicket, int TipoFalla, string FehTick, string CveUser, int pagina, int tamañomuestra)
-                oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, 0, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
-                if (oLista[0].status != 200)
+                controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
+                if (controlFal.status != 200)
                 {
-                    TempData["Mensaje"] = "¡No se encuentran datos! " + oLista[0].status + " " + oLista[0].message.ToString();
+                    TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
                 }
-                int totalSolicitudes = oLista[0].TotalSolicitudes;
-                int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                ViewBag.TotalPages = totalPages;
+                if (controlFal.status != 200)
+                {
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
+                }
+                ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                 ViewBag.CurrentPage = pagina;
-                ViewData["Buscar"] = 1;
-                ViewData["UsAsignado"] = UsAsignado;
-                ViewData["FehTick"] = FehTick;
-                ViewData["NumTicket"] = NumTicket;
+                TempData["Buscar"] = 1;
+                TempData["UsAsignado"] = UsAsignado;
+                TempData["FehTick"] = FehTick;
+                TempData["NumTicket"] = NumTicket;
                 ViewData["Title"] = "Asignados";
-                if (oLista.Count == 0)
-                {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
-                }
-                else
-                {
-                    return View("Asignados", oLista);
-                }
+                return View("Asignados", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
         [HttpPost]
 
-        public IActionResult AsigTiempApoyClasif(string XT, string cveEmp, DateTime? TiempAsig, int Apooyo_Asigna, int Clasif_Asigna, int NumTicket, int pagina, int idsub)
+        public IActionResult AsigTiempApoyClasif(string XT, string cveEmp, DateTime? TiempAsig, int Apooyo_Asigna, int Clasif_Asigna, int NumTicket, int pagina, int idsub, int CheckDisel, int CheckGrua, string Dot, string Marca, string Medida, int Posis)
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, XT);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, XT);
                 model.Token = XT;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
+                controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (controlFal.status != 200)
+                {
+                    TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
+                }
+                ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                ViewBag.CurrentPage = pagina;
+                TempData["Buscar"] = 0;
+                TempData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                 if (Apooyo_Asigna == 0)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status != 200)
-                    {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + oLista[0].status + " " + oLista[0].message.ToString();
-                    }
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
-                    ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 0;
-                    ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                     TempData["Mensaje"] = "¡Seleccione un Apoyo!";
-                    return View("Asignados", oLista);
+                    return View("Asignados", controlFal);
                 }
                 if (!TiempAsig.HasValue || TiempAsig <= DateTime.Now)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(2, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status != 200)
-                    {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + oLista[0].status + " " + oLista[0].message.ToString();
-                    }
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
-                    ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 0;
-                    ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                     TempData["Mensaje"] = "¡La fecha de asignación no puede ser nulla o anterior.!";
-                    return View("Asignados", oLista);
+                    return View("Asignados", controlFal);
                 }
                 else
                 {
-                    oLista = con.Modfificador_metod(2, 4, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket.ToString(), 0.ToString(), Convert.ToInt32(Apooyo_Asigna), Clasif_Asigna, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), "", model.Data[0].idus.ToString(), TiempAsig?.ToString("yyyy-MM-dd HH:mm"), 0, idsub, pagina, pageSize);
-                    //oLista = con.AsignacionTiempoApoyClasificacion(NumTicket, Apooyo_Asigna, Clasif_Asigna, model.Data[0].EmpS[0].cveEmp.ToString(), TiempAsig, model.Data[0].idus);
-                    if (oLista[0].status == 200)
+                    if (Clasif_Asigna != 2)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        Dot = "";
+                        Marca = "";
+                        Medida = "";
+                        Posis = 0;
+                    }
+                    if (Clasif_Asigna == 2)
+                    {
+                        if (string.IsNullOrEmpty(Dot))
+                        {
+                            TempData["Mensaje"] = "¡Debes de llenar el Dot!";
+                            return View("Asignados", controlFal);
+                        }
+                        else if (string.IsNullOrEmpty(Marca))
+                        {
+                            TempData["Mensaje"] = "¡Debes de llenar la Marca!";
+                            return View("Asignados", controlFal);
+                        }
+                        else if (string.IsNullOrEmpty(Medida))
+                        {
+                            TempData["Mensaje"] = "¡Debes de llenar el Medida!";
+                            return View("Asignados", controlFal);
+                        }
+                        else if (Posis == 0)
+                        {
+                            TempData["Mensaje"] = "¡Debes de tener una Posición!";
+                            return View("Asignados", controlFal);
+                        }
+                    }
+                    controlFal = con.ModificadorFall(2, 4, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket.ToString(), 0.ToString(), Convert.ToInt32(Apooyo_Asigna), Clasif_Asigna, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), "", model.Data[0].idus, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), 0, idsub, pagina, pageSize, CheckDisel, CheckGrua, Dot, Marca, Medida, Posis);
+                    if (controlFal.status == 200)
+                    {
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 0;
-                        ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
-                        TempData["guardado"] = "¡Se Guardado Correctamenre!" + oLista[0].status + " " + oLista[0].message.ToString();
+                        TempData["Buscar"] = 0;
+                        TempData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                        TempData["guardado"] = "¡Se Guardado Correctamenre!" + controlFal.status + " " + controlFal.message;
                     }
                     else
                     {
-                        TempData["Mensaje"] = "¡Error de guardado! " + oLista[0].status + " " + oLista[0].message.ToString();
+                        TempData["Mensaje"] = "¡Error de guardado! " + controlFal.status + " " + controlFal.message;
                     }
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status != 200)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
-                else
-                {
-                    ViewData["Title"] = "Asignados";
-                    return View("Asignados", oLista);
-                }
+                return View("Asignados", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
 
@@ -521,38 +422,33 @@ namespace ConectDB.Controllers
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
+                if (FehTick == null || FehTick == DateTime.MinValue)
+                {
+                    FehTick = DateTime.Now;
+                    TempData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    TempData["FehTick"] = FehTick;
+                }
                 if (Convert.ToInt32(Buscar) == 0)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 0;
-                    ViewData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
-                    if (oLista.Count == 0)
+                    TempData["Buscar"] = 0;
+                    if (controlFal.status != 200)
                     {
-                        msj.status = 400;
-                        msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                        mensaje.Add(msj);
-                        return View("Error", mensaje);
+                        msj.status = controlFal.status;
+                        msj.message = "!" + controlFal.message + "!";
+                        return View("Error", msj);
                     }
                     else
                     {
@@ -561,278 +457,241 @@ namespace ConectDB.Controllers
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status == 200)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 1;
-                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
-                        ViewData["NumTicket"] = NumTicket;
+                        TempData["Buscar"] = 1;
+                        TempData["NumTicket"] = NumTicket;
                         ViewData["ClaveTipoFalla"] = TipFalla;
                         ViewData["TipTicket"] = TipTicket;
                     }
-                    else
+                    if (controlFal.status != 200)
                     {
-                        TempData["Mensaje"] = "¡" + oLista[0].status + " " + oLista[0].message.ToString() + "!";
-                    }
-                    if (oLista.Count == 0)
-                    {
-                        msj.status = 400;
-                        msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                        mensaje.Add(msj);
-                        return View("Error", mensaje);
-                    }
-                    else
-                    {
-                        ViewData["Title"] = "Reparacion";
+                        msj.status = controlFal.status;
+                        msj.message = "!" + controlFal.message + "!";
+                        return View("Error", msj);
                     }
                 }
-                return View("Reparacion", oLista);
+                ViewData["Title"] = "Reparacion";
+                return View("Reparacion", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
 
         [HttpPost]
-
         public IActionResult BuscarReparacion(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
         {
             try
             {
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
-                //model.Data[0].usuario = usuario;
-                //model.Data[0].contraseña = contraseña;
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
-                oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                if (oLista[0].status == 200)
+
+                if (FehTick == null || FehTick == DateTime.MinValue)
                 {
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    FehTick = DateTime.Now;
+                    TempData["FehTick"] = FehTick;
+                }
+                else
+                {
+                    TempData["FehTick"] = FehTick;
+                }
+
+                controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (controlFal.status == 200)
+                {
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 1;
-                    ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                    TempData["Buscar"] = 1;
                 }
-                else
+                else if (controlFal.status == 400)
                 {
-                    TempData["Mensaje"] = "¡" + oLista[0].status + " " + oLista[0].message.ToString() + "!";
+                    TempData["Mensaje"] = "¡" + controlFal.status + " " + controlFal.message + "!";
+                    TempData["NumTicket"] = NumTicket;
+                    TempData["ClaveTipoFalla"] = TipFalla;
+                    TempData["TipTicket"] = TipTicket;
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status > 400)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
-                else
-                {
-                    ViewData["Title"] = "Reparacion";
-                    ViewData["NumTicket"] = NumTicket;
-                    ViewData["ClaveTipoFalla"] = TipFalla;
-                    ViewData["TipTicket"] = TipTicket;
-                }
-                return View("Reparacion", oLista);
+                ViewData["Title"] = "Reparacion";
+                return View("Reparacion", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
         [HttpPost]
-
         public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina)
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Tok);
-                //model.Data[0].usuario = User;
-                //model.Data[0].contraseña = Contra;
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Tok);
                 model.Token = Tok;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
 
                 if (FechEstima > FechEstimaComparar && FechEstima > DateTime.Now)
                 {
-                    oLista = con.Modfificador_metod(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, 0, 0, "", "", "", 0);
+                    if (controlFal.status == 200)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 0;
+                        TempData["Buscar"] = 0;
                         ViewData["Title"] = "Reparacion";
-                        TempData["guardado"] = +oLista[0].status + "\r\n¡" + oLista[0].message + "!";
-                        return View("Reparacion", oLista);
+                        TempData["guardado"] = controlFal.status + "\r\n¡" + controlFal.message + "!";
+                        TempData["FehTick"] = FechEstima;
+                        return View("Reparacion", controlFal);
                     }
                     else
                     {
-                        TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                         ViewData["Title"] = "Reparacion";
-                        return View("Reparacion", oLista);
+                        TempData["FehTick"] = FechEstima;
+                        return View("Reparacion", controlFal);
                     }
                 }
                 if (FechEstima == FechEstimaComparar)
                 {
-                    oLista = con.Modfificador_metod(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, 0, 0, "", "", "", 0);
+                    if (controlFal.status == 200)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 0;
+                        TempData["Buscar"] = 0;
                         ViewData["Title"] = "Reparacion";
-                        TempData["guardado"] = +oLista[0].status + "\r\n¡" + oLista[0].message + "!";
-                        return View("Reparacion", oLista);
+                        TempData["guardado"] = controlFal.status + "\r\n¡" + controlFal.message + "!";
+                        TempData["FehTick"] = FechEstima;
+                        return View("Reparacion", controlFal);
                     }
                     else
                     {
-                        TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                         ViewData["Title"] = "Reparacion";
-                        return View("Reparacion", oLista);
+                        TempData["FehTick"] = FechEstima;
+                        return View("Reparacion", controlFal);
                     }
                 }
                 else
                 {
-                    oLista = con.Primer_crga_con_Catalogos(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status != 200)
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status != 200)
                     {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + oLista[0].status + " " + oLista[0].message.ToString();
+                        TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
                     }
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    if (controlFal.status > 400)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 0;
+                    TempData["Buscar"] = 0;
+                    TempData["FehTick"] = DateTime.Now;
                     TempData["Mensaje"] = "¡Seleccione una fecha mayor que la registrada " + FechEstima.ToString("yyyy-MM-dd HH:mm:ss") + " !";
-                    return View("Reparacion", oLista);
+                    return View("Reparacion", controlFal);
                 }
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
 
-        public IActionResult Fin(int pagina, string k, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
+        public IActionResult Fin(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
                 if (Convert.ToInt32(Buscar) == 0)
                 {
                     if (FehTick == null || FehTick == DateTime.MinValue)
                     {
                         FehTick = DateTime.Now;
-                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                        TempData["FehTick"] = FehTick;
                     }
                     else
                     {
-                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                        TempData["FehTick"] = FehTick;
                     }
-                    oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, "", model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 0;
+                    TempData["Buscar"] = 0;
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (oLista[0].status == 200)
+                    if (FehTick == null || FehTick == DateTime.MinValue)
                     {
-                        int totalSolicitudes = oLista[0].TotalSolicitudes;
-                        int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                        ViewBag.TotalPages = totalPages;
+                        FehTick = DateTime.Now;
+                        TempData["FehTick"] = FehTick;
+                    }
+                    else
+                    {
+                        TempData["FehTick"] = FehTick;
+                    }
+                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    //oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    if (controlFal.status == 200)
+                    {
+                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
-                        ViewData["Buscar"] = 1;
-                        ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                        TempData["Buscar"] = 1;
                         ViewData["TipTicket"] = TipTicket;
                         ViewData["TipFalla"] = TipFalla;
                     }
                     else
                     {
-                        TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                     }
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status > 400)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
                 else
                 {
                     ViewData["Title"] = "Finalizado";
-                    return View("Finalizado", oLista);
+                    return View("Finalizado", controlFal);
                 }
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
         [HttpPost]
@@ -841,61 +700,51 @@ namespace ConectDB.Controllers
         {
             try
             {
-                oLista.Clear();
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
-                string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
-                string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-
-                model = menu.RegresMenu(desusuario, descontraseña, Convert.ToInt32(cveEmp), url, Token);
-                //model.Data[0].usuario = usuario;
-                //model.Data[0].contraseña = contraseña;
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
                 model.Token = Token;
                 model.idsub = idsub;
-                //HttpContext.Session.SetString("UsuarioModel", JsonConvert.SerializeObject(model));
                 ViewData["UsuarioModel"] = model;
-                oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                if (oLista[0].status == 200)
+                if (FehTick == null || FehTick == DateTime.MinValue)
                 {
-                    int totalSolicitudes = oLista[0].TotalSolicitudes;
-                    int totalPages = (int)Math.Ceiling((double)totalSolicitudes / pageSize);
-                    ViewBag.TotalPages = totalPages;
+                    FehTick = DateTime.Now;
+                    TempData["FehTick"] = FehTick;
+                }
+                else
+                {
+                    TempData["FehTick"] = FehTick;
+                }
+                controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (controlFal.status == 200)
+                {
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
-                    ViewData["Buscar"] = 1;
+                    TempData["Buscar"] = 1;
                 }
                 else
                 {
-                    TempData["Mensaje"] = +oLista[0].status + " ¡" + oLista[0].message + "\r\n Intenta mas Tarde! \r\n ";
+                    TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                 }
-                if (oLista.Count == 0)
+                if (controlFal.status > 400)
                 {
-                    msj.status = 400;
-                    msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo";
-                    mensaje.Add(msj);
-                    return View("Error", mensaje);
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
+                    return View("Error", msj);
                 }
-                else
-                {
-                    ViewData["Title"] = "Finalizado";
-                    ViewData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
-                    ViewData["TipTicket"] = TipTicket;
-                    ViewData["TipFalla"] = TipFalla;
-                }
-                return View("Finalizado", oLista);
+                ViewData["Title"] = "Finalizado";
+                TempData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
+                ViewData["TipTicket"] = TipTicket;
+                ViewData["TipFalla"] = TipFalla;
+
+                return View("Finalizado", controlFal);
             }
             catch (Exception e)
             {
                 msj.status = 400;
                 msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                mensaje.Add(msj);
-                return View("Error", mensaje);
+                return View("Error", msj);
             }
         }
     }

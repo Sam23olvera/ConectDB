@@ -100,9 +100,18 @@ namespace ConectDB.Controllers
                     {
                         jsonEnvio += "'Medida': '" + Medida + "',";
                     }
-                    if (Posis == 0)
+                    if (TipoClas == 2)
                     {
-                        jsonEnvio += "'Posicion': 0,";
+                        if (Posis == 0)
+                        {
+                            jsonEnvio += "'Posicion': 0,";
+                            TempData["Mensaje"] = "¡Debes de Colocar Por lo Menos la Posicion!";
+                            return View("Index", oLista);
+                        }
+                        else
+                        {
+                            jsonEnvio += "'Posicion': " + Posis.ToString() + ",";
+                        }
                     }
                     else
                     {

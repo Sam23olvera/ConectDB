@@ -1,10 +1,9 @@
 ﻿@using ConectDB.Models;
-@model List<ControlFalla>;
+@model ControlFalla;
 @{
     string? title = ViewData["Title"] as string;
     Layout = "~/Views/Shared/_Layout_ControlReparaciones.cshtml";
     var usuarioModel = ViewData["UsuarioModel"] as UsuarioModel;
-    string FehTick = ViewData["FehTick"] as string;
 }
 <div class="container-fluid">
     <main role="main">
@@ -33,262 +32,270 @@
                         </li>
                     </ul>
                 </div>
-                @foreach (var item in Model)
-                {
-                    <div class="col-md-10">
-                        <div class="container">
-                            <br />
-                            <div class="row-cols-auto text-lg-start">
-                                <h3>Finalizado</h3>
-                            </div>
-                            <br />
-                            <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarFinalizados">
-                                <div class="row justify-content-start align-items-start">
-                                    <div class="col-md-2">
-                                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select class="form-select input-sm" aria-label="Default select example" id="TipTicket" name="TipTicket">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var ticket in item.TBCAT_TipoTicket)
-                                            {
-                                                <option value="@ticket.ClaveTipoTicket">@ticket.Descripcion</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select class="form-select input-sm" aria-label="Default select example" id="TipFalla" name="TipFalla">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var falla in item.TBCAT_TipoFalla)
-                                            {
-                                                <option value="@falla.ClaveTipoFalla">@falla.Descripcion</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control filtros" placeholder="# Ticket" id="NumTicket" />
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button class="btn btn-primary" type="submit" id="btnBusFalReg">Buscar</button>
-                                    </div>
-                                    <input type="hidden" name="idsub" id="idsub" value="@usuarioModel.idsub" />
-                                    <input type="hidden" name="Token" id="Token" value="@usuarioModel.Token" />
-                                    <input type="hidden" name="cveEmp" id="cveEmp" value="@usuarioModel.Data[0].EmpS?[0].cveEmp" />
+
+                <div class="col-md-10">
+                    <div class="container">
+                        <br />
+                        <div class="row-cols-auto text-lg-start">
+                            <h3>@ViewData["Title"]</h3>
+                        </div>
+                        <br />
+                        <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarFinalizados">
+                            <div class="row justify-content-start align-items-start">
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
                                 </div>
-                            </form>
-                            <br />
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="table-responsive container-fluid">
-                                        <table class="table table-bordered table-sm ticket-final-table">
-                                            <caption>@ViewData["Title"]</caption>
-                                            <thead>
+                                <div class="col-md-2">
+                                    <select class="form-select input-sm" aria-label="Default select example" id="TipTicket" name="TipTicket">
+                                        <option selected>[Selecciona]</option>
+                                        @foreach (var ticket in Model.TBCAT_TipoTicket)
+                                        {
+                                            <option value="@ticket.ClaveTipoTicket">@ticket.Descripcion</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select input-sm" aria-label="Default select example" id="TipFalla" name="TipFalla">
+                                        <option selected>[Selecciona]</option>
+                                        @foreach (var falla in Model.TBCAT_TipoFalla)
+                                        {
+                                            <option value="@falla.ClaveTipoFalla">@falla.Descripcion</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control filtros" placeholder="# Ticket" id="NumTicket" />
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" type="submit" id="btnBusFalReg">Buscar</button>
+                                </div>
+                                <input type="hidden" name="idsub" id="idsub" value="@usuarioModel.idsub" />
+                                <input type="hidden" name="Token" id="Token" value="@usuarioModel.Token" />
+                                <input type="hidden" name="cveEmp" id="cveEmp" value="@usuarioModel.Data[0].EmpS?[0].cveEmp" />
+                            </div>
+                        </form>
+                        <br />
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive container-fluid">
+                                    <table class="table table-bordered table-sm ticket-final-table">
+                                        <caption>@ViewData["Title"]</caption>
+                                        <thead>
+                                            <tr>
+                                                <th># Ticket</th>
+                                                <th>Fecha Creación</th>
+                                                <th>Tipo Ticket</th>
+                                                <th>Falla</th>
+                                                <th>Fecha Asignación</th>
+                                                <th>Usuario Asignado</th>
+                                                <th>Tipo Apoyo</th>
+                                                <th>Tiempo Estimado</th>
+                                                <th>Fecha Termino</th>
+                                                <th>Clasificación</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var solicitude in Model.Solicitudes)
+                                            {
                                                 <tr>
-                                                    <th># Ticket</th>
-                                                    <th>Fecha Creación</th>
-                                                    <th>Tipo Ticket</th>
-                                                    <th>Falla</th>
-                                                    <th>Fecha Asignación</th>
-                                                    <th>Usuario Asignado</th>
-                                                    <th>Tipo Apoyo</th>
-                                                    <th>Tiempo Estimado</th>
-                                                    <th>Fecha Termino</th>
-                                                    <th>Clasificación</th>
-                                                    <th></th>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.NumTicket</p>
+                                                        <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.FechaCreacion?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.TipoTicket</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.TipoFalla</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.FechaAsignacion?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                        @* <input type="date" class="form-control filtros" disabled /> *@
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.Usuario</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.TipoApoyo</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.FechaEvento?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                        @* <input type="datetime-local" class="form-control filtros" disabled /> *@
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p>@solicitude.TipoClasificacion</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" class="btn btn-light btn-sm" id="mostrar" onclick="mostrar(@solicitude.NumTicket)">
+                                                            <img src="~/imag/mas.png" alt="Agregar" />
+                                                        </button>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var solicitude in item.Solicitudes)
-                                                {
-                                                    <tr>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.NumTicket</p>
-                                                            <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.FechaCreacion?.ToString("yyyy-MM-dd HH:mm")</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.TipoTicket</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.TipoFalla</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.FechaAsignacion?.ToString("yyyy-MM-dd HH:mm")</p>
-                                                            @* <input type="date" class="form-control filtros" disabled /> *@
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.Usuario</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.TipoApoyo</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm")</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.FechaEvento?.ToString("yyyy-MM-dd HH:mm")</p>
-                                                            @* <input type="datetime-local" class="form-control filtros" disabled /> *@
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <p>@solicitude.TipoClasificacion</p>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <button type="button" class="btn btn-light btn-sm" id="mostrar" onclick="mostrar(@solicitude.NumTicket)">
-                                                                <img src="~/imag/mas.png" alt="Agregar" />
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="12">
-                                                            <div class="container">
-                                                                <div class="row">
-                                                                    <div id="datos-@solicitude.NumTicket" class="datos-bak">
-                                                                        @if (@solicitude.ClaveTipoClasificacion == 2)
-                                                                        {
-                                                                            <div class="row">
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tipo Clasificacion: </h6>
-                                                                                    <p>@solicitude.TipoClasificacion</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>DOT: </h6>
-                                                                                    <p>@solicitude.DOT</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>MARCA: </h6>
-                                                                                    <p>@solicitude.MARCA</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>MEDIDA: </h6>
-                                                                                    <p>@solicitude.MEDIDA</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>POSICION: </h6>
-                                                                                    <p>@solicitude.POSICION</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2"></div>
-                                                                            </div>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <div class="row">
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tipo Clasificacion: </h6>
-                                                                                    <p>@solicitude.TipoClasificacion</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-10">
-                                                                                </div>
-                                                                            </div>
-                                                                        }
-                                                                        @if (@solicitude.ClaveTipoTicket == 1)
-                                                                        {
-                                                                            <div id="Tractor" class="row">
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Solicitante: </h6>
-                                                                                    <p>@solicitude.UsuarioCreacion</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Economico | Alias: </h6>
-                                                                                    <p>@solicitude.Unidad | @solicitude.Alias</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tipo de Equipo:</h6>
-                                                                                    <p>@solicitude.TipoEquipo</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-3">
-                                                                                    <h6>Ruta:</h6>
-                                                                                    <p>@solicitude.NumRuta | @solicitude.Ruta</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tramo Carretero: </h6>
-                                                                                    <p>@solicitude.TramoCarretero</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <div id="Remolque" class="row">
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Solicitante: </h6>
-                                                                                    <p>@solicitude.UsuarioCreacion</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Remolque: </h6>
-                                                                                    <p>@solicitude.Remolque</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tipo de Carga: </h6>
-                                                                                    <p>@solicitude.TipoCarga</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tipo de Equipo:</h6>
-                                                                                    <p>@solicitude.TipoEquipo</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Ruta:</h6>
-                                                                                    <p>@solicitude.NumRuta | @solicitude.Ruta</p>
-                                                                                </div>
-                                                                                <div class="col-12 col-md-2">
-                                                                                    <h6>Tramo Carretero: </h6>
-                                                                                    <p>@solicitude.TramoCarretero</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        }
+                                                <tr>
+                                                    <td colspan="12">
+                                                        <div class="container">
+                                                            <div class="row">
+                                                                <div id="datos-@solicitude.NumTicket" class="datos-bak">
+                                                                    @if (@solicitude.ClaveTipoClasificacion == 2)
+                                                                    {
                                                                         <div class="row">
                                                                             <div class="col-12 col-md-2">
-                                                                                <h6>Operador:</h6>
-                                                                                <p>@solicitude.NumOp | @solicitude.Operador</p>
+                                                                                <h6>Tipo Clasificacion: </h6>
+                                                                                <p>@solicitude.TipoClasificacion</p>
                                                                             </div>
                                                                             <div class="col-12 col-md-2">
-                                                                                <h6>Telefono Operador: </h6>
-                                                                                <p>@solicitude.Tel_Operador</p>
+                                                                                <h6>DOT: </h6>
+                                                                                <p>@solicitude.DOT</p>
                                                                             </div>
-                                                                            <div class="col-12 col-md-4">
-                                                                                <h6> Ubicacion Reportada: </h6>
-                                                                                <p>@solicitude.UbicacionReportada</p>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>MARCA: </h6>
+                                                                                <p>@solicitude.MARCA</p>
                                                                             </div>
-                                                                            <div class="col-12 col-md-4">
-                                                                                <h6> Ultima Posicion Reportada GPS: </h6>
-                                                                                <p>@solicitude.FechaUltPosicion?.ToString("yyyy-MM-dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>MEDIDA: </h6>
+                                                                                <p>@solicitude.MEDIDA</p>
                                                                             </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>POSICION: </h6>
+                                                                                <p>@solicitude.POSICION</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2"></div>
+                                                                        </div>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div class="row">
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Tipo Clasificacion: </h6>
+                                                                                <p>@solicitude.TipoClasificacion</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-10">
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                    @if (@solicitude.ClaveTipoTicket == 1)
+                                                                    {
+                                                                        <div id="Tractor" class="row">
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Solicitante: </h6>
+                                                                                <p>@solicitude.UsuarioCreacion</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Economico | Alias: </h6>
+                                                                                <p>@solicitude.Unidad | @solicitude.Alias</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Tipo de Equipo:</h6>
+                                                                                <p>@solicitude.TipoEquipo</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-3">
+                                                                                <h6>Ruta:</h6>
+                                                                                <p>@solicitude.NumRuta | @solicitude.Ruta</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Tramo Carretero: </h6>
+                                                                                <p>@solicitude.TramoCarretero</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div id="Remolque" class="row">
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Solicitante: </h6>
+                                                                                <p>@solicitude.UsuarioCreacion</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Remolque: </h6>
+                                                                                <p>@solicitude.Remolque</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Tipo de Carga: </h6>
+                                                                                <p>@solicitude.TipoCarga</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Tipo de Equipo:</h6>
+                                                                                <p>@solicitude.TipoEquipo</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Ruta:</h6>
+                                                                                <p>@solicitude.NumRuta | @solicitude.Ruta</p>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2">
+                                                                                <h6>Tramo Carretero: </h6>
+                                                                                <p>@solicitude.TramoCarretero</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                    <div class="row">
+                                                                        <div class="col-12 col-md-2">
+                                                                            <h6>Operador:</h6>
+                                                                            <p>@solicitude.NumOp | @solicitude.Operador</p>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-2">
+                                                                            <h6>Telefono Operador: </h6>
+                                                                            <p>@solicitude.Tel_Operador</p>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-4">
+                                                                            <h6> Ubicacion Reportada: </h6>
+                                                                            <p>@solicitude.UbicacionReportada</p>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-4">
+                                                                            <h6> Ultima Posicion Reportada GPS: </h6>
+                                                                            <p>@solicitude.FechaUltPosicion?.ToString("yyyy-MM-dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-6">
+                                                                            <h6>Diesel</h6>
+                                                                            <p>@solicitude.Diesel</p>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <h6>Grua</h6>
+                                                                            <p>@solicitude.Grua</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="pagination">
-                                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                                        {
-                                            <ul class="pagination pagination-sm">
-                                                @if (ViewBag.CurrentPage == @i)
-                                                {
-                                                    <li class="page-item active" aria-current="page">
-                                                        <span class="page-link">@i</span>
-                                                    </li>
-                                                }
-                                                else
-                                                {
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="Fin?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@ViewData["Buscar"]&NumTicket=@ViewData["NumTicket"]&TipTicket=@ViewData["TipTicket"]&TipFalla=@ViewData["TipFalla"]&FehTick=@Convert.ToDateTime(@ViewData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
-                                                            @i
-                                                        </a>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        }
-                                    </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pagination">
+                                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                    {
+                                        <ul class="pagination pagination-sm">
+                                            @if (ViewBag.CurrentPage == @i)
+                                            {
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">@i</span>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li class="page-item">
+                                                    <a class="page-link" href="Fin?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&TipTicket=@TempData["TipTicket"]&TipFalla=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
+                                                        @i
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
-                }
+                </div>
             </div>
         </div>
     </main>

@@ -28,6 +28,34 @@ function calendario(numTicket) {
     });
 }
 
+function llenarDiesel(numTick)
+{
+    var nameChkDisel = 'ChkDisel-' + numTick;
+    var txtnameCheckDisel = 'CheckDisel-' + numTick;
+    var ChkDisel = document.getElementById(nameChkDisel);
+    var txtCheckDisel = document.getElementById(txtnameCheckDisel);
+    if (ChkDisel.checked == true) {
+        txtCheckDisel.value = 1;
+    }
+    else if (ChkDisel.checked == false) {
+        txtCheckDisel.value = 0;
+    }
+}
+
+function llenarGrua(numTick)
+{
+    var nameChkGrua = 'ChkGrua-' + numTick;
+    var txtnameCheckGrua = 'CheckGrua-' + numTick;
+    var ChkGrua = document.getElementById(nameChkGrua);
+    var txtCheckGrua = document.getElementById(txtnameCheckGrua);
+    if (ChkGrua.checked == true) {
+        txtCheckGrua.value = 1;
+    }
+    else if (ChkGrua.checked == false) {
+        txtCheckGrua.value = 0;
+    }
+}
+
 $(document).ready(function () {
     var checkIni = document.getElementById('checkIni');
     var checkIniValue = document.getElementById('checkIniValue').value;
@@ -178,7 +206,7 @@ function finalizar(cveEmp, ClavUsu, ClavCtRep) {
             "data": {
                 "bdCc": 5,
                 "bdSch": "dbo",
-                "bdSp": "SPQRY_FinRepFalla"
+                "bdSp": "SPUPD_FinRepFalla"
             },
             "filter": [
                 {
