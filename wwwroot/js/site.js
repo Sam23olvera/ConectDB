@@ -1,13 +1,4 @@
-﻿document.getElementById("selectEmpresa").addEventListener("change", function () {
-
-    var selectedValue = this.value;
-    document.getElementById("cveEmp").value = selectedValue;
-    // Enviar el formulario automáticamente al seleccionar una opción
-    document.getElementById("formAcceder").submit();
-});
-
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $('#FEG').datetimepicker({
         format: 'Y/m/d H:i'
     });
@@ -78,10 +69,17 @@ $(document).ready(function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    var selectEmpresa = document.getElementById('selectEmpresa');
-    var cveEmp = document.getElementById('cveEmp');
-    selectEmpresa.addEventListener('change', function () {
-        cveEmp.value = selectEmpresa.value;
-    });
+//document.addEventListener("DOMContentLoaded", function () {
+//    var selectEmpresa = document.getElementById('selectEmpresa');
+//    var cveEmp = document.getElementById('cveEmp');
+//    selectEmpresa.addEventListener('change', function () {
+//        cveEmp.value = selectEmpresa.value;
+//    });
+//});
+document.getElementById("selectEmpresa").addEventListener("change", function () {
+
+    var selectedValue = this.value;
+    document.getElementById("cveEmp").value = selectedValue;
+    // Enviar el formulario automáticamente al seleccionar una opción
+    document.getElementById("formAcceder").submit();
 });

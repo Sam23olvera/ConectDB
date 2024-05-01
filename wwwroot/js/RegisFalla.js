@@ -1,4 +1,15 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿window.onload = function () {
+    document.getElementById("spinner").style.display = "none";
+};
+document.addEventListener("DOMContentLoaded", function () {
+    var links = document.querySelectorAll(".nav-link");
+    links.forEach(function (link) {
+        link.addEventListener("click", function () {
+            document.getElementById("spinner").style.display = "block";
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
     var TipoClas = document.getElementById('TipoClas');
     var forllantas = document.getElementById('forllantas');
     var TipTicket = document.getElementById('TipTicket');

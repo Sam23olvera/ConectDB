@@ -11,7 +11,7 @@ namespace ConectDB.Controllers
         private readonly ConectMenuUser menu = new ConectMenuUser();
         private readonly DataApi data = new DataApi();
         private readonly ConectApiContrRep con = new ConectApiContrRep();
-        private const int pageSize = 2;
+        private const int pageSize = 5;
         ControlFalla controlFal = new ControlFalla();
         UsuarioModel model = new UsuarioModel();
         List<Error> mensaje = new List<Error>();

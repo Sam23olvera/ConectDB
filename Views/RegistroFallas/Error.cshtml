@@ -8,287 +8,285 @@
 }
 @foreach (var item in Model)
 {
+
     <div class="container">
-        <main role="main">
-            <div class="container">
-                <br>
-                <div class="row text-center">
-                    <h4>Registro Fallas</h4>
+        <br>
+        <div class="row text-center">
+            <h4>Registro Fallas</h4>
+        </div>
+    </div>
+    <form asp-action="Guardar" asp-controller="RegistroFallas" method="post">
+        <div class="accordion" id="formAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Datos Operador
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#formAccordion">
+                    <div class="accordion-body" id="Seccion1">
+                        <div class="row">
+                            <div class="col-12 col-md-3">
+                                <label># Operador:</label>
+                                <select class="form-select" aria-label="Default select example" id="Numope" name="ClaveOperador">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var operador in item.TBCAT_Operador)
+                                    {
+                                        <option value="@operador.ClaveOperador">@operador.NumOP</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <label> Nombre Operador: </label>
+                                <select class="form-select" aria-label="Default select example" id="NomOpe">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var op in item.TBCAT_Operador)
+                                    {
+                                        <option value="@op.ClaveOperador">@op.Nombre</option>
+                                    }
+                                </select>
+                                <input type="text" class="form-control" value="Nom" id="Nombre" />
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label>Telefono Operador</label>
+                                <input type="text" class="form-control" id="telop" placeholder="##-##-##-##-##" name="telop" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-3">
+                                <label>Eco TUM:</label>
+                                <select class="form-select" aria-label="Default select example" id="Eco" name="ClaveUnidad_Motora">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var unidades in item.TBCAT_Unidades)
+                                    {
+                                        <option value="@unidades.ClaveUnidad_Motora"><label>@unidades.Numero</label></option>
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label>Alias:</label>
+                                <select class="form-select" aria-label="Default select example" id="selAli">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var unidades in item.TBCAT_Unidades)
+                                    {
+                                        <option value="@unidades.ClaveUnidad_Motora">@unidades.Alias</option>
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                                <select class="form-select" aria-label="Default select example" id="ClTpOp" hidden>
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var unidades in item.TBCAT_Unidades)
+                                    {
+                                        <option value="@unidades.ClaveUnidad_Motora">@unidades.ClaveTipoOperacion</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label>Ruta:</label>
+                                <select class="form-select" aria-label="Default select example" id="Ruta" name="CveRuta">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var ruta in item.TBCAT_Ruta)
+                                    {
+                                        <option value="@ruta.CveRuta">@ruta.Nombre</option>
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <label>Tipo de Equipo:</label>
+                                <select class="form-select" aria-label="Default select example" name="ClaveTipoEquipo">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var equipo in item.TBCAT_TipoEquipo)
+                                    {
+                                        <option value="@equipo.ClaveTipoEquipo">@equipo.Descripcion</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label>Tipo de Carga:</label>
+                                <select class="form-select" aria-label="Default select example" name="ClaveTipoCarga">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var carga in item.TBCAT_TipoCarga)
+                                    {
+                                        <option value="@carga.ClaveTipoCarga">@carga.Descripcion</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="container p-2 my-3 border">
+                                            <input type="checkbox" checked="checked" class="checkbox-group-Llegadas" id="checkboxMostrarOcultar" name="ChckRemol" />
+                                            <label>Remolque</label>
+                                            <div class="container LLegada llegada-input" style="border">
+                                                <label>Selecione un Remolque</label>
+                                                <select class="form-select" id="opcionesRemolque1" name="opcionesRemolque1">
+                                                    <option selected>[Selecciona]</option>
+                                                    @foreach (var re in item.TBCAT_Remolques)
+                                                    {
+                                                        <option value="@re.ClaveUnidad_Arrastre">@re.Numero</option>
+                                                    }
+                                                </select>
+                                                <input type="hidden" id="Remolque1" name="Remolque1" value="" />
+                                                <label>Remolque</label>
+                                                <select class="form-select" id="opcionesRemolque2" name="opcionesRemolque2">
+                                                    <option selected>[Selecciona]</option>
+                                                    @foreach (var re in item.TBCAT_Remolques)
+                                                    {
+                                                        <option value="@re.ClaveUnidad_Arrastre">@re.Numero</option>
+                                                    }
+                                                </select>
+                                                <input type="hidden" id="Remolque2" name="Remolque2" value="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-content-start">
+                            <div class="col-12 col-md-2">
+                                <button class="btn btn-secondary" id="btnLimpiar1" type="button">Limpiar</button>
+                            </div>
+                            <div class="col-12 col-md-10">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <form asp-action="Guardar" asp-controller="RegistroFallas" method="post">
-                <div class="accordion" id="formAccordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Datos Operador
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#formAccordion">
-                            <div class="accordion-body" id="Seccion1">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" id="ubicacionButton" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false">
+                        Ubicación
+                    </button>
+                    <input type="hidden" value="" id="Numero" name="Numero" />
+                    <input type="hidden" value="" id="Alias" name="Alias" />
+                    <input type="hidden" value="" id="ClOp" name="ClaveOperacion" />
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#formAccordion">
+                    <div class="accordion-body" id="Seccion2">
+                        <div class="row">
+                            <div qqclass="col-12 col-md-6">
                                 <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <label># Operador:</label>
-                                        <select class="form-select" aria-label="Default select example" id="Numope" name="ClaveOperador">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var operador in item.TBCAT_Operador)
-                                            {
-                                                <option value="@operador.ClaveOperador">@operador.NumOP</option>
-                                            }
-                                        </select>
+                                    <div class="col-12 col-md-12">
+                                        <label>Ultima Ubicacion GPS:</label>
                                     </div>
-                                    <div class="col-12 col-md-5">
-                                        <label> Nombre Operador: </label>
-                                        <select class="form-select" aria-label="Default select example" id="NomOpe">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var op in item.TBCAT_Operador)
-                                            {
-                                                <option value="@op.ClaveOperador">@op.Nombre</option>
-                                            }
-                                        </select>
-                                        <input type="text" class="form-control" value="Nom" id="Nombre" />
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <label>Telefono Operador</label>
-                                        <input type="text" class="form-control" id="telop" placeholder="##-##-##-##-##" name="telop" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <label>Eco TUM:</label>
-                                        <select class="form-select" aria-label="Default select example" id="Eco" name="ClaveUnidad_Motora">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var unidades in item.TBCAT_Unidades)
-                                            {
-                                                <option value="@unidades.ClaveUnidad_Motora"><label>@unidades.Numero</label></option>
-                                            }
-                                        </select>
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                        <label>Alias:</label>
-                                        <select class="form-select" aria-label="Default select example" id="selAli">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var unidades in item.TBCAT_Unidades)
-                                            {
-                                                <option value="@unidades.ClaveUnidad_Motora">@unidades.Alias</option>
-                                            }
-                                        </select>
-                                        <span class="text-danger"></span>
-                                        <select class="form-select" aria-label="Default select example" id="ClTpOp" hidden>
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var unidades in item.TBCAT_Unidades)
-                                            {
-                                                <option value="@unidades.ClaveUnidad_Motora">@unidades.ClaveTipoOperacion</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label>Ruta:</label>
-                                        <select class="form-select" aria-label="Default select example" id="Ruta" name="CveRuta">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var ruta in item.TBCAT_Ruta)
-                                            {
-                                                <option value="@ruta.CveRuta">@ruta.Nombre</option>
-                                            }
-                                        </select>
-                                        <span class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <br />
-                                <div class="row">
-                                    <div class="col-12 col-md-4">
-                                        <label>Tipo de Equipo:</label>
-                                        <select class="form-select" aria-label="Default select example" name="ClaveTipoEquipo">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var equipo in item.TBCAT_TipoEquipo)
-                                            {
-                                                <option value="@equipo.ClaveTipoEquipo">@equipo.Descripcion</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <label>Tipo de Carga:</label>
-                                        <select class="form-select" aria-label="Default select example" name="ClaveTipoCarga">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var carga in item.TBCAT_TipoCarga)
-                                            {
-                                                <option value="@carga.ClaveTipoCarga">@carga.Descripcion</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="container p-2 my-3 border">
-                                                    <input type="checkbox" checked="checked" class="checkbox-group-Llegadas" id="checkboxMostrarOcultar" name="ChckRemol" />
-                                                    <label>Remolque</label>
-                                                    <div class="container LLegada llegada-input" style="border">
-                                                        <label>Selecione un Remolque</label>
-                                                        <select class="form-select" id="opcionesRemolque1" name="opcionesRemolque1">
-                                                            <option selected>[Selecciona]</option>
-                                                            @foreach (var re in item.TBCAT_Remolques)
-                                                            {
-                                                                <option value="@re.ClaveUnidad_Arrastre">@re.Numero</option>
-                                                            }
-                                                        </select>
-                                                        <input type="hidden" id="Remolque1" name="Remolque1" value="" />
-                                                        <label>Remolque</label>
-                                                        <select class="form-select" id="opcionesRemolque2" name="opcionesRemolque2">
-                                                            <option selected>[Selecciona]</option>
-                                                            @foreach (var re in item.TBCAT_Remolques)
-                                                            {
-                                                                <option value="@re.ClaveUnidad_Arrastre">@re.Numero</option>
-                                                            }
-                                                        </select>
-                                                        <input type="hidden" id="Remolque2" name="Remolque2" value="" />
-                                                    </div>
-                                                </div>
+                                    @if (item.UltimaPosicion == null)
+                                    {
+                                        <input type="hidden" class="form-control" value="-99.22525802624514" id="inputLng" />
+                                        <input type="hidden" class="form-control" value="19.617008289431393" id="inputLat" />
+                                        <div class="col-12 align-content-center">
+                                            <div id="map" class="map map-home" style="height: 300px; margin-top: 50px">
                                             </div>
                                         </div>
-                                    </div>
+                                        <label>Direccion GPS: </label>
+                                        <input type="text" value="" class="form-control" />
+                                        <label> Fecha GPS: </label>
+                                        <input type="datetime" value="" class="form-control" />
+                                    }
+                                    else
+                                    {
+                                        @foreach (var ubi in item.UltimaPosicion)
+                                        {
+                                            <input type="hidden" class="form-control" value="@ubi.Longitud" id="inputLng" />
+                                            <input type="hidden" class="form-control" value="@ubi.Latitud" id="inputLat" />
+                                            <div class="col-12 align-content-center">
+                                                <div id="map" class="map map-home" style="height: 300px; margin-top: 50px">
+                                                </div>
+                                            </div>
+                                            <label>Direccion GPS: </label>
+                                            <input type="text" value="@ubi.Position" class="form-control" />
+                                            <label> Fecha GPS: </label>
+                                            <input type="datetime" value="@ubi.SendTime" class="form-control" />
+                                        }
+                                    }
                                 </div>
-                                <div class="row align-content-start">
-                                    <div class="col-12 col-md-2">
-                                        <button class="btn btn-secondary" id="btnLimpiar1" type="button">Limpiar</button>
-                                    </div>
-                                    <div class="col-12 col-md-10">
-                                    </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="row">
+                                    <label> Ubicacion Reportada: </label>
+                                    <input type="text" class="form-control" value="Ubicacion Reportada" name="UbiRepor" />
+                                    <lbael>Tramo Carretero:</lbael>
+                                    <input type="text" class="form-control" value="Tramo Carretero" name="TramCarretero" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" id="ubicacionButton" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false">
-                                Ubicación
-                            </button>
-                            <input type="hidden" value="" id="Numero" name="Numero" />
-                            <input type="hidden" value="" id="Alias" name="Alias" />
-                            <input type="hidden" value="" id="ClOp" name="ClaveOperacion" />
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#formAccordion">
-                            <div class="accordion-body" id="Seccion2">
-                                <div class="row">
-                                    <div qqclass="col-12 col-md-6">
-                                        <div class="row">
-                                            <div class="col-12 col-md-12">
-                                                <label>Ultima Ubicacion GPS:</label>
-                                            </div>
-                                            @if (item.UltimaPosicion == null)
-                                            {
-                                                <input type="hidden" class="form-control" value="-99.22525802624514" id="inputLng" />
-                                                <input type="hidden" class="form-control" value="19.617008289431393" id="inputLat" />
-                                                <div class="col-12 align-content-center">
-                                                    <div id="map" class="map map-home" style="height: 300px; margin-top: 50px">
-                                                    </div>
-                                                </div>
-                                                <label>Direccion GPS: </label>
-                                                <input type="text" value="" class="form-control" />
-                                                <label> Fecha GPS: </label>
-                                                <input type="datetime" value="" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                @foreach (var ubi in item.UltimaPosicion)
-                                                {
-                                                    <input type="hidden" class="form-control" value="@ubi.Longitud" id="inputLng" />
-                                                    <input type="hidden" class="form-control" value="@ubi.Latitud" id="inputLat" />
-                                                    <div class="col-12 align-content-center">
-                                                        <div id="map" class="map map-home" style="height: 300px; margin-top: 50px">
-                                                        </div>
-                                                    </div>
-                                                    <label>Direccion GPS: </label>
-                                                    <input type="text" value="@ubi.Position" class="form-control" />
-                                                    <label> Fecha GPS: </label>
-                                                    <input type="datetime" value="@ubi.SendTime" class="form-control" />
-                                                }
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="row">
-                                            <label> Ubicacion Reportada: </label>
-                                            <input type="text" class="form-control" value="Ubicacion Reportada" name="UbiRepor" />
-                                            <lbael>Tramo Carretero:</lbael>
-                                            <input type="text" class="form-control" value="Tramo Carretero" name="TramCarretero" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row align-content-start">
-                                    <div class="col-12 col-md-2">
-                                        <button class="btn btn-secondary" id="btnLimpiar2" type="button">Limpiar</button>
-                                    </div>
-                                    <div class="col-12 col-md-10"></div>
-                                </div>
+                        <div class="row align-content-start">
+                            <div class="col-12 col-md-2">
+                                <button class="btn btn-secondary" id="btnLimpiar2" type="button">Limpiar</button>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Sección 3 - Descripción Falla -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Descripción Falla
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#formAccordion">
-                            <div class="accordion-body" id="Seccion3">
-                                <div class="row">
-                                    <div class="col-12 col-md-4">
-                                        <label>Tipo Apoyo:</label>
-                                        <select class="form-select" aria-label="Default select example" name="ClaveTipoApoyo">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var apoyo in item.TBCAT_TipoApoyo)
-                                            {
-                                                <option value="@apoyo.ClaveTipoApoyo">@apoyo.Descripcion</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <label>Tipo de Falla:</label>
-                                        <select class="form-select" aria-label="Default select example" name="ClaveTipoFalla">
-                                            <option selected>[Selecciona]</option>
-                                            @foreach (var tipfalla in item.TBCAT_TipoFalla)
-                                            {
-                                                <option value="@tipfalla.ClaveTipoFalla">@tipfalla.Descripcion</option>
-                                            }
-                                        </select>
-                                    </div>
-
-                                </div>
-                                @*<div class="row">
-                            <label>Diagrama de falla</label>
-                            <img src="~/imag/Track.jpg" alt="Bootstrap">
-                            </div>*@
-                                <div class="row">
-                                    <label>Comentario de Falla Mecanica</label>
-                                    @*<input type="text" name="Coment" id="coment" value="Comentario describir Falla Mecanica" />*@
-                                    <textarea class="form-control" aria-label="With textarea" name="ComeFalla"></textarea>
-                                </div>
-                                <div class="row align-content-start">
-                                    <div class="col-12 col-md-2">
-                                        <button class="btn btn-secondary" id="btnLimpiar3" type="button">Limpiar</button>
-                                    </div>
-                                    <div class="col-12 col-md-10"></div>
-                                </div>
-                            </div>
+                            <div class="col-12 col-md-10"></div>
                         </div>
                     </div>
                 </div>
-                <!-- Botones de navegación -->
-                <div class=" row align-content-end">
-                    <div class="col-12 col-md-10">
-                        <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
-                        <input type="hidden" name="UF" id="usuario" value="@usuarioModel.Data[0].usuario.ToString()" />
-                        <input type="hidden" name="xPaS" id="contraseña" value="@usuarioModel.Data[0].contraseña.ToString()" />
-                        <input type="hidden" name="Emp" id="cveEmp" value="@usuarioModel.Data[0].EmpS[0].cveEmp.ToString()" />
-                    </div>
-                    <div class="col-12 col-md-2">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+
+            <!-- Sección 3 - Descripción Falla -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Descripción Falla
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#formAccordion">
+                    <div class="accordion-body" id="Seccion3">
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <label>Tipo Apoyo:</label>
+                                <select class="form-select" aria-label="Default select example" name="ClaveTipoApoyo">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var apoyo in item.TBCAT_TipoApoyo)
+                                    {
+                                        <option value="@apoyo.ClaveTipoApoyo">@apoyo.Descripcion</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label>Tipo de Falla:</label>
+                                <select class="form-select" aria-label="Default select example" name="ClaveTipoFalla">
+                                    <option selected>[Selecciona]</option>
+                                    @foreach (var tipfalla in item.TBCAT_TipoFalla)
+                                    {
+                                        <option value="@tipfalla.ClaveTipoFalla">@tipfalla.Descripcion</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+                        @*<div class="row">
+                    <label>Diagrama de falla</label>
+                    <img src="~/imag/Track.jpg" alt="Bootstrap">
+                    </div>*@
+                        <div class="row">
+                            <label>Comentario de Falla Mecanica</label>
+                            @*<input type="text" name="Coment" id="coment" value="Comentario describir Falla Mecanica" />*@
+                            <textarea class="form-control" aria-label="With textarea" name="ComeFalla"></textarea>
+                        </div>
+                        <div class="row align-content-start">
+                            <div class="col-12 col-md-2">
+                                <button class="btn btn-secondary" id="btnLimpiar3" type="button">Limpiar</button>
+                            </div>
+                            <div class="col-12 col-md-10"></div>
+                        </div>
                     </div>
                 </div>
-            </form>
-        </main>
-    </div>
+            </div>
+        </div>
+        <!-- Botones de navegación -->
+        <div class=" row align-content-end">
+            <div class="col-12 col-md-10">
+                <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
+                <input type="hidden" name="UF" id="usuario" value="@usuarioModel.Data[0].usuario.ToString()" />
+                <input type="hidden" name="xPaS" id="contraseña" value="@usuarioModel.Data[0].contraseña.ToString()" />
+                <input type="hidden" name="Emp" id="cveEmp" value="@usuarioModel.Data[0].EmpS[0].cveEmp.ToString()" />
+            </div>
+            <div class="col-12 col-md-2">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </form>
+
 }

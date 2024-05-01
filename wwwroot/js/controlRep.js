@@ -1,4 +1,25 @@
-﻿$(document).ready(function () {
+﻿window.onload = function () {
+    document.getElementById("spinner-overlay").style.display = "none"; // Oculta el spinner overlay cuando la página haya cargado
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+    //var links = document.querySelectorAll(".nav-link");
+    var links = document.querySelectorAll(".carga");
+    var pagin = document.querySelectorAll(".page-link");
+    links.forEach(function (link) {
+        link.addEventListener("click", function () {
+            document.getElementById("spinner-overlay").style.display = "block"; // Muestra el spinner overlay al hacer clic en un enlace
+        });
+    });
+
+    pagin.forEach(function (link) {
+        link.addEventListener("click", function () {
+            document.getElementById("spinner-overlay").style.display = "block"; // Muestra el spinner overlay al hacer clic en un enlace de paginación
+        });
+    });
+});
+
+$(document).ready(function () {
     $('#FehTick').datetimepicker({
         //format: 'm/d/Y'
         format: 'Y/m/d'
@@ -20,12 +41,9 @@ function cal(numTicket) {
         format: 'Y/m/d H:i'
     });
 }
-function calendario(numTicket) {
-    var Tiem = "TiempAsig-" + numTicket;
-    var TiempAsig = document.getElementById(Tiem);
-    $(TiempAsig).datetimepicker({
-        format: 'Y/m/d H:i'
-    });
+function calendario() {
+    var idsub = document.getElementById('idsub');
+    idsub.value 
 }
 
 function llenarDiesel(numTick)
@@ -34,6 +52,8 @@ function llenarDiesel(numTick)
     var txtnameCheckDisel = 'CheckDisel-' + numTick;
     var ChkDisel = document.getElementById(nameChkDisel);
     var txtCheckDisel = document.getElementById(txtnameCheckDisel);
+    txtCheckDisel.value = ChkDisel.value;
+
     if (ChkDisel.checked == true) {
         txtCheckDisel.value = 1;
     }
