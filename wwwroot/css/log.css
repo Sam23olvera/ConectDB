@@ -83,3 +83,22 @@ body {
     display: block;
     width: 80pt;
 }
+
+.spinner-overlay {
+    position: fixed;
+    top: 50%; /* Centra verticalmente */
+    left: 50%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Centra el contenido */
+    width: 100%;
+    height: 100%;
+    color: #008392;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+    display: none;
+}
+
+.spiner-center {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

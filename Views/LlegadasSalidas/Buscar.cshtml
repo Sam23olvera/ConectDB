@@ -8,8 +8,7 @@
     string cveEmp = ViewData["cveEmp"] as string;
     string message = ViewData["message"] as string;
 }
-<div class="container-fluid">
-    <main role="main">
+    
         @foreach (var item in Model)
         {
             <div class="container">
@@ -108,5 +107,4 @@
                 </div>
             </div>
         }
-    </main>
-</div>
+    

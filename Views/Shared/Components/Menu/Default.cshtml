@@ -48,7 +48,7 @@
                                             @foreach (var submodulo in modulo.submods)
                                             {
                                                 <li>
-                                                    <a asp-action="Index" asp-controller="@submodulo.nomsub.Replace(" ", "")" asp-route-cveEmp="@Model.Data[0].EmpS[0].cveEmp" asp-route-XT="@Model.Token" asp-route-idsub="@submodulo.idsub" class="dropdown-item text-dark">
+                                                    <a asp-action="Index" asp-controller="@submodulo.nomsub.Replace(" ", "")" asp-route-cveEmp="@Model.Data[0].EmpS[0].cveEmp" asp-route-XT="@Model.Token" asp-route-idsub="@submodulo.idsub" class="dropdown-item text-dark carga">
                                                         @submodulo.nomsub
                                                     </a>
                                                 </li>

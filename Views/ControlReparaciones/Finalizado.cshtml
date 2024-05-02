@@ -37,6 +37,8 @@
                 <br />
                 <div class="row-cols-auto text-lg-start">
                     <h3>@ViewData["Title"]</h3>
+                    <input type="hidden" value="@TempData["Mensaje"]" id="mensaje"></input>
+                    <input type="hidden" value="@TempData["guardado"]" id="guarda"></input>
                 </div>
                 <br />
                 <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarFinalizados">

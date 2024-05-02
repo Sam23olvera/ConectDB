@@ -8,6 +8,18 @@
         toastr.success(guarda);
     }
 });
+window.onload = function () {
+    document.getElementById("spinner-overlay").style.display = "none";
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+    var links = document.querySelectorAll(".carga");
+    links.forEach(function (link) {
+        link.addEventListener("click", function () {
+            document.getElementById("spinner-overlay").style.display = "block";
+        });
+    });
+});
 
 //document.addEventListener("DOMContentLoaded", function () {
 //    var selectEmpresa = document.getElementById('selectEmpresa');

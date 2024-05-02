@@ -17,8 +17,8 @@
     string FSEl = ViewData["FeFolVi"] as string;
     string idus = ViewData["iduse"] as string;
 }
-<div class="container-fluid">
-    <main role="main">
+
+    
         @for (int i = 0; i < Model.Count; i++)
         {
             <form id="miFormulario" method="post" asp-controller="LlegadasSalidas" asp-action="Guardar" asp-route-UN="@ViewData["UN"]" asp-route-ET="@ViewData["ET"]" asp-route-OP="@ViewData["OP"]" asp-route-FV="@ViewData["FV"]" asp-route-NR="@ViewData["NR"]" asp-route-CV="@ViewData["CV"]" asp-route-Tox="@ViewData["Token"]" asp-route-FeFolVi="@ViewData["FeFolVi"]" asp-route-FeSel="@Model[i].FeSel" asp-route-cveEmp="@ViewData["cveEmp"]" asp-route-xPaS="@ViewData["Contraseña"]" asp-route-UF="@ViewData["Usuario"]" asp-route-cvruta="@Model[i].cvruta" asp-route-idus="@ViewData["iduse"]">
@@ -256,8 +256,8 @@
                 </div>
             </form>
         }
-    </main>
-</div>
+    
+
 <input type="hidden" name="Token" id="Token" value="@ViewData["Token"]" />
 <input type="hidden" name="usuario" id="usuario" value="@ViewData["usuario"]" />
 <input type="hidden" name="contraseña" id="contraseña" value="@ViewData["contraseña"]" />

@@ -1,4 +1,15 @@
-﻿$(document).ready(function () {
+﻿window.onload = function () {
+    document.getElementById("spinner").style.display = "none";
+};
+document.addEventListener("DOMContentLoaded", function () {
+    var links = document.querySelectorAll(".carga");
+    links.forEach(function (link) {
+        link.addEventListener("click", function () {
+            document.getElementById("spinner").style.display = "block";
+        });
+    });
+});
+$(document).ready(function () {
     $('#FEG').datetimepicker({
         format: 'Y/m/d H:i'
     });

@@ -90,11 +90,14 @@ namespace ConectDB.Controllers
                         TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                     }
                 }
-                if (controlFal.status != 200)
+                if (controlFal.status == 400)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 TempData["FehTick"] = FehTick;
                 ViewData["Title"] = "Por Asignar";
@@ -271,9 +274,12 @@ namespace ConectDB.Controllers
                 }
                 if (controlFal.status != 200)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 ViewData["Title"] = "Asignados";
                 return View("Asignados", controlFal);
@@ -446,9 +452,16 @@ namespace ConectDB.Controllers
                     TempData["Buscar"] = 0;
                     if (controlFal.status != 200)
                     {
-                        msj.status = controlFal.status;
-                        msj.message = "!" + controlFal.message + "!";
-                        return View("Error", msj);
+                        if (controlFal.Solicitudes.Count != 0)
+                        {
+                            msj.status = controlFal.status;
+                            msj.message = "!" + controlFal.message + "!";
+                            return View("Error", msj);
+                        }
+                        else 
+                        {
+                            TempData["Mensaje"] = controlFal.status + " !" + controlFal.message + "!";
+                        }
                     }
                     else
                     {
@@ -683,8 +696,17 @@ namespace ConectDB.Controllers
                 }
                 else
                 {
-                    ViewData["Title"] = "Finalizado";
-                    return View("Finalizado", controlFal);
+                    if (controlFal.Solicitudes.Count == 0)
+                    {
+                        TempData["Mensaje"] = controlFal.status + " !" + controlFal.message + "¡";
+                        ViewData["Title"] = "Finalizado";
+                        return View("Finalizado", controlFal);
+                    }
+                    else
+                    {
+                        ViewData["Title"] = "Finalizado";
+                        return View("Finalizado", controlFal);
+                    }
                 }
             }
             catch (Exception e)

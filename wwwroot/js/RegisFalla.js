@@ -2,7 +2,7 @@
     document.getElementById("spinner").style.display = "none";
 };
 document.addEventListener("DOMContentLoaded", function () {
-    var links = document.querySelectorAll(".nav-link");
+    var links = document.querySelectorAll(".carga");
     links.forEach(function (link) {
         link.addEventListener("click", function () {
             document.getElementById("spinner").style.display = "block";

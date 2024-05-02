@@ -1,20 +1,19 @@
 ﻿window.onload = function () {
-    document.getElementById("spinner-overlay").style.display = "none"; // Oculta el spinner overlay cuando la página haya cargado
+    document.getElementById("spinner-overlay").style.display = "none"; 
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-    //var links = document.querySelectorAll(".nav-link");
     var links = document.querySelectorAll(".carga");
     var pagin = document.querySelectorAll(".page-link");
     links.forEach(function (link) {
         link.addEventListener("click", function () {
-            document.getElementById("spinner-overlay").style.display = "block"; // Muestra el spinner overlay al hacer clic en un enlace
+            document.getElementById("spinner-overlay").style.display = "block";
         });
     });
 
     pagin.forEach(function (link) {
         link.addEventListener("click", function () {
-            document.getElementById("spinner-overlay").style.display = "block"; // Muestra el spinner overlay al hacer clic en un enlace de paginación
+            document.getElementById("spinner-overlay").style.display = "block";
         });
     });
 });
