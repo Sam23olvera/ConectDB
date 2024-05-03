@@ -219,9 +219,12 @@ namespace ConectDB.Controllers
                 }
                 if (controlFal.status != 200)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 ViewData["Title"] = "Por Asignar";
                 return View("PorAsignar", controlFal);
@@ -429,9 +432,12 @@ namespace ConectDB.Controllers
                 }
                 if (controlFal.status != 200)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 return View("Asignados", controlFal);
             }
@@ -501,9 +507,12 @@ namespace ConectDB.Controllers
                     }
                     if (controlFal.status != 200)
                     {
-                        msj.status = controlFal.status;
-                        msj.message = "!" + controlFal.message + "!";
-                        return View("Error", msj);
+                        if (controlFal.Solicitudes.Count != 0)
+                        {
+                            msj.status = controlFal.status;
+                            msj.message = controlFal.message;
+                            return View("Error", msj);
+                        }
                     }
                 }
                 ViewData["Title"] = "Reparacion";
@@ -539,8 +548,14 @@ namespace ConectDB.Controllers
                 {
                     TempData["FehTick"] = FehTick;
                 }
-
-                controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (NumTicket == 0)
+                {
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                }
+                else 
+                {
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                }
                 if (controlFal.status == 200)
                 {
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
@@ -556,9 +571,12 @@ namespace ConectDB.Controllers
                 }
                 if (controlFal.status > 400)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 ViewData["Title"] = "Reparacion";
                 return View("Reparacion", controlFal);
@@ -634,9 +652,12 @@ namespace ConectDB.Controllers
                     }
                     if (controlFal.status > 400)
                     {
-                        msj.status = controlFal.status;
-                        msj.message = controlFal.message;
-                        return View("Error", msj);
+                        if (controlFal.Solicitudes.Count != 0)
+                        {
+                            msj.status = controlFal.status;
+                            msj.message = controlFal.message;
+                            return View("Error", msj);
+                        }
                     }
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
@@ -736,7 +757,6 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-
         public IActionResult BuscarFinalizados(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
         {
             try
@@ -757,7 +777,14 @@ namespace ConectDB.Controllers
                 {
                     TempData["FehTick"] = FehTick;
                 }
-                controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (NumTicket == 0)
+                {
+                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                }
+                else 
+                {
+                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                }
                 if (controlFal.status == 200)
                 {
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);

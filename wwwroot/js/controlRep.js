@@ -40,9 +40,12 @@ function cal(numTicket) {
         format: 'Y/m/d H:i'
     });
 }
-function calendario() {
-    var idsub = document.getElementById('idsub');
-    idsub.value 
+function calendario(numTicket) {
+    var Tiem = "TiempAsig-" + numTicket;
+    var TiempAsig = document.getElementById(Tiem);
+    $(TiempAsig).datetimepicker({
+        format: 'Y/m/d H:i'
+    });
 }
 
 function llenarDiesel(numTick)
