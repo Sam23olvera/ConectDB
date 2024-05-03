@@ -17,13 +17,16 @@
                     <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Por Asignar</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Asignados</a>
+                    <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Asignados</a>
                 </li>
                 <li class="nav-item">
                     <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">En Reparación</a>
                 </li>
                 <li class="nav-item">
                     <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Consulta</a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link seccion">Indicadores</a>
@@ -42,7 +45,7 @@
                 <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarAsignados">
                     <div class="row justify-content-start align-items-start">
                         <div class="col-md-2">
-                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")" id="FehTick" name="FehTick" />
                         </div>
                         <div class="col-md-3">
                             <select class="form-select input-sm" aria-label="Default select example" name="UsAsignado" id="UsAsignado">
@@ -96,10 +99,10 @@
                                                 <p>@solicitude.NumTicket</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaCreacion?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaCreacion?.ToString("yyyy/MM/dd HH:mm")</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaAsignacion?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaAsignacion?.ToString("yyyy/MM/dd HH:mm")</p>
                                             </td>
                                             <td class="text-center">
                                                 <p>@solicitude.TipoTicket</p>
@@ -302,7 +305,7 @@
                                                                 </div>
                                                                 <div class="col-12 col-md-4">
                                                                     <h6> Ultima Posicion Reportada GPS: </h6>
-                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy-MM-dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
+                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy/MM/dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -327,7 +330,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Asignacion?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")&UsAsignado=@Convert.ToInt16(@TempData["UsAsignado"])&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="Asignacion?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&UsAsignado=@Convert.ToInt16(@TempData["UsAsignado"])&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

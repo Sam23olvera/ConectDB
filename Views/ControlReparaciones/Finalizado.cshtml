@@ -24,7 +24,10 @@
                     <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">En Reparación</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
+                    <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Finalizado</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Consulta</a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link seccion">Indicadores</a>
@@ -44,7 +47,7 @@
                 <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarFinalizados">
                     <div class="row justify-content-start align-items-start">
                         <div class="col-md-2">
-                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")" id="FehTick" name="FehTick" />
                         </div>
                         <div class="col-md-2">
                             <select class="form-select input-sm" aria-label="Default select example" id="TipTicket" name="TipTicket">
@@ -105,7 +108,7 @@
                                                 <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaCreacion?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaCreacion?.ToString("yyyy/MM/dd HH:mm")</p>
                                             </td>
                                             <td class="text-center">
                                                 <p>@solicitude.TipoTicket</p>
@@ -114,7 +117,7 @@
                                                 <p>@solicitude.TipoFalla</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaAsignacion?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaAsignacion?.ToString("yyyy/MM/dd HH:mm")</p>
                                                 @* <input type="date" class="form-control filtros" disabled /> *@
                                             </td>
                                             <td class="text-center">
@@ -124,10 +127,10 @@
                                                 <p>@solicitude.TipoApoyo</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaHoraVencimiento?.ToString("yyyy/MM/dd HH:mm")</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaEvento?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaEvento?.ToString("yyyy/MM/dd HH:mm")</p>
                                                 @* <input type="datetime-local" class="form-control filtros" disabled /> *@
                                             </td>
                                             <td class="text-center">
@@ -250,7 +253,7 @@
                                                                 </div>
                                                                 <div class="col-12 col-md-4">
                                                                     <h6> Ultima Posicion Reportada GPS: </h6>
-                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy-MM-dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
+                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy/MM/dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
@@ -285,7 +288,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Fin?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&TipTicket=@TempData["TipTicket"]&TipFalla=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="Fin?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&TipTicket=@TempData["TipTicket"]&TipFalla=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

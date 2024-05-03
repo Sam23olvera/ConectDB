@@ -21,10 +21,13 @@
                     <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Asignados</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">En Reparación</a>
+                    <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">En Reparación</a>
                 </li>
                 <li class="nav-item">
                     <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Consulta</a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link seccion">Indicadores</a>
@@ -44,7 +47,7 @@
                 <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarReparacion">
                     <div class="row justify-content-start align-items-start">
                         <div class="col-md-2">
-                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")" id="FehTick" name="FehTick" />
                         </div>
                         <div class="col-md-2">
                             <select class="form-select input-sm" aria-label="Default select example" id="TipTicket" name="TipTicket">
@@ -103,16 +106,15 @@
                                     @foreach (var solicitude in Model.Solicitudes)
                                     {
                                         <tr>
-                                            <form method="post" asp-controller="ControlReparaciones" asp-action="AsigRepa" asp-route-Tok="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub">
+                                            <form method="post" asp-controller="ControlReparaciones" asp-action="AsigRepa">
                                             <td class="text-center">
                                                 <p>@solicitude.NumTicket</p>
-                                                <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaCreacion?.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                                                <p>@solicitude.FechaCreacion?.ToString("yyyy/MM/dd HH:mm:ss")</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaAsignacion?.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                                                <p>@solicitude.FechaAsignacion?.ToString("yyyy/MM/dd HH:mm:ss")</p>
                                             </td>
                                             <td class="text-center">
                                                 <p>@solicitude.TipoTicket</p>
@@ -124,7 +126,7 @@
                                                 <p>@solicitude.ObsOperacion</p>
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaEvento?.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                                                <p>@solicitude.FechaEvento?.ToString("yyyy/MM/dd HH:mm:ss")</p>
                                             </td>
                                             <td class="text-center">
                                                 <p>@solicitude.TipoApoyo</p>
@@ -135,8 +137,8 @@
                                                 @if (DateTime.Now >= @solicitude.FechaHoraVencimiento)
                                                 {
                                                 <td class="text-center">
-                                                    <input type="text" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstima" onclick="cal(@solicitude.NumTicket)" />
-                                                    <input type="hidden" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstimaComparar" />
+                                                    <input type="text" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy/MM/dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstima" onclick="cal(@solicitude.NumTicket)" />
+                                                    <input type="hidden" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy/MM/dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstimaComparar" />
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="container" style="background:red">
@@ -155,8 +157,8 @@
                                                 else
                                                 {
                                                 <td class="text-center">
-                                                    <input type="text" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstima" onclick="cal(@solicitude.NumTicket)" />
-                                                    <input type="hidden" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy-MM-dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstimaComparar" />
+                                                    <input type="text" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy/MM/dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstima" onclick="cal(@solicitude.NumTicket)" />
+                                                    <input type="hidden" class="form-control FechEstima" value="@solicitude.FechaHoraVencimiento?.ToString("yyyy/MM/dd HH:mm:ss")" id="FechEstima-@solicitude.NumTicket" name="FechEstimaComparar" />
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="container" style="background:green;">
@@ -172,6 +174,12 @@
                                                     </button>
                                                 </td>
                                                 }
+                                            <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
+                                            <input type="hidden" value="@usuarioModel.Token" id="Tok" name="Tok" />
+                                            <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
+                                            <input type="hidden" value="@usuarioModel.idsub" id="idsub" name="idsub" />
+                                            <input type="hidden" value="@solicitude.Diesel" id="Diesel" name="Diesel" />
+                                            <input type="hidden" value="@solicitude.Grua" id="Grua" name="Grua" />
                                             </form>
                                             <td>
                                                 <button type="button" class="btn btn-light btn-sm" id="mostrar" onclick="mostrar(@solicitude.NumTicket)">
@@ -290,7 +298,7 @@
                                                                 </div>
                                                                 <div class="col-12 col-md-4">
                                                                     <h6> Ultima Posicion Reportada GPS: </h6>
-                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy-MM-dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
+                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy/MM/dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
@@ -325,7 +333,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Repara?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&TipTicket=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="Repara?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&TipTicket=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

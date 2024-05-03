@@ -49,6 +49,10 @@ body {
     .nav .seccion {
         color: black;
     }
+    .nav .activo {
+        background-color: #5c8b91;
+        color: white;
+    }
 
         .nav .seccion:hover {
             color: white;
@@ -61,11 +65,9 @@ body {
     cursor: pointer;
     background-color: #5c8b91;
 }
-
 /*p {
     color: white;
 }*/
-
 .sidebar {
     height: 80%;
     width: 250px;

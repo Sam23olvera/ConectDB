@@ -1,5 +1,6 @@
 ﻿using ConectDB.DB;
 using ConectDB.Models;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -11,7 +12,7 @@ namespace ConectDB.Controllers
         private readonly ConectMenuUser menu = new ConectMenuUser();
         private readonly DataApi data = new DataApi();
         private readonly ConectApiContrRep con = new ConectApiContrRep();
-        private const int pageSize = 5;
+        private const int pageSize = 2;
         ControlFalla controlFal = new ControlFalla();
         UsuarioModel model = new UsuarioModel();
         List<Error> mensaje = new List<Error>();
@@ -30,7 +31,7 @@ namespace ConectDB.Controllers
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
                 controlFal = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
-                ViewData["Title"] = "Resumen";
+                ViewData["Title"] = "Inicio";
                 return View("Index", controlFal);
 
             }
@@ -175,7 +176,7 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult AsignacionTicket(string Token, string cveEmp, string Asigna, string ticket, int pagina, int idsub)
+        public IActionResult AsignacionTicket(string Token, string cveEmp, string Asigna, string ticket, int pagina, int idsub, int Diesel, int Grua)
         {
             try
             {
@@ -189,13 +190,14 @@ namespace ConectDB.Controllers
                 DateTime FehAsignatiempo = DateTime.Now;
                 if (Asigna != "[Selecciona]")
                 {
-                    controlFal = con.ModificadorFall(1, 2, model.Data[0].EmpS[0].cveEmp.ToString(), ticket, Asigna, 0, 0, "", "", model.Data[0].idus, FehAsignatiempo.ToString("yyyy-MM-dd"), 0, idsub, pagina, pageSize, 0, 0, "", "", "", 0);
+                    controlFal = con.ModificadorFall(1, 2, model.Data[0].EmpS[0].cveEmp.ToString(), ticket, Asigna, 0, 0, "", "", model.Data[0].idus, FehAsignatiempo.ToString("yyyy-MM-dd"), 0, idsub, pagina, pageSize, Diesel, Grua, "", "", "", 0);
                     if (controlFal.status == 200)
                     {
                         ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                         ViewBag.CurrentPage = pagina;
                         TempData["Buscar"] = 0;
                         TempData["FehTick"] = FehAsignatiempo;
+                        TempData["guardado"] = controlFal.status + "¡ \r\n" + controlFal.message + "\r\n!";
                     }
                     else
                     {
@@ -211,6 +213,7 @@ namespace ConectDB.Controllers
                         ViewBag.CurrentPage = pagina;
                         TempData["Buscar"] = 0;
                         TempData["FehTick"] = FehAsignatiempo;
+                        TempData["guardado"] = controlFal.status + "¡ \r\n" + controlFal.message + "\r\n!";
                     }
                     else
                     {
@@ -439,6 +442,7 @@ namespace ConectDB.Controllers
                         return View("Error", msj);
                     }
                 }
+                ViewData["Title"] = "Asignados";
                 return View("Asignados", controlFal);
             }
             catch (Exception e)
@@ -589,7 +593,7 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina)
+        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina,int Diesel,int Grua)
         {
             try
             {
@@ -603,7 +607,7 @@ namespace ConectDB.Controllers
 
                 if (FechEstima > FechEstimaComparar && FechEstima > DateTime.Now)
                 {
-                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, 0, 0, "", "", "", 0);
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize,Diesel, Grua, "", "", "", 0);
                     if (controlFal.status == 200)
                     {
                         ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
@@ -624,7 +628,7 @@ namespace ConectDB.Controllers
                 }
                 if (FechEstima == FechEstimaComparar)
                 {
-                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, 0, 0, "", "", "", 0);
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, Diesel, Grua, "", "", "", 0);
                     if (controlFal.status == 200)
                     {
                         ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
@@ -807,6 +811,30 @@ namespace ConectDB.Controllers
                 ViewData["TipFalla"] = TipFalla;
 
                 return View("Finalizado", controlFal);
+            }
+            catch (Exception e)
+            {
+                msj.status = 400;
+                msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
+                return View("Error", msj);
+            }
+        }
+
+        public IActionResult Consul(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub) 
+        {
+            try 
+            {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+                    return RedirectToAction("Index", "Loging");
+
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                model.Token = Token;
+                model.idsub = idsub;
+                ViewData["UsuarioModel"] = model;
+                TempData["FehInicio"] = DateTime.Now;
+                TempData["FehFin"] = DateTime.Now;
+                ViewData["Title"] = "Consulta";
+                return View("Consulta");
             }
             catch (Exception e)
             {

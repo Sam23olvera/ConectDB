@@ -32,6 +32,12 @@ $(document).ready(function () {
     $('#FechEstima').datetimepicker({
         format: 'm/d/Y H:i'
     });
+    $('#FehInicio').datetimepicker({
+        format: 'Y/m/d'
+    });
+    $('#FehFin').datetimepicker({
+        format: 'Y/m/d'
+    });
 });
 function cal(numTicket) {
     var Inp = "FechEstima-" + numTicket;

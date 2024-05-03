@@ -14,7 +14,7 @@
                     <a asp-action="Index" asp-controller="ControlReparaciones" asp-route-XT="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link active seccion carga">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Por Asignar</a>
+                    <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Por Asignar</a>
                 </li>
                 <li class="nav-item">
                     <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Asignados</a>
@@ -24,6 +24,9 @@
                 </li>
                 <li class="nav-item">
                     <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Consulta</a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link seccion">Indicadores</a>
@@ -43,7 +46,7 @@
                 <form method="post" asp-controller="ControlReparaciones" asp-action="BuscarPorAsig">
                     <div class="row justify-content-start align-items-start">
                         <div class="col-md-2">
-                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")" id="FehTick" name="FehTick" />
+                            <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")" id="FehTick" name="FehTick" />
                         </div>
                         <div class="col-md-3">
                             <select class="form-select input-sm" aria-label="Default select example" id="ClaveTipoFalla" name="ClaveTipoFalla">
@@ -94,7 +97,7 @@
                                                 <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
                                             </td>
                                             <td class="text-center">
-                                                <p>@solicitude.FechaEvento?.ToString("yyyy-MM-dd HH:mm")</p>
+                                                <p>@solicitude.FechaEvento?.ToString("yyyy/MM/dd HH:mm")</p>
                                             </td>
                                             <td class="text-center">
                                                 <p>@solicitude.TipoTicket</p>
@@ -117,6 +120,8 @@
                                                 </button>
                                             </td>
                                             <input type="hidden" name="pagina" value="@ViewBag.CurrentPage" />
+                                            <input type="hidden" name="Diesel" value="@Convert.ToInt16(@solicitude.Diesel)" />
+                                            <input type="hidden" name="Grua" value="@Convert.ToInt16(@solicitude.Grua)" />
                                             </form>
                                             <td class="text-center">
                                                 <p>@solicitude.ObsOperacion</p>
@@ -239,7 +244,7 @@
                                                                 </div>
                                                                 <div class="col-12 col-md-4">
                                                                     <h6> Ultima Posicion Reportada GPS: </h6>
-                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy-MM-dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
+                                                                    <p>@solicitude.FechaUltPosicion?.ToString("yyyy/MM/dd HH:mm:ss") | @solicitude.UltimaPosicionGps</p>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
@@ -274,7 +279,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="PorAsig?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@Convert.ToInt16(@TempData["Buscar"])&NumTicket=@Convert.ToInt16(@TempData["NumTicket"])&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy-MM-dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="PorAsig?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@Convert.ToInt16(@TempData["Buscar"])&NumTicket=@Convert.ToInt16(@TempData["NumTicket"])&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

@@ -1,0 +1,64 @@
+﻿@using ConectDB.Models;
+@model ControlFalla;
+@{
+    string? title = ViewData["Title"] as string;
+    Layout = "~/Views/Shared/_Layout_ControlReparaciones.cshtml";
+    var usuarioModel = ViewData["UsuarioModel"] as UsuarioModel;
+}
+<div class="container-fluid">
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <ul class="nav flex-column border tamancla">
+                <li class="nav-item">
+                    <a asp-action="Index" asp-controller="ControlReparaciones" asp-route-XT="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link active seccion carga">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Por Asignar</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Asignados</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">En Reparación</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Consulta</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link seccion">Indicadores</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="container">
+                <br />
+                <div class="row-cols-auto text-lg-start">
+                    <h3>@ViewData["Title"]</h3>
+                    <input type="hidden" value="@TempData["Mensaje"]" id="mensaje" />
+                    <input type="hidden" value="@TempData["guardado"]" id="guarda" />
+                </div>
+                <br />
+                <div class="row justify-content-start align-items-start">
+                    <div class="col-md-2">
+                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")" id="FehInicio" name="FehInicio" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")" id="FehFin" name="FehFin" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control input-sm filtros" placeholder="# Ticket" id="NumTicket" name="NumTicket" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary carga" type="submit" id="btnBusFalReg">Buscar</button>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
