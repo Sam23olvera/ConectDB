@@ -13,6 +13,7 @@ namespace ConectDB.Controllers
         ConectApi con = new ConectApi();
         ConectMenuUser menu = new ConectMenuUser();
         UsuarioModel model = new UsuarioModel();
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT)
         {
             try

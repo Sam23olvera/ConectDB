@@ -124,8 +124,14 @@ namespace ConectDB.Controllers
                 model.Token = Token;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                //con.Primer_crga_con_Catalo(1, model.Data[0].EmpS[0].cveEmp.ToString(), "", NumTicket, 0, ClaveTipoFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                if (NumTicket == 0)
+                {
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                }
+                else 
+                {
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                }
                 if (controlFal.status == 200)
                 {
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
@@ -150,9 +156,12 @@ namespace ConectDB.Controllers
                 }
                 if (controlFal.status != 200)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message.ToString();
-                    return View("Error", msj);
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 ViewData["Title"] = "Por Asignar";
                 return View("PorAsignar", controlFal);
@@ -250,7 +259,7 @@ namespace ConectDB.Controllers
                     controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
                     if (controlFal.status != 200)
                     {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
+                        TempData["Mensaje"] = "¡" + controlFal.status + " " + controlFal.message + "!";
                     }
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
@@ -261,7 +270,7 @@ namespace ConectDB.Controllers
                     controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
                     if (controlFal.status != 200)
                     {
-                        TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
+                        TempData["Mensaje"] = "¡" + controlFal.status + " " + controlFal.message + "!";
                     }
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
@@ -303,16 +312,26 @@ namespace ConectDB.Controllers
                 model.Token = Token;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
-                if (controlFal.status != 200)
+                if (NumTicket == 0)
                 {
-                    TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
+                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
+                }
+                else 
+                {
+                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
                 }
                 if (controlFal.status != 200)
                 {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
+                    TempData["Mensaje"] = "¡"+ controlFal.status + " " + controlFal.message + "!";
+                }
+                if (controlFal.status != 200)
+                {
+                    if (controlFal.Solicitudes.Count != 0)
+                    {
+                        msj.status = controlFal.status;
+                        msj.message = controlFal.message;
+                        return View("Error", msj);
+                    }
                 }
                 ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                 ViewBag.CurrentPage = pagina;

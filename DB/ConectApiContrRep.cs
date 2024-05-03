@@ -89,6 +89,10 @@ namespace ConectDB.DB
                 jsdat = JObject.Parse("{\"data\":{\"bdCc\":5,\"bdSch\":\"dbo\",\"bdSp\":\"SPQRY_CatalogosMantto\"},\"filter\":[{\"property\": \"ClaveEmpresa\",\"value\":\"" + empresa + "\"}]}");
                 if (CarCata(jsdat, CveEstatus).status == 200)
                 {
+                    if (String.IsNullOrEmpty(FehTick))
+                    {
+                        FehTick = null;
+                    }
                     jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_ControlReparaciones\"},\"filter\": [{ \"property\": \"cveEmpresa\",\"value\":\"" + empresa + "\"},{\"property\":\"CveEstatus\",\"value\": " + CveEstatus + "},{\"property\":\"Fecha\",\"value\": \"" + FehTick + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"TipoTicket\",\"value\":" + TipoTicket + "},{\"property\":\"TipoFalla\",\"value\": " + TipoFalla + "},{\"property\":\"CveUser\",\"value\":" + CveUser + "},{\"property\":\"UserFiltro\",\"value\":" + UserFiltro + "},{\"property\":\"IdSubmodulo\",\"value\":" + IdSubmodulo + "}]}");
                     json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                     data = json["data"] as JArray;

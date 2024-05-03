@@ -14,6 +14,7 @@ namespace ConectDB.Controllers
         ConectMenuUser menu = new ConectMenuUser();
         UsuarioModel model = new UsuarioModel();
 
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
