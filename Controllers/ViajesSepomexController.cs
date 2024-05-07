@@ -18,14 +18,9 @@ namespace ConectDB.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-                {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-                }
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                {
-                    return RedirectToAction("Index", "Loging");
-                }
+
                 string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
                 string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
