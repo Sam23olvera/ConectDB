@@ -33,10 +33,21 @@ $(document).ready(function () {
         format: 'm/d/Y H:i'
     });
     $('#FehInicio').datetimepicker({
-        format: 'Y/m/d'
+        format: 'Y/m/d',
+        maxDate: "1M",
+        onClose: function (selectedDate) {
+            var endDate = new Date(selectedDate);
+            endDate.setDate(endDate.getDate() + 31);
+            $('#FehFin').datetimepicker('option', 'maxDate', endDate);
+
+            var FehFin = document.getElementById('FehFin');
+            let fechaprueba = new Date(endDate);
+            FehFin.value = fechaprueba.getFullYear() + '/' + (fechaprueba.getMonth() + 1) + '/' + fechaprueba.getDate();    
+        }
     });
     $('#FehFin').datetimepicker({
-        format: 'Y/m/d'
+        format: 'Y/m/d',
+        minDate: "-1M"
     });
 });
 function cal(numTicket) {

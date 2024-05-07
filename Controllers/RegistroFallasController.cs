@@ -8,7 +8,7 @@ namespace ConectDB.Controllers
     public class RegistroFallasController : Controller
     {
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
-        ConectApi con = new ConectApi();
+        ConectRegistraFalla con = new ConectRegistraFalla();
         ConectMenuUser menu = new ConectMenuUser();
         UsuarioModel model = new UsuarioModel();
         ModelFallas oLista = new ModelFallas();
@@ -16,20 +16,15 @@ namespace ConectDB.Controllers
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Index(int cveEmp, string XT)
         {
-            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-            {
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                 return RedirectToAction("Index", "Loging");
-            }
-            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-            {
-                return RedirectToAction("Index", "Loging");
-            }
+
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
             model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
             ViewData["UsuarioModel"] = model;
-            ViewData["Token"] = XT;
+            model.Token = XT;
             oLista = con.ObjetoModelOperadores_Rem(model.Data[0].EmpS[0].cveEmp.ToString());
             return View("Index", oLista);
 
@@ -38,14 +33,9 @@ namespace ConectDB.Controllers
 
         public IActionResult Guardar(int ClaveTipoTicket, int TipoClas, TBCATTipoFalla tipoFalla, string Dot, string Marca, string Medida, int Posis, string ComeFalla, TBCATOperador operador, string telop, TBCATUnidade unidade, TBCATRutum rutum, int opcionesRemolque1, TBCATTipoCarga carga, int cvTipoequipo, string UbiRepor, string TramCarretero, TBCATTipoApoyo tBCATTipo, string LongGps, string LatGps, string DirGPS, string FechGPS, string Token, string Emp, int CheckDisel, int CheckGrua)
         {
-            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]))
-            {
+            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                 return RedirectToAction("Index", "Loging");
-            }
-            if (string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-            {
-                return RedirectToAction("Index", "Loging");
-            }
+
             string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
             string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 

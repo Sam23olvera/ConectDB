@@ -77,14 +77,14 @@
                                 <caption>@ViewData["Title"]</caption>
                                 <thead>
                                     <tr>
-                                        <th># Ticket</th>
-                                        <th>Fecha de creación</th>
-                                        <th>Tipo Ticket</th>
-                                        <th>Falla</th>
-                                        <th>Asignar A</th>
-                                        <th></th>
-                                        <th>Comentario</th>
-                                        <th></th>
+                                        <th scope="col"># Ticket</th>
+                                        <th scope="col">Fecha de creación</th>
+                                        <th scope="col">Tipo Ticket</th>
+                                        <th scope="col">Falla</th>
+                                        <th scope="col">Asignar A</th>
+                                        <th scope="col"></th>
+                                        <th scope="col">Comentario</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,7 +92,7 @@
                                     {
                                         <tr>
                                             <form id="buscarForm" method="post" asp-controller="ControlReparaciones" asp-action="AsignacionTicket" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" asp-route-ticket="@solicitude.NumTicket" asp-route-idsub="@usuarioModel.idsub">
-                                            <td class="text-center">
+                                            <td scope="col" class="text-center">
                                                 <p>@solicitude.NumTicket</p>
                                                 <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
                                             </td>

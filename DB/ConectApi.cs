@@ -143,26 +143,7 @@ namespace ConectDB.DB
             }
             return viajes;
         }
-        public JObject GuardarFallas(string json)
-        {
-            try
-            {
-                JObject jsonfinal = JObject.Parse("{\"data\":{\"bdCc\":5,\"bdSch\":\"dbo\",\"bdSp\":\"SPINS_ControlReparaciones\"},\"filter\":[{\"property\": \"Json1\",\"value\":\"" + json + "\"}]}");
-                var datos = hh.HttpWebRequest("POST", url, jsonfinal);
-                JObject js = JObject.Parse(datos);
-                if (js["status"].ToString() == "400")
-                {
-                    return js;
-                }
-                return js;
-
-            }
-            catch (Exception e)
-            {
-                JObject js = JObject.Parse("{ \"status\": \"Desconosido\",\"message\":\"" + e.Message.ToString() + "\"}");
-                return js;
-            }
-        }
+        
         public bool Guardar(string json)
         {
             try

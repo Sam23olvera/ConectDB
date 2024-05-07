@@ -129,7 +129,7 @@ namespace ConectDB.Controllers
                 {
                     controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                 }
-                else 
+                else
                 {
                     controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                 }
@@ -322,13 +322,13 @@ namespace ConectDB.Controllers
                 {
                     controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
                 }
-                else 
+                else
                 {
                     controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
                 }
                 if (controlFal.status != 200)
                 {
-                    TempData["Mensaje"] = "¡"+ controlFal.status + " " + controlFal.message + "!";
+                    TempData["Mensaje"] = "¡" + controlFal.status + " " + controlFal.message + "!";
                 }
                 if (controlFal.status != 200)
                 {
@@ -487,7 +487,7 @@ namespace ConectDB.Controllers
                             msj.message = "!" + controlFal.message + "!";
                             return View("Error", msj);
                         }
-                        else 
+                        else
                         {
                             TempData["Mensaje"] = controlFal.status + " !" + controlFal.message + "!";
                         }
@@ -556,7 +556,7 @@ namespace ConectDB.Controllers
                 {
                     controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                 }
-                else 
+                else
                 {
                     controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                 }
@@ -593,7 +593,7 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina,int Diesel,int Grua)
+        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina, int Diesel, int Grua)
         {
             try
             {
@@ -607,7 +607,7 @@ namespace ConectDB.Controllers
 
                 if (FechEstima > FechEstimaComparar && FechEstima > DateTime.Now)
                 {
-                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize,Diesel, Grua, "", "", "", 0);
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, Diesel, Grua, "", "", "", 0);
                     if (controlFal.status == 200)
                     {
                         ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
@@ -785,7 +785,7 @@ namespace ConectDB.Controllers
                 {
                     controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                 }
-                else 
+                else
                 {
                     controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                 }
@@ -820,9 +820,9 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult Consul(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub) 
+        public IActionResult Consul(string Token, string cveEmp, int NumTicket, DateTime FehInicio, DateTime FehFin, int idsub, int pagina)
         {
-            try 
+            try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
@@ -831,10 +831,48 @@ namespace ConectDB.Controllers
                 model.Token = Token;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                TempData["FehInicio"] = DateTime.Now;
+                TempData["FehInicio"] = FehInicio;
                 TempData["FehFin"] = DateTime.Now;
                 ViewData["Title"] = "Consulta";
-                return View("Consulta");
+
+                if (NumTicket == 0 || FehInicio == null || FehInicio == DateTime.MinValue || FehFin == null || FehInicio == DateTime.MinValue)
+                {
+                    controlFal = con.ConsultaGeneral(cveEmp, NumTicket, FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), FehFin.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
+                }
+                else 
+                {
+                    controlFal = con.ConsultaGeneral(cveEmp, NumTicket, FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), FehFin.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
+                }
+                ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                ViewBag.CurrentPage = pagina;
+                return View("Consulta", controlFal);
+            }
+            catch (Exception e)
+            {
+                msj.status = 400;
+                msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
+                return View("Error", msj);
+            }
+        }
+        [HttpPost]
+        public IActionResult BusConsul(string Token, DateTime FehInicio, DateTime FehFin, int NumTicket, string cveEmp, int idsub, int pagina)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+                    return RedirectToAction("Index", "Loging");
+
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                model.Token = Token;
+                model.idsub = idsub;
+                ViewData["UsuarioModel"] = model;
+                TempData["FehInicio"] = FehInicio;
+                TempData["FehFin"] = FehFin;
+                ViewData["Title"] = "Consulta";
+                controlFal = con.ConsultaGeneral(cveEmp, NumTicket, FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), FehFin.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
+                ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                ViewBag.CurrentPage = pagina;
+                return View("Consulta", controlFal);
             }
             catch (Exception e)
             {

@@ -42,20 +42,95 @@
                     <input type="hidden" value="@TempData["guardado"]" id="guarda" />
                 </div>
                 <br />
+                <form method="post" asp-action="BusConsul" asp-controller="ControlReparaciones">
+                    <div class="row justify-content-start align-items-start">
+                        <div class="col-md-2">
+                            @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
+                            {
+                                <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy/MM/dd")" id="FehInicio" name="FehInicio" />
+                            }else
+                            {
+                                <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")" id="FehInicio" name="FehInicio" />
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
+                            {
+                                <input type="text" class="form-control input-sm filtros" value="" id="FehFin" name="FehFin" />
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")" id="FehFin" name="FehFin" />
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control input-sm filtros" placeholder="# Ticket" id="NumTicket" name="NumTicket" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary carga" type="submit" id="btnBusFalReg">Buscar</button>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
+                            <input type="hidden" value="@usuarioModel.idsub" id="idsub" name="idsub" />
+                        </div>
+                    </div>
+                </form>
+                <br />
                 <div class="row justify-content-start align-items-start">
-                    <div class="col-md-2">
-                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")" id="FehInicio" name="FehInicio" />
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control input-sm filtros" value="@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")" id="FehFin" name="FehFin" />
-                    </div>
-                    <div class="col-md-2">
-                        <input type="number" class="form-control input-sm filtros" placeholder="# Ticket" id="NumTicket" name="NumTicket" />
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-primary carga" type="submit" id="btnBusFalReg">Buscar</button>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-12">
+                        <div class="container table-responsive container-fluid">
+                            <table class="table table-bordered table-sm ticket-porasigna-table">
+                                <caption>@ViewData["Title"]</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">NumTicket</th>
+                                        <th scope="col">Unidad</th>
+                                        <th scope="col">Alias</th>
+                                        <th scope="col">Remolque</th>
+                                        <th scope="col">TipoFalla</th>
+                                        <th scope="col">TipoTicket</th>
+                                        <th scope="col">Estatus</th>
+                                        <th scope="col">FechaCreacion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var solicitude in Model.Solicitudes)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@solicitude.NumTicket</td>
+                                            <td class="text-center">@solicitude.Unidad</td>
+                                            <td class="text-center">@solicitude.Alias</td>
+                                            <td class="text-center">@solicitude.Remolque</td>
+                                            <td class="text-center">@solicitude.TipoFalla</td>
+                                            <td class="text-center">@solicitude.TipoTicket</td>
+                                            <td class="text-center">@solicitude.Estatus</td>
+                                            <td class="text-center">@solicitude.FechaCreacion</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination">
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                <ul class="pagination pagination-sm">
+                                    @if (ViewBag.CurrentPage == @i)
+                                    {
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">@i</span>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="Consul?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&NumTicket=@Convert.ToInt16(@TempData["NumTicket"])&FehInicio=@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")&FehFin=@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
+                                                @i
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

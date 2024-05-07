@@ -3,11 +3,12 @@
     
     public class ControlFalla
     {
+        private List<Solicitude> zVarcio = new List<Solicitude>();
         public int TotalSolicitudes { get; set; }
         public int status { get; set; }
         public string? message { get; set; }
         public List<soliGeneral>? SolicitudesGenerales { get; set; }
-        public List<Solicitude>? Solicitudes { get; set; }
+        public List<Solicitude> Solicitudes { get { return zVarcio; }   set { zVarcio = value; }  }
         public List<TBCATTipoTicket>? TBCAT_TipoTicket { get; set; }
         public List<TBCATTipoFalla>? TBCAT_TipoFalla { get; set; }
         public List<TBCATTipoApoyo>? TBCAT_TipoApoyo { get; set; }

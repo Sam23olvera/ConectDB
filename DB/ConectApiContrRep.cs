@@ -82,14 +82,14 @@ namespace ConectDB.DB
             return controlFalla;
         }
 
-        public ControlFalla PrimerCarga(int CveEstatus, string empresa, string FehTick, int NumTicket, int TipoTicket, int TipoFalla, int CveUser, int UserFiltro, int IdSubmodulo, int pagina, int tamañomuestra)
+        public ControlFalla PrimerCarga(int CveEstatus, string empresa, string? FehTick, int NumTicket, int TipoTicket, int TipoFalla, int CveUser, int UserFiltro, int IdSubmodulo, int pagina, int tamañomuestra)
         {
             try
             {
                 jsdat = JObject.Parse("{\"data\":{\"bdCc\":5,\"bdSch\":\"dbo\",\"bdSp\":\"SPQRY_CatalogosMantto\"},\"filter\":[{\"property\": \"ClaveEmpresa\",\"value\":\"" + empresa + "\"}]}");
                 if (CarCata(jsdat, CveEstatus).status == 200)
                 {
-                    if (String.IsNullOrEmpty(FehTick))
+                    if (string.IsNullOrEmpty(FehTick))
                     {
                         FehTick = null;
                     }
@@ -161,5 +161,30 @@ namespace ConectDB.DB
                 return controlFalla;
             }
         }
+        public ControlFalla ConsultaGeneral(string cveEmp, int NumTicket, string FechaIni, string FechaFin, int pagina, int tamañomuestra) 
+        {
+            try 
+            {
+                jsdat = JObject.Parse("{\"data\":{\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_Reparaciones\"},\"filter\": [{\"property\": \"cveEmpresa\",\"value\":\"" + cveEmp + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"FechaIni\",\"value\": \"" + FechaIni + "\"},{\"property\":\"FechaFin\",\"value\": \"" + FechaFin + "\"}]}");
+                json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
+                data = json["data"] as JArray;
+                pagina = (pagina - 1) * tamañomuestra;
+                if (data != null && data.Count > 0)
+                {
+                    controlFalla = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString());
+                    controlFalla.TotalSolicitudes = controlFalla.Solicitudes.Count;
+                    controlFalla.Solicitudes = controlFalla.Solicitudes.Skip(pagina).Take(tamañomuestra).ToList();
+                    controlFalla.status = Convert.ToInt32(json["status"]);
+
+                }
+                return controlFalla;
+            }
+            catch (Exception e)
+            {
+                controlFalla.status = 400;
+                controlFalla.message = e.Message.ToString();
+                return controlFalla;
+            }
+}
     }
 }

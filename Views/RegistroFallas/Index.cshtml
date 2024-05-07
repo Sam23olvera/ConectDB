@@ -1,10 +1,8 @@
 ﻿@using ConectDB.Models;
-@* @model List<ModelFallas> *@
 @model ModelFallas
 @{
     ViewData["Title"] = "Registro Fallas";
     Layout = "~/Views/Shared/_Layout_RegistroFallas.cshtml";
-    string token = ViewData["Token"] as string;
     var usuarioModel = ViewData["UsuarioModel"] as UsuarioModel;
 }
 
