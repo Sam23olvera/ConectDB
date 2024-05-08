@@ -104,7 +104,7 @@
                                             <td class="text-center">@solicitude.TipoFalla</td>
                                             <td class="text-center">@solicitude.TipoTicket</td>
                                             <td class="text-center">@solicitude.Estatus</td>
-                                            <td class="text-center">@solicitude.FechaCreacion</td>
+                                            <td class="text-center">@solicitude.FechaCreacion?.ToString("yyyy/MM/dd HH:mm")</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -123,7 +123,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Consul?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&NumTicket=@Convert.ToInt16(@TempData["NumTicket"])&FehInicio=@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")&FehFin=@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="Consul?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&FehInicio=@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")&FehFin=@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

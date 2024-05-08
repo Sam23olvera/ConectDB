@@ -8,7 +8,7 @@ namespace ConectDB.DB
     {
         private readonly string url = "https://webportal.tum.com.mx/wsstmdv/api/execsp";
         private readonly DataApi hh = new DataApi();
-        ControlFalla controlFalla = new ControlFalla();
+        ControlFalla? controlFalla = new ControlFalla();
         JObject jsdat = new JObject();
         JObject json = new JObject();
         JArray? data = new JArray();
@@ -32,7 +32,6 @@ namespace ConectDB.DB
                 return controlFalla;
             }
         }
-
         private ControlFalla CarCata(JObject jsdat, int CveEstatus)
         {
             json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
@@ -41,35 +40,25 @@ namespace ConectDB.DB
             {
                 if (CveEstatus == 1)
                 {
-                    //TBCAT_TipoFalla
                     controlFalla.TBCAT_TipoFalla = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoFalla;
-                    //TBCAT_UserAsignaReparacion
                     controlFalla.TBCAT_UserAsignaReparacion = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_UserAsignaReparacion;
                 }
                 else if (CveEstatus == 2)
                 {
-                    //TBCAT_UserAsignaReparacion
                     controlFalla.TBCAT_UserAsignaReparacion = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_UserAsignaReparacion;
-                    //TBCAT_TipoClasificacion
                     controlFalla.TBCAT_TipoClasificacion = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoClasificacion;
-                    //TBCAT_TipoApoyo
                     controlFalla.TBCAT_TipoApoyo = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoApoyo;
                 }
                 else if (CveEstatus == 4)
                 {
-                    //TBCAT_TipoTicket
                     controlFalla.TBCAT_TipoTicket = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoTicket;
-                    //TBCAT_TipoFalla
                     controlFalla.TBCAT_TipoFalla = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoFalla;
                 }
                 else if (CveEstatus == 5)
                 {
-                    //TBCAT_TipoTicket
                     controlFalla.TBCAT_TipoTicket = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoTicket;
-                    //TBCAT_TipoFalla
                     controlFalla.TBCAT_TipoFalla = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString()).TBCAT_TipoFalla;
                 }
-                //controlFalla = JsonConvert.DeserializeObject<ControlFalla>(data[0].ToString());
                 controlFalla.status = Convert.ToInt32(json["status"]);
                 controlFalla.message = json["message"].ToString();
             }
@@ -128,7 +117,6 @@ namespace ConectDB.DB
         {
             try
             {
-                //jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPMTP_SeguimientoReparaciones\"},\"filter\": [{\"property\": \"claveControlReparaciones\",\"value\": " + NumTicket + "},{\"property\":\"ClaveEstatusNvo\",\"value\": " + modCveEstatus + "},{\"property\":\"CveUsuarioAsignado \",\"value\": " + UseAsigna + "},{\"property\": \"ClaveTipoApoyo\",\"value\": " + TipoApoyo + "},{\"property\":\"ClaveTipoClasificacion\",\"value\": " + TipoFalla + "},{\"property\":\"FechaHoraEstimadaReparacion\",\"value\": \"" + FechaHoraEstimadaReparacion + "\"},{\"property\":\"ComentariosCambioVto\", \"value\": \"" + ComentariosCambioVto + "\"},{\"property\":\"CveUsuarioMod\",\"value\": " + CveUser + "},{\"property\": \"Diesel\",\"value\": " + Diesel + " },{\"property\": \"Grua\",\"value\": " + Grua + "}]}");
                 jsdat = JObject.Parse("{\"data\": {\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPMTP_SeguimientoReparaciones\"},\"filter\": [{\"property\": \"claveControlReparaciones\",\"value\": " + NumTicket + "},{\"property\":\"ClaveEstatusNvo\",\"value\": " + modCveEstatus + "},{\"property\":\"CveUsuarioAsignado \",\"value\": " + UseAsigna + "},{\"property\": \"ClaveTipoApoyo\",\"value\": " + TipoApoyo + "},{\"property\":\"ClaveTipoClasificacion\",\"value\": " + TipoFalla + "},{\"property\":\"FechaHoraEstimadaReparacion\",\"value\": \"" + FechaHoraEstimadaReparacion + "\"},{\"property\":\"ComentariosCambioVto\", \"value\": \"" + ComentariosCambioVto + "\"},{\"property\":\"CveUsuarioMod\",\"value\": " + CveUser + "},{\"property\": \"Diesel\",\"value\": " + Diesel + " },{\"property\": \"Grua\",\"value\": " + Grua + "},{\"property\": \"DOT\",\"value\": \"" + Dot + "\"},{\"property\": \"MARCA\",\"value\": \"" + Marca + "\"},{\"property\": \"MEDIDA\",\"value\": \"" + Medida + "\"},{\"property\": \"POSICION\",\"value\": " + Posis + "}]}");
                 json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                 if (Convert.ToInt32(json["status"]) == 200)
@@ -161,11 +149,18 @@ namespace ConectDB.DB
                 return controlFalla;
             }
         }
-        public ControlFalla ConsultaGeneral(string cveEmp, int NumTicket, string FechaIni, string FechaFin, int pagina, int tamañomuestra) 
+        public ControlFalla ConsultaGeneral(string cveEmp, int NumTicket, string FechaIni, string FechaFin, int pagina, int tamañomuestra)
         {
-            try 
+            try
             {
-                jsdat = JObject.Parse("{\"data\":{\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_Reparaciones\"},\"filter\": [{\"property\": \"cveEmpresa\",\"value\":\"" + cveEmp + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"FechaIni\",\"value\": \"" + FechaIni + "\"},{\"property\":\"FechaFin\",\"value\": \"" + FechaFin + "\"}]}");
+                if (NumTicket == 0)
+                {
+                    jsdat = JObject.Parse("{\"data\":{\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_Reparaciones\"},\"filter\": [{\"property\": \"cveEmpresa\",\"value\":\"" + cveEmp + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"FechaIni\",\"value\": \"" + FechaIni + "\"},{\"property\":\"FechaFin\",\"value\": \"" + FechaFin + "\"}]}");
+                }
+                else 
+                {
+                    jsdat = JObject.Parse("{\"data\":{\"bdCc\": 5,\"bdSch\": \"dbo\",\"bdSp\": \"SPQRY_Reparaciones\"},\"filter\": [{\"property\": \"cveEmpresa\",\"value\":\"" + cveEmp + "\"},{\"property\":\"NumTicket\",\"value\":" + NumTicket + "},{\"property\":\"FechaIni\",\"value\": null },{\"property\":\"FechaFin\",\"value\": null }]}");
+                }
                 json = JObject.Parse(hh.HttpWebRequest("POST", url, jsdat));
                 data = json["data"] as JArray;
                 pagina = (pagina - 1) * tamañomuestra;
@@ -175,8 +170,10 @@ namespace ConectDB.DB
                     controlFalla.TotalSolicitudes = controlFalla.Solicitudes.Count;
                     controlFalla.Solicitudes = controlFalla.Solicitudes.Skip(pagina).Take(tamañomuestra).ToList();
                     controlFalla.status = Convert.ToInt32(json["status"]);
-
+                    controlFalla.message = json["message"].ToString();
                 }
+                controlFalla.status = Convert.ToInt32(json["status"]);
+                controlFalla.message = json["message"].ToString();
                 return controlFalla;
             }
             catch (Exception e)
@@ -185,6 +182,6 @@ namespace ConectDB.DB
                 controlFalla.message = e.Message.ToString();
                 return controlFalla;
             }
-}
+        }
     }
 }

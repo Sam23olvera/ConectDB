@@ -17,7 +17,46 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+$(document).ready(function () {
+    var ctx = document.getElementById('barChart').getContext('2d');
 
+    var barChart = new Chart(ctx, {
+        type: 'polarArea',
+        data: {
+            labels: [
+                $('#Name-Esta-1').val(),
+                $('#Name-Esta-2').val(),
+                $('#Name-Esta-3').val(),
+                $('#Name-Esta-4').val(),
+                $('#Name-Esta-5').val()
+            ],
+            datasets: [{
+                label: 'Reporte Mensual', // Etiqueta de la leyenda
+                data: [
+                    parseInt($('#Esta-1').val()),
+                    parseInt($('#Esta-2').val()),
+                    parseInt($('#Esta-3').val()),
+                    parseInt($('#Esta-4').val()),
+                    parseInt($('#Esta-5').val())
+                ], // Datos para las barras
+                //data: [12, 16, 7, 3, 14], // Datos para las barras
+                backgroundColor: [ 'rgb(255, 99, 132)','rgb(75, 192, 192)','rgb(255, 205, 86)','rgb(201, 203, 207)','rgb(54, 162, 235)']// color de cada uno de las rebanadas
+                //backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo de las barras
+                //borderColor: 'rgba(54, 162, 235, 1)', // Color del borde de las barras
+                //borderWidth: 1 // Ancho del borde de las barras
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true // Empezar en cero en el eje y
+                    }
+                }]
+            }
+        }
+    });
+});
 $(document).ready(function () {
     $('#FehTick').datetimepicker({
         //format: 'm/d/Y'
@@ -45,10 +84,10 @@ $(document).ready(function () {
             FehFin.value = fechaprueba.getFullYear() + '/' + (fechaprueba.getMonth() + 1) + '/' + fechaprueba.getDate();    
         }
     });
-    $('#FehFin').datetimepicker({
-        format: 'Y/m/d',
-        minDate: "-1M"
-    });
+    //$('#FehFin').datetimepicker({
+    //    format: 'Y/m/d',
+    //    minDate: "-1M"
+    //});
 });
 function cal(numTicket) {
     var Inp = "FechEstima-" + numTicket;

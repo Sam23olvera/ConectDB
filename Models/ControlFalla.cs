@@ -1,22 +1,28 @@
 ﻿namespace ConectDB.Models
 {
-    
+
     public class ControlFalla
     {
         private List<Solicitude> zVarcio = new List<Solicitude>();
-        public int TotalSolicitudes { get; set; }
-        public int status { get; set; }
+        private List<TBCATTipoFalla> zVaciTBCATFALLAS = new List<TBCATTipoFalla>();
+        private List<TBCATTipoTicket> zVaciTBCATTipoTicket = new List<TBCATTipoTicket>();
+        private List<TBCATTipoApoyo> ZVaciTBCATTipApoyo = new List<TBCATTipoApoyo>();
+        private List<TBCATTipoClasificacion> zVaciTBCATTipoClasificacion = new List<TBCATTipoClasificacion>();
+        private List<TBCATUserAsignaReparacion> zVaciTBCATUserAsignaReparacion = new List<TBCATUserAsignaReparacion>();
+        private List<soliGeneral> soliGenerals = new List<soliGeneral>();
+        public int? TotalSolicitudes { get; set; }
+        public int? status { get; set; }
         public string? message { get; set; }
-        public List<soliGeneral>? SolicitudesGenerales { get; set; }
-        public List<Solicitude> Solicitudes { get { return zVarcio; }   set { zVarcio = value; }  }
-        public List<TBCATTipoTicket>? TBCAT_TipoTicket { get; set; }
-        public List<TBCATTipoFalla>? TBCAT_TipoFalla { get; set; }
-        public List<TBCATTipoApoyo>? TBCAT_TipoApoyo { get; set; }
-        public List<TBCATTipoClasificacion>? TBCAT_TipoClasificacion { get; set; }
-        public List<TBCATUserAsignaReparacion>? TBCAT_UserAsignaReparacion { get; set; }
+        public List<soliGeneral> SolicitudesGenerales { get { return soliGenerals; } set { soliGenerals = value; } }
+        public List<Solicitude> Solicitudes { get { return zVarcio; } set { zVarcio = value; } }
+        public List<TBCATTipoTicket> TBCAT_TipoTicket { get { return zVaciTBCATTipoTicket; } set { zVaciTBCATTipoTicket = value; } }
+        public List<TBCATTipoFalla> TBCAT_TipoFalla { get { return zVaciTBCATFALLAS; } set { zVaciTBCATFALLAS = value; } }
+        public List<TBCATTipoApoyo> TBCAT_TipoApoyo { get { return ZVaciTBCATTipApoyo; } set { ZVaciTBCATTipApoyo = value; } }
+        public List<TBCATTipoClasificacion> TBCAT_TipoClasificacion { get { return zVaciTBCATTipoClasificacion; } set { zVaciTBCATTipoClasificacion = value; } }
+        public List<TBCATUserAsignaReparacion> TBCAT_UserAsignaReparacion { get { return zVaciTBCATUserAsignaReparacion; } set { zVaciTBCATUserAsignaReparacion = value; } }
 
     }
-    public class TBCATUserAsignaReparacion 
+    public class TBCATUserAsignaReparacion
     {
         public int idusuario { get; set; }
         public string? nombre { get; set; }
