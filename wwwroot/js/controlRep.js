@@ -17,6 +17,70 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+$(document).ready(function () {
+    document.getElementById('archivo').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        var mimeType = file.type;
+
+        // Verificar si el archivo es una imagen o un video
+        if (mimeType.includes('image') || mimeType.includes('video')) {
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                var image = new Image();
+
+                image.onload = function () {
+                    var width = this.width;
+                    var height = this.height;
+
+                    // Comprimir el archivo si es una imagen
+                    if (mimeType.includes('image')) {
+                        new Compressor(file, {
+                            quality: 0.6, // Calidad de compresión (valor entre 0 y 1)
+                            maxWidth: 800, // Ancho máximo de la imagen comprimida
+                            maxHeight: 600, // Altura máxima de la imagen comprimida
+                            success: function (result) {
+                                // Aquí puedes hacer algo con el archivo comprimido, como subirlo al servidor
+                                alert('Archivo comprimido:', result);
+                                var formData = new FormData();
+                                formData.append('file', result);
+
+                                fetch('//webportal/ImagTest', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            alert('Archivo subido exitosamente');
+                                        } else {
+                                            alert('Error al subir el archivo');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        alert('Error de red:', error);
+                                    });
+                            }
+                        });
+                    } else {
+                        // No es una imagen, puedes hacer algo diferente aquí
+                        alert('No es una imagen');
+                    }
+                };
+
+                image.src = reader.result;
+            };
+
+            reader.readAsDataURL(file);
+
+        } else {
+            // No es una imagen ni un video, puedes mostrar un mensaje de error o hacer algo diferente aquí
+            alert('Formato de archivo no compatible');
+        }
+    });
+});
+
+
 $(document).ready(function () {
     var ctx = document.getElementById('barChart').getContext('2d');
 

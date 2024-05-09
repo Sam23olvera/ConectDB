@@ -185,7 +185,12 @@ body {
     height: 25pt;
 }
 
-
+.inputUploadFile {
+    display: block;
+    height: 30pt;
+    width: 200pt;
+    font-size: small;
+}
 
 .ComeMotvAsig {
     display: block;
@@ -277,9 +282,14 @@ body {
         font-weight: bold;
         color: #0d6efd;
     }
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
 
 .custom-input {
-    
     border: none;
     border-bottom: 1px solid black; /* Color de las líneas abajo (blanco en este caso) */
     background-color: transparent; /* Fondo transparente */
