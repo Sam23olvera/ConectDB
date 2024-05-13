@@ -1,5 +1,5 @@
 ﻿window.onload = function () {
-    document.getElementById("spinner-overlay").style.display = "none"; 
+    document.getElementById("spinner-overlay").style.display = "none";
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -17,70 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
-$(document).ready(function () {
-    document.getElementById('archivo').addEventListener('change', function (event) {
-        var file = event.target.files[0];
-        var mimeType = file.type;
-
-        // Verificar si el archivo es una imagen o un video
-        if (mimeType.includes('image') || mimeType.includes('video')) {
-            var reader = new FileReader();
-
-            reader.onload = function () {
-                var image = new Image();
-
-                image.onload = function () {
-                    var width = this.width;
-                    var height = this.height;
-
-                    // Comprimir el archivo si es una imagen
-                    if (mimeType.includes('image')) {
-                        new Compressor(file, {
-                            quality: 0.6, // Calidad de compresión (valor entre 0 y 1)
-                            maxWidth: 800, // Ancho máximo de la imagen comprimida
-                            maxHeight: 600, // Altura máxima de la imagen comprimida
-                            success: function (result) {
-                                // Aquí puedes hacer algo con el archivo comprimido, como subirlo al servidor
-                                alert('Archivo comprimido:', result);
-                                var formData = new FormData();
-                                formData.append('file', result);
-
-                                fetch('//webportal/ImagTest', {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                    .then(response => {
-                                        if (response.ok) {
-                                            alert('Archivo subido exitosamente');
-                                        } else {
-                                            alert('Error al subir el archivo');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        alert('Error de red:', error);
-                                    });
-                            }
-                        });
-                    } else {
-                        // No es una imagen, puedes hacer algo diferente aquí
-                        alert('No es una imagen');
-                    }
-                };
-
-                image.src = reader.result;
-            };
-
-            reader.readAsDataURL(file);
-
-        } else {
-            // No es una imagen ni un video, puedes mostrar un mensaje de error o hacer algo diferente aquí
-            alert('Formato de archivo no compatible');
-        }
-    });
-});
-
-
 $(document).ready(function () {
     var ctx = document.getElementById('barChart').getContext('2d');
 
@@ -104,7 +40,7 @@ $(document).ready(function () {
                     parseInt($('#Esta-5').val())
                 ], // Datos para las barras
                 //data: [12, 16, 7, 3, 14], // Datos para las barras
-                backgroundColor: [ 'rgb(255, 99, 132)','rgb(75, 192, 192)','rgb(255, 205, 86)','rgb(201, 203, 207)','rgb(54, 162, 235)']// color de cada uno de las rebanadas
+                backgroundColor: ['rgb(255, 99, 132)', 'rgb(75, 192, 192)', 'rgb(255, 205, 86)', 'rgb(201, 203, 207)', 'rgb(54, 162, 235)']// color de cada uno de las rebanadas
                 //backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo de las barras
                 //borderColor: 'rgba(54, 162, 235, 1)', // Color del borde de las barras
                 //borderWidth: 1 // Ancho del borde de las barras
@@ -145,7 +81,7 @@ $(document).ready(function () {
 
             var FehFin = document.getElementById('FehFin');
             let fechaprueba = new Date(endDate);
-            FehFin.value = fechaprueba.getFullYear() + '/' + (fechaprueba.getMonth() + 1) + '/' + fechaprueba.getDate();    
+            FehFin.value = fechaprueba.getFullYear() + '/' + (fechaprueba.getMonth() + 1) + '/' + fechaprueba.getDate();
         }
     });
     //$('#FehFin').datetimepicker({
@@ -168,8 +104,7 @@ function calendario(numTicket) {
     });
 }
 
-function llenarDiesel(numTick)
-{
+function llenarDiesel(numTick) {
     var nameChkDisel = 'ChkDisel-' + numTick;
     var txtnameCheckDisel = 'CheckDisel-' + numTick;
     var ChkDisel = document.getElementById(nameChkDisel);
@@ -184,8 +119,7 @@ function llenarDiesel(numTick)
     }
 }
 
-function llenarGrua(numTick)
-{
+function llenarGrua(numTick) {
     var nameChkGrua = 'ChkGrua-' + numTick;
     var txtnameCheckGrua = 'CheckGrua-' + numTick;
     var ChkGrua = document.getElementById(nameChkGrua);
@@ -197,6 +131,84 @@ function llenarGrua(numTick)
         txtCheckGrua.value = 0;
     }
 }
+
+$(document).ready(function () {
+    const input = document.getElementById('Files');
+    const image0 = document.getElementById('image-selected-0');
+    const image1 = document.getElementById('image-selected-1');
+    const image2 = document.getElementById('image-selected-2');
+    const image3 = document.getElementById('image-selected-3');
+    const image4 = document.getElementById('image-selected-4');
+
+    input.addEventListener("change", (e) => {
+        console.log(e.target.files[0]);
+
+        const Imag0 = new FileReader();
+        Imag0.readAsDataURL(e.target.files[0]);
+        Imag0.onload = (e) => {
+            e.preventDefault();
+            image0.setAttribute('src', e.target.result)
+        };
+
+        const Imag1 = new FileReader();
+        Imag1.readAsDataURL(e.target.files[1]);
+        Imag1.onload = (e) => {
+            e.preventDefault();
+            image1.setAttribute('src', e.target.result)
+        };
+
+        const Imag2 = new FileReader();
+        Imag2.readAsDataURL(e.target.files[2]);
+        Imag2.onload = (e) => {
+            e.preventDefault();
+            image2.setAttribute('src', e.target.result)
+        };
+
+        const Imag3 = new FileReader();
+        Imag3.readAsDataURL(e.target.files[3]);
+        Imag3.onload = (e) => {
+            e.preventDefault();
+            image3.setAttribute('src', e.target.result)
+        };
+
+        const Imag4 = new FileReader();
+        Imag4.readAsDataURL(e.target.files[4]);
+        Imag4.onload = (e) => {
+            e.preventDefault();
+            image4.setAttribute('src', e.target.result)
+        };
+
+    });
+
+});
+
+//$(document).ready(function () {
+//    const input = document.getElementById('Files');
+//    const previewContainer = document.getElementById('preview-container');
+
+//    input.addEventListener("change", (e) => {
+//        previewContainer.innerHTML = ''; // Limpiar contenedor previo
+
+//        const files = e.target.files;
+//        console.log(e.target.files.length);
+//        for (let i = 0; i < files.length; i++) {
+//            const file = files[i];
+//            const reader = new FileReader();
+//            reader.onload = function (e) {
+//                const previewElement = document.createElement('div');
+//                previewElement.classList.add('preview-item');
+//                const preview = document.createElement('img');
+//                preview.src = e.target.result;
+//                preview.alt = file.name;
+//                previewElement.appendChild(preview);
+//                previewContainer.appendChild(previewElement);
+//            };
+
+//            // Leer archivo como URL de datos
+//            reader.readAsDataURL(file);
+//        }
+//    });
+//});
 
 $(document).ready(function () {
     var checkIni = document.getElementById('checkIni');
@@ -213,14 +225,12 @@ $(document).ready(function () {
     if (checkFinValue === 'true') {
         checkFin.checked = true;
     }
-    else
-    {
+    else {
         checkFin.checked = false;
     }
 
 });
-function mostrarllantitas(numTicket)
-{
+function mostrarllantitas(numTicket) {
     var selectReclas_Asigna = "Reclas_Asigna-" + numTicket
     var Reclas_Asigna = document.getElementById(selectReclas_Asigna);
     var mostTab = '.llantitas-' + numTicket;
@@ -235,8 +245,7 @@ function mostrarllantitas(numTicket)
     }
 }
 
-function asignarTicket(numTicket)
-{
+function asignarTicket(numTicket) {
     var selectId = "select-" + numTicket;
     var selectElement = document.getElementById(selectId);
     var valorSeleccionado = selectElement.value;
@@ -245,8 +254,7 @@ function asignarTicket(numTicket)
     // Asignar la nueva URL al enlace del botón
     botonAsigna.setAttribute("href", nuevaURL);
 }
-function pinta()
-{
+function pinta() {
 
     var MenIni = document.getElementById('MenIni');
     var MenFal = document.getElementById('MenFal');
@@ -308,14 +316,12 @@ function mostrar(NumTicket) {
     }
 }
 
-function Exporta()
-{
+function Exporta() {
     var Export = document.getElementById('ExportExcel');
     Export.value = "";
     Export.value = true;
 }
-function Buscar()
-{
+function Buscar() {
     var Export = document.getElementById('ExportExcel');
     Export.value = "";
     Export.value = false;
@@ -333,13 +339,11 @@ function finalizar(cveEmp, ClavUsu, ClavCtRep) {
         mensaje = 'No selecciono una Falla';
         toastr.error(mensaje);
     }
-    else if (obsMat.value === "")
-    {
+    else if (obsMat.value === "") {
         mensaje = 'Describa la Falla';
         toastr.error(mensaje);
     }
-    else
-    {
+    else {
         var url = new URL('https://webportal.tum.com.mx/wsstmdv/api/execspxor');
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -394,7 +398,7 @@ function finalizar(cveEmp, ClavUsu, ClavCtRep) {
                 }
                 else {
                     FechaFini.value = obj.data[0].Respuesta[0].FechaFinalizacion;
-                    DesFalrel.disabled = true;                    
+                    DesFalrel.disabled = true;
                     selTBCAT_TipoFalla.disabled = true;
                     btnFinal.disabled = true;
                     obsMat.disabled = true;

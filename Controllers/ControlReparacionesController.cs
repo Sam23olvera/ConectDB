@@ -1,6 +1,9 @@
 ﻿using ConectDB.DB;
 using ConectDB.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace ConectDB.Controllers
 {
@@ -929,6 +932,62 @@ namespace ConectDB.Controllers
                 ViewData["Title"] = "Indicadores";
                 controlFal = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
                 return View("Indica", controlFal);
+            }
+            catch (Exception e)
+            {
+                msj.status = 400;
+                msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
+                return View("Error", msj);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SubirArchivo(List<IFormFile> archivos, int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
+        {
+            try
+            {
+                foreach (var archivo in archivos)
+                {
+                    if (archivo != null && archivo.Length > 0)
+                    {
+                        var extension = Path.GetExtension(archivo.FileName).ToLower();
+
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\GMI\\" + NumTicket.ToString());
+
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+
+                        string fileName = NumTicket.ToString() + "_" + Guid.NewGuid().ToString() + extension;
+
+                        string fileNameWithPath = Path.Combine(path, fileName);
+
+                        if (extension == ".jpg" || extension == ".jpeg" || extension == ".png")
+                        {
+                            using (var image = Image.Load(archivo.OpenReadStream()))
+                            {
+                                image.Mutate(x => x.Resize(800, 600));
+                                image.Save(fileNameWithPath);
+                            }
+                        }
+                        else if (extension == ".mp4" || extension == ".avi" || extension == ".mov")
+                        {
+                            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                            {
+                                await archivo.CopyToAsync(stream);
+                            }
+                        }
+                        else
+                        {
+                            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                            {
+                                archivo.CopyTo(stream);
+                            }
+                        }
+                    }
+                }
+
+                return RedirectToAction("Repara", new { pagina, Token, cveEmp, Buscar, FehTick, TipTicket, TipFalla, NumTicket, idsub });
             }
             catch (Exception e)
             {

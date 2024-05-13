@@ -20,6 +20,7 @@
         public List<TBCATTipoApoyo> TBCAT_TipoApoyo { get { return ZVaciTBCATTipApoyo; } set { ZVaciTBCATTipApoyo = value; } }
         public List<TBCATTipoClasificacion> TBCAT_TipoClasificacion { get { return zVaciTBCATTipoClasificacion; } set { zVaciTBCATTipoClasificacion = value; } }
         public List<TBCATUserAsignaReparacion> TBCAT_UserAsignaReparacion { get { return zVaciTBCATUserAsignaReparacion; } set { zVaciTBCATUserAsignaReparacion = value; } }
+        public string RutaArchivo { get; set; }
 
     }
     public class TBCATUserAsignaReparacion
