@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Security.Policy;
 
 namespace ConectDB.Controllers
 {
@@ -851,6 +854,10 @@ namespace ConectDB.Controllers
                 }
                 else
                 {
+                    for (int i = 0; i < controlFal.Solicitudes.Count; i++)
+                    {
+                        controlFal.Solicitudes[i].PathArchivo = ObtenerArchivosPorTicket(controlFal.Solicitudes[i].NumTicket);
+                    }
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
                 }
@@ -894,6 +901,10 @@ namespace ConectDB.Controllers
                 if (controlFal.status == 200)
                 {
                     if (controlFal.TotalSolicitudes == null) { controlFal.TotalSolicitudes = 0; }
+                    for (int i = 0; i < controlFal.Solicitudes.Count; i++)
+                    {
+                        controlFal.Solicitudes[i].PathArchivo = ObtenerArchivosPorTicket(controlFal.Solicitudes[i].NumTicket);
+                    }
                     ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
                     ViewBag.CurrentPage = pagina;
                     TempData["FehInicio"] = FehInicio;
@@ -917,36 +928,29 @@ namespace ConectDB.Controllers
                 return View("Error", msj);
             }
         }
-
-        public IActionResult Indica(int cveEmp, string Token, int idsub)
+        private List<archivo> ObtenerArchivosPorTicket(int numTicket)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
-                    return RedirectToAction("Index", "Loging");
+            List<archivo> listarch = new List<archivo>();
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\GMI\\" + numTicket.ToString());
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
-                ViewData["UsuarioModel"] = model;
-                ViewData["Title"] = "Indicadores";
-                controlFal = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
-                return View("Indica", controlFal);
-            }
-            catch (Exception e)
+            if (Directory.Exists(path))
             {
-                msj.status = 400;
-                msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
-                return View("Error", msj);
+                string[] fileNames = Directory.GetFiles(path);
+
+                foreach (var fileName in fileNames)
+                {
+                    listarch.Add(new archivo { carpet = numTicket, rutFile = numTicket.ToString() + "/" + Path.GetFileName(fileName) });
+                }
             }
+            return listarch;
         }
 
         [HttpPost]
-        public async Task<ActionResult> SubirArchivo(List<IFormFile> archivos, int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
+        public async Task<ActionResult> SubirArchivo(List<IFormFile> Files, int pagina, string Token, string cveEmp, DateTime FehInicio, DateTime FehFin, int NumTicket, int idsub)
         {
             try
             {
-                foreach (var archivo in archivos)
+                foreach (var archivo in Files)
                 {
                     if (archivo != null && archivo.Length > 0)
                     {
@@ -986,8 +990,30 @@ namespace ConectDB.Controllers
                         }
                     }
                 }
+                return RedirectToAction("Consul", new { Token, cveEmp, NumTicket, FehInicio, FehFin, idsub, pagina });
+            }
+            catch (Exception e)
+            {
+                msj.status = 400;
+                msj.message = "Error de Conexion | Erorr Desconocido Notificar a Sistemas Desarrollo" + e.Message.ToString();
+                return View("Error", msj);
+            }
+        }
 
-                return RedirectToAction("Repara", new { pagina, Token, cveEmp, Buscar, FehTick, TipTicket, TipFalla, NumTicket, idsub });
+        public IActionResult Indica(int cveEmp, string Token, int idsub)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
+                    return RedirectToAction("Index", "Loging");
+
+                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                model.Token = Token;
+                model.idsub = idsub;
+                ViewData["UsuarioModel"] = model;
+                ViewData["Title"] = "Indicadores";
+                controlFal = con.PrimerCarga_sin_catlog(0, model.Data[0]?.EmpS[0].cveEmp.ToString(), model.Data[0].idus.ToString(), DateTime.Now.ToString("yyyy-MM-dd"), 0, idsub);
+                return View("Indica", controlFal);
             }
             catch (Exception e)
             {

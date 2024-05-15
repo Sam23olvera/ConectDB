@@ -16,7 +16,6 @@
     <PackageReference Include="System.IO" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Imagenes\" />
     <Folder Include="wwwroot\GMI\" />
   </ItemGroup>
 </Project>

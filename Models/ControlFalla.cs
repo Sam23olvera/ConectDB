@@ -20,7 +20,13 @@
         public List<TBCATTipoApoyo> TBCAT_TipoApoyo { get { return ZVaciTBCATTipApoyo; } set { ZVaciTBCATTipApoyo = value; } }
         public List<TBCATTipoClasificacion> TBCAT_TipoClasificacion { get { return zVaciTBCATTipoClasificacion; } set { zVaciTBCATTipoClasificacion = value; } }
         public List<TBCATUserAsignaReparacion> TBCAT_UserAsignaReparacion { get { return zVaciTBCATUserAsignaReparacion; } set { zVaciTBCATUserAsignaReparacion = value; } }
-        public string RutaArchivo { get; set; }
+        
+
+    }
+    public class archivo 
+    {
+        public int carpet { get; set; }
+        public string rutFile { get; set; }
 
     }
     public class TBCATUserAsignaReparacion
@@ -37,6 +43,7 @@
     }
     public class Solicitude
     {
+        private List<archivo> RutArchi = new List<archivo>();
         public int Cantidad { get; set; }
         public string? Descripcion { get; set; }
         public int ClaveEstatus { get; set; }
@@ -78,5 +85,6 @@
         public string? MEDIDA { get; set; }
         public int? POSICION { get; set; }
         public int ClaveTipoFalla { get; set; }
+        public List<archivo> PathArchivo { get { return RutArchi; } set { RutArchi = value; } }
     }
 }

@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 $(document).ready(function () {
     var ctx = document.getElementById('barChart').getContext('2d');
 
@@ -132,6 +133,38 @@ function llenarGrua(numTick) {
     }
 }
 
+function mostrarModal(numTicket) {
+    var modal = document.getElementById('evidenciasModal-' + numTicket);
+    $(modal).modal('show');
+}
+$(document).ready(function () {
+
+    $(".owl-carousel").owlCarousel({
+        items: 1,
+        loop: true,
+        margin: 10,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        autoplayHoverPause: true
+    });
+    //$('.owl-carousel').owlCarousel({
+    //    items: 1,
+    //    merge: true,
+    //    loop: true,
+    //    margin: 10,
+    //    video: true,
+    //    lazyLoad: true,
+    //    center: true,
+    //    responsive: {
+    //        480: {
+    //            items: 2
+    //        },
+    //        600: {
+    //            items: 4
+    //        }
+    //    }
+    //});
+});
 $(document).ready(function () {
     const input = document.getElementById('Files');
     const image0 = document.getElementById('image-selected-0');
@@ -142,7 +175,8 @@ $(document).ready(function () {
 
     input.addEventListener("change", (e) => {
         console.log(e.target.files[0]);
-
+        var carouselExampleInterval = document.getElementById('carouselExampleInterval');
+        carouselExampleInterval.style.display = "block";
         const Imag0 = new FileReader();
         Imag0.readAsDataURL(e.target.files[0]);
         Imag0.onload = (e) => {
