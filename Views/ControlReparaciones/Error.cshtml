@@ -7,6 +7,10 @@
 <main role="main">
     <div class="container-fluid ">
         <div class="row">
+            <input type="hidden" value="@TempData["Mensaje"]" id="mensaje" />
+            <input type="hidden" value="@TempData["guardado"]" id="guarda" />
+        </div>
+        <div class="row">
             <h1 style="color:white">ERROR </h1>
             <h2 style="color:white">@Model.status</h2>
                 <h2 style="color:white">@Model.message</h2>

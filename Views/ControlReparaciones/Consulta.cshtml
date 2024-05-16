@@ -29,7 +29,7 @@
                     <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Consulta</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link seccion">Indicadores</a>
+                    <a asp-action="Indica" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Indicadores</a>
                 </li>
             </ul>
         </div>
@@ -112,27 +112,6 @@
                                             <td class="text-center">@solicitude.TipoTicket</td>
                                             <td class="text-center">@solicitude.Estatus</td>
                                             <td class="text-center">@solicitude.FechaCreacion?.ToString("yyyy/MM/dd HH:mm")</td>
-                                            @* <td class="text-center">
-                                                <div class="continer">
-                                                    <div class="col-2">
-                                                        <label class="custom-file-upload inputUploadFile">
-                                                            <input type="file" name="Files" id="Files" accept="image/*, video/*" multiple="5" />
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-8">
-                                                        <div class="owl-carousel owl-theme" id="carousel2">
-                                                        </div>
-                                                        <input type="hidden" value="@usuarioModel.Token" id="Tok" name="Tok" />
-                                                        <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
-                                                        <input type="hidden" value="@usuarioModel.idsub" id="idsub" name="idsub" />
-                                                    </div>
-                                                    <div class="col-2">
-                                                        <button type="submit" class="btn btn-light btn-sm">
-                                                            <img src="~/imag/sub_imag.png" alt="Agregar" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td> *@
                                             <td class="text-center">
                                                 <div class="continer">
                                                     <div class="col-4">
@@ -147,6 +126,29 @@
                                                         <input type="hidden" value="@usuarioModel.Token" id="Tok" name="Tok" />
                                                         <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
                                                         <input type="hidden" value="@usuarioModel.idsub" id="idsub" name="idsub" />
+                                                            @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
+                                                            {
+                                                            <input type="hidden" value="@DateTime.Now.ToString("yyyy/MM/dd")" name="FehInicio" />
+                                                            }
+                                                            else
+                                                            {
+                                                            <input type="hidden" value="@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")" name="FehInicio" />
+                                                            }
+                                                            @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
+                                                            {
+                                                            <input type="hidden" value="" name="FehFin" />
+                                                            }
+                                                            else
+                                                            {
+                                                            <input type="hidden" value="@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")" name="FehFin" />
+                                                            }
+                                                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                                            {
+                                                                @if (ViewBag.CurrentPage == @i)
+                                                                {
+                                                                <input type="hidden" value="@i" name="pagina" />
+                                                                }
+                                                            }
                                                     </div>
                                                     <div class="col-2">
                                                         <button type="submit" class="btn btn-light btn-sm">
@@ -166,12 +168,11 @@
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="evidenciasModalLabel-@solicitude.NumTicket">Evidencias del Ticket @solicitude.NumTicket</h5>
-                                                                <button id="CloseX" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <button id="CloseX" type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                @* <div class="owl-carousel owl-theme"> *@
                                                                 <div class="owl-carousel owl-theme" id="carousel1">
                                                                     @foreach (var evidencia in solicitude.PathArchivo)
                                                                     {
@@ -184,7 +185,7 @@
                                                                         else if (evidencia.exte == ".mp4" || evidencia.exte == ".avi" || evidencia.exte == ".mov")
                                                                         {
                                                                             <div class="item-video">
-                                                                                <video controls>
+                                                                                <video autoplay controls style="width: 80%; height: 80%; margin-right: 10px; margin-bottom: 10px;">
                                                                                     <source src="~/GMI/@evidencia.rutFile" type="video/mp4">
                                                                                     Tu navegador no soporta el elemento de video.
                                                                                 </video>
@@ -194,7 +195,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" id="Close" data-dismiss="modal">Cerrar</button>
+                                                                @* <button type="button" class="btn btn-secondary" id="Close" data-dismiss="modal">Cerrar</button> *@
                                                             </div>
                                                         </div>
                                                     </div>

@@ -7,6 +7,7 @@ using SixLabors.ImageSharp.Processing;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Policy;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 
 namespace ConectDB.Controllers
 {
@@ -871,7 +872,8 @@ namespace ConectDB.Controllers
                 return View("Error", msj);
             }
         }
-        [HttpPost]
+        [HttpGet, HttpPost]
+        //[HttpPost]
         public IActionResult BusConsul(string Token, DateTime FehInicio, DateTime FehFin, int NumTicket, string cveEmp, int idsub, int pagina)
         {
             try
@@ -990,7 +992,9 @@ namespace ConectDB.Controllers
                         }
                     }
                 }
-                return RedirectToAction("Consul", new { Token, cveEmp, NumTicket, FehInicio, FehFin, idsub, pagina });
+                TempData["guardado"] = "Se subieron correctamente las imagenes";
+                return RedirectToAction("BusConsul", new { Token, FehInicio, FehFin, NumTicket = 0, cveEmp, idsub, pagina });
+                //return RedirectToAction("Consul", new { Token = "", cveEmp, NumTicket = 0, FehInicio, FehFin = DateTime.MinValue, idsub, pagina });
             }
             catch (Exception e)
             {

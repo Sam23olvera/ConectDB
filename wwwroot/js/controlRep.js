@@ -57,6 +57,7 @@ $(document).ready(function () {
             }
         }
     });
+
 });
 $(document).ready(function () {
     $('#FehTick').datetimepicker({
@@ -137,36 +138,19 @@ function mostrarModal(numTicket) {
     var modal = document.getElementById('evidenciasModal-' + numTicket);
     $(modal).modal('show');
 }
-$(document).ready(function () {
 
-    //$(".owl-carousel").owlCarousel({
-    //    items: 1,
-    //    merge: true,
-    //    loop: true,
-    //    margin: 10,
-    //    autoplay: true,
-    //    autoplayTimeout: 5000,
-    //    autoplayHoverPause: true,
-    //    center: true,
-    //    video: true
-    //});
-    //$('.owl-carousel').owlCarousel({
-    //    items: 1,
-    //    merge: true,
-    //    loop: true,
-    //    margin: 10,
-    //    video: true,
-    //    lazyLoad: true,
-    //    center: true,
-    //    responsive: {
-    //        480: {
-    //            items: 2
-    //        },
-    //        600: {
-    //            items: 4
-    //        }
-    //    }
-    //});
+$(document).ready(function () {
+    $(".owl-carousel").owlCarousel({
+        items: 1,
+        merge: true,
+        loop: true,
+        margin: 10,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        autoplayHoverPause: true,
+        center: true,
+        video: true
+    });
 });
 
 $(document).ready(function () {
@@ -182,153 +166,35 @@ $(document).ready(function () {
                 const src = event.target.result;
                 // Verifica si es un video o una imagen
                 if (file.type.startsWith('image')) {
-                    carousel.append('<div class="item"><img src="' + src + '" alt="Imagen" class="img-fluid"></div>');
+                    carousel.append('<div class="item"><img src="' + src + '" alt="Imagen" style = "width: 40%; height: 80%; margin-right: 10px; margin-bottom: 10px;"></div>');
                 } else if (file.type.startsWith('video')) {
-                    carousel.append('<div class="item"><video controls><source src="' + src + '" type="' + file.type + '">Tu navegador no soporta el elemento de video.</video></div>');
+                    carousel.append('<div class="item-video"><video autoplay controls style = "width: 40%; height: 40%; margin-right: 10px; margin-bottom: 10px;" ><source src="' + src + '" type="' + file.type + '">Tu navegador no soporta el elemento de video.</video></div>');
                 }
             };
         });
         carousel.owlCarousel({
             items: 1,
-            merge: true,
             loop: true,
             margin: 10,
             autoplay: true,
             autoplayTimeout: 5000,
             autoplayHoverPause: true,
             center: true,
-            video: true
+            video: true,
+            responsive:{
+                0:{
+                    items:1
+                },
+                600:{
+                    items:2
+                },
+                1000:{
+                    items:3
+                }
+            }
         });
     });
 });
-
-//$(document).ready(function () {
-//    $(".owl-carousel").owlCarousel({
-//        items: 1,
-//        merge: true,
-//        loop: true,
-//        margin: 10,
-//        autoplay: true,
-//        autoplayTimeout: 5000,
-//        autoplayHoverPause: true,
-//        center: true,
-//        video: true
-//    });
-
-//    const input = document.getElementById('Files');
-//    //const owlCarousel = $('.owl-carousel');
-//    const owlCarousel2 = $('#carousel2');
-//    input.addEventListener("change", (e) => {
-//        console.log(e.target.files[0]);
-//        owlCarousel2.empty(); // Vacía el carousel antes de agregar nuevos elementos
-//        const filesArray = Array.from(e.target.files);
-//        filesArray.forEach((file) => {
-//            const reader = new FileReader();
-//            reader.readAsDataURL(file);
-//            reader.onload = (event) => {
-//                const src = event.target.result;
-//                // Verifica si es un video o una imagen
-//                if (file.type.startsWith('image')) {
-//                    owlCarousel2.append('<div class="item"><img src="' + src + '" alt="Evidencias" class="img-fluid"></div>');
-//                } else if (file.type.startsWith('video')) {
-//                    owlCarousel2.append('<div class="item-video"><video controls><source src="' + src + '" type="' + file.type + '">Tu navegador no soporta el elemento de video.</video></div>');
-//                }
-//            };
-//        });
-//        // Inicializa el carousel de Owl Carousel
-//        //owlCarousel2.owlCarousel({
-//        //    items: 1,
-//        //    merge: true,
-//        //    loop: true,
-//        //    margin: 10,
-//        //    autoplay: true,
-//        //    autoplayTimeout: 5000,
-//        //    autoplayHoverPause: true,
-//        //    center: true,
-//        //    video: true
-//        //});
-//    });
-//});
-
-
-//$(document).ready(function () {
-//    const input = document.getElementById('Files');
-//    const image0 = document.getElementById('image-selected-0');
-//    const image1 = document.getElementById('image-selected-1');
-//    const image2 = document.getElementById('image-selected-2');
-//    const image3 = document.getElementById('image-selected-3');
-//    const image4 = document.getElementById('image-selected-4');
-
-//    input.addEventListener("change", (e) => {
-//        console.log(e.target.files[0]);
-//        var carouselExampleInterval = document.getElementById('carouselExampleInterval');
-//        carouselExampleInterval.style.display = "block";
-//        const Imag0 = new FileReader();
-//        Imag0.readAsDataURL(e.target.files[0]);
-//        Imag0.onload = (e) => {
-//            e.preventDefault();
-//            image0.setAttribute('src', e.target.result)
-//        };
-
-//        const Imag1 = new FileReader();
-//        Imag1.readAsDataURL(e.target.files[1]);
-//        Imag1.onload = (e) => {
-//            e.preventDefault();
-//            image1.setAttribute('src', e.target.result)
-//        };
-
-//        const Imag2 = new FileReader();
-//        Imag2.readAsDataURL(e.target.files[2]);
-//        Imag2.onload = (e) => {
-//            e.preventDefault();
-//            image2.setAttribute('src', e.target.result)
-//        };
-
-//        const Imag3 = new FileReader();
-//        Imag3.readAsDataURL(e.target.files[3]);
-//        Imag3.onload = (e) => {
-//            e.preventDefault();
-//            image3.setAttribute('src', e.target.result)
-//        };
-
-//        const Imag4 = new FileReader();
-//        Imag4.readAsDataURL(e.target.files[4]);
-//        Imag4.onload = (e) => {
-//            e.preventDefault();
-//            image4.setAttribute('src', e.target.result)
-//        };
-
-//    });
-
-//});
-
-//$(document).ready(function () {
-//    const input = document.getElementById('Files');
-//    const previewContainer = document.getElementById('preview-container');
-
-//    input.addEventListener("change", (e) => {
-//        previewContainer.innerHTML = ''; // Limpiar contenedor previo
-
-//        const files = e.target.files;
-//        console.log(e.target.files.length);
-//        for (let i = 0; i < files.length; i++) {
-//            const file = files[i];
-//            const reader = new FileReader();
-//            reader.onload = function (e) {
-//                const previewElement = document.createElement('div');
-//                previewElement.classList.add('preview-item');
-//                const preview = document.createElement('img');
-//                preview.src = e.target.result;
-//                preview.alt = file.name;
-//                previewElement.appendChild(preview);
-//                previewContainer.appendChild(previewElement);
-//            };
-
-//            // Leer archivo como URL de datos
-//            reader.readAsDataURL(file);
-//        }
-//    });
-//});
 
 $(document).ready(function () {
     var checkIni = document.getElementById('checkIni');
