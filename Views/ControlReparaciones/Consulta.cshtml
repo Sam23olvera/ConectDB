@@ -177,9 +177,21 @@
                                                                 <div class="owl-carousel owl-theme">
                                                                     @foreach (var evidencia in solicitude.PathArchivo)
                                                                     {
-                                                                        <div class="item">
-                                                                            <img src="~/GMI/@evidencia.rutFile" alt="Evidencia" class="img-fluid">
-                                                                        </div>
+                                                                        @if (evidencia.exte == ".jpg" || evidencia.exte == ".jpeg" || evidencia.exte == ".png")
+                                                                        {
+                                                                            <div class="item">
+                                                                                <img src="~/GMI/@evidencia.rutFile" alt="Evidencia" class="img-fluid" />
+                                                                            </div>
+                                                                        }
+                                                                        else if (evidencia.exte == ".mp4" || evidencia.exte == ".avi" || evidencia.exte == ".mov")
+                                                                        {
+                                                                            <div class="item-video">
+                                                                                <video controls>
+                                                                                    <source src="~/GMI/@evidencia.rutFile" type="video/mp4">
+                                                                                    Tu navegador no soporta el elemento de video.
+                                                                                </video>
+                                                                            </div>
+                                                                        }
                                                                     }
                                                                 </div>
                                                             </div>

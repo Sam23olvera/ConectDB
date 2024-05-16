@@ -939,7 +939,7 @@ namespace ConectDB.Controllers
 
                 foreach (var fileName in fileNames)
                 {
-                    listarch.Add(new archivo { carpet = numTicket, rutFile = numTicket.ToString() + "/" + Path.GetFileName(fileName) });
+                    listarch.Add(new archivo { carpet = numTicket, exte = Path.GetExtension(fileName).ToString() , rutFile = numTicket.ToString() + "/" + Path.GetFileName(fileName) });
                 }
             }
             return listarch;

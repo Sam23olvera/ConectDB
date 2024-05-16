@@ -26,6 +26,7 @@
     public class archivo 
     {
         public int carpet { get; set; }
+        public string exte { get; set; }
         public string rutFile { get; set; }
 
     }

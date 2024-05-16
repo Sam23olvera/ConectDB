@@ -339,3 +339,14 @@ body {
     width: 150px; 
     height: 150px;
 }
+
+/*.modal-body .item img {
+    max-width: 50%;
+    height: 50%;
+}*/
+
+/* Estilos para los videos */
+.modal-body .item-video video {
+    max-width: 10dp;
+    height: 10dp;
+}

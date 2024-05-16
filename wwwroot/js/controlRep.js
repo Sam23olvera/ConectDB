@@ -141,11 +141,14 @@ $(document).ready(function () {
 
     $(".owl-carousel").owlCarousel({
         items: 1,
+        merge: true,
         loop: true,
         margin: 10,
         autoplay: true,
         autoplayTimeout: 5000,
-        autoplayHoverPause: true
+        autoplayHoverPause: true,
+        center: true,
+        video: true
     });
     //$('.owl-carousel').owlCarousel({
     //    items: 1,
