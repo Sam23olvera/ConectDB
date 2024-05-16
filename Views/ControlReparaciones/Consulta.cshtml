@@ -99,7 +99,7 @@
                                 <tbody>
                                     @foreach (var solicitude in Model.Solicitudes)
                                     {
-                                        <tr>
+                                        <tr id="fila-@solicitude.NumTicket">
                                             <form asp-action="SubirArchivo" method="post" enctype="multipart/form-data">
                                             <td class="text-center">
                                                     @solicitude.NumTicket
@@ -112,40 +112,37 @@
                                             <td class="text-center">@solicitude.TipoTicket</td>
                                             <td class="text-center">@solicitude.Estatus</td>
                                             <td class="text-center">@solicitude.FechaCreacion?.ToString("yyyy/MM/dd HH:mm")</td>
-                                            <td class="text-center">
+                                            @* <td class="text-center">
                                                 <div class="continer">
-                                                    <div class="col-4">
+                                                    <div class="col-2">
                                                         <label class="custom-file-upload inputUploadFile">
                                                             <input type="file" name="Files" id="Files" accept="image/*, video/*" multiple="5" />
                                                         </label>
                                                     </div>
+                                                    <div class="col-8">
+                                                        <div class="owl-carousel owl-theme" id="carousel2">
+                                                        </div>
+                                                        <input type="hidden" value="@usuarioModel.Token" id="Tok" name="Tok" />
+                                                        <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
+                                                        <input type="hidden" value="@usuarioModel.idsub" id="idsub" name="idsub" />
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button type="submit" class="btn btn-light btn-sm">
+                                                            <img src="~/imag/sub_imag.png" alt="Agregar" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td> *@
+                                            <td class="text-center">
+                                                <div class="continer">
+                                                    <div class="col-4">
+                                                        <label class="custom-file-upload inputUploadFile">
+                                                            <input type="file" name="Files" id="Files-@solicitude.NumTicket" accept="image/*, video/*" multiple="5" />
+                                                        </label>
+                                                    </div>
                                                     <div class="col-6">
-                                                        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="display:none">
-                                                            <div class="carousel-inner">
-                                                                <div class="carousel-item active" data-bs-interval="10000">
-                                                                    <img alt="Imagen-0" id="image-selected-0" />
-                                                                </div>
-                                                                <div class="carousel-item" data-bs-interval="1000">
-                                                                    <img alt="Imagen-1" id="image-selected-1" />
-                                                                </div>
-                                                                <div class="carousel-item">
-                                                                    <img alt="Imagen-2" id="image-selected-2" />
-                                                                </div>
-                                                                <div class="carousel-item">
-                                                                    <img alt="Imagen-3" id="image-selected-3" />
-                                                                </div>
-                                                                <div class="carousel-item">
-                                                                    <img alt="Imagen-4" id="image-selected-4" />
-                                                                </div>
-                                                            </div>
-                                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-                                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                                <span class="visually-hidden">Previous</span>
-                                                            </button>
-                                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-                                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                                <span class="visually-hidden">Next</span>
-                                                            </button>
+                                                        <div id="carousel-@solicitude.NumTicket" class="owl-carousel owl-theme">
+                                                            <!-- Carousel items -->
                                                         </div>
                                                         <input type="hidden" value="@usuarioModel.Token" id="Tok" name="Tok" />
                                                         <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
@@ -174,7 +171,8 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <div class="owl-carousel owl-theme">
+                                                                @* <div class="owl-carousel owl-theme"> *@
+                                                                <div class="owl-carousel owl-theme" id="carousel1">
                                                                     @foreach (var evidencia in solicitude.PathArchivo)
                                                                     {
                                                                         @if (evidencia.exte == ".jpg" || evidencia.exte == ".jpeg" || evidencia.exte == ".png")
