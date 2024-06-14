@@ -73,15 +73,15 @@ $(document).ready(function () {
     $('#FechEstima').datetimepicker({
         format: 'm/d/Y H:i'
     });
-    $('#FehInicio').datetimepicker({
+    $('#FehFin').datetimepicker({
         format: 'Y/m/d',
         maxDate: "1M",
         onClose: function (selectedDate) {
             var endDate = new Date(selectedDate);
-            endDate.setDate(endDate.getDate() + 31);
-            $('#FehFin').datetimepicker('option', 'maxDate', endDate);
+            endDate.setDate(endDate.getDate() - 31);
+            $('#FehInicio').datetimepicker('option', 'maxDate', endDate);
 
-            var FehFin = document.getElementById('FehFin');
+            var FehFin = document.getElementById('FehInicio');
             let fechaprueba = new Date(endDate);
             FehFin.value = fechaprueba.getFullYear() + '/' + (fechaprueba.getMonth() + 1) + '/' + fechaprueba.getDate();
         }

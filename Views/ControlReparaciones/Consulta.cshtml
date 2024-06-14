@@ -47,7 +47,7 @@
                         <div class="col-md-2">
                             @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
                             {
-                                <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy/MM/dd")" id="FehInicio" name="FehInicio" />
+                                <input type="text" class="form-control input-sm filtros" value="" id="FehInicio" name="FehInicio" />
                             }
                             else
                             {
@@ -57,7 +57,7 @@
                         <div class="col-md-2">
                             @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
                             {
-                                <input type="text" class="form-control input-sm filtros" value="" id="FehFin" name="FehFin" />
+                                <input type="text" class="form-control input-sm filtros" value="@DateTime.Now.ToString("yyyy/MM/dd")" id="FehFin" name="FehFin" />
                             }
                             else
                             {
@@ -151,7 +151,7 @@
                                                             }
                                                     </div>
                                                     <div class="col-2">
-                                                        <button type="submit" class="btn btn-light btn-sm">
+                                                        <button type="submit" class="btn btn-light btn-sm carga" >
                                                             <img src="~/imag/sub_imag.png" alt="Agregar" />
                                                         </button>
                                                     </div>

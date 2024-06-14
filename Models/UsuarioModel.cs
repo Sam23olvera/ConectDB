@@ -2,7 +2,8 @@ namespace ConectDB.Models
 {
     public class UsuarioModel
     {
-        public string? Token { get; set; }
+        private string Tok = string.Empty;
+        public string Token { get { return Tok; } set { Tok = value; } }
         public string? XT { get; set; }
         public int Status { get; set; }
         public bool Success { get; set; }

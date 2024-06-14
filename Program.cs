@@ -33,22 +33,14 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-app.MapControllerRoute(
-    name: "Guardar",
-    pattern: "{area:exists}/{controller=Guardar}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "Menu",
-    pattern: "{area:exists}/{controller=Menu}/{action=Index}/{id?}");
-//name: "default",
-//pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "Loging",
     pattern: "{controller=Loging}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-    name:"default",
-    pattern: "{controller=Loging}/{action=Index}");
+//app.MapControllerRoute(
+//    name: "Presenta",
+//    pattern: "{controller=Presenta}/{action=Index}/{id?}");
+
 
 app.Run();

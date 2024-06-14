@@ -96,6 +96,7 @@ namespace ConectDB.DB
                     else
                     {
                         controlFalla.Solicitudes = new List<Solicitude>();
+                        controlFalla.TotalSolicitudes = controlFalla.Solicitudes.Count;
                         controlFalla.status = Convert.ToInt32(json["status"]);
                         controlFalla.message = json["message"].ToString();
                     }

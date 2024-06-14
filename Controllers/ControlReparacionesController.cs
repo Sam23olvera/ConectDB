@@ -1,13 +1,8 @@
 ﻿using ConectDB.DB;
 using ConectDB.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Security.Policy;
-using Microsoft.CodeAnalysis.FlowAnalysis;
 
 namespace ConectDB.Controllers
 {
@@ -47,7 +42,7 @@ namespace ConectDB.Controllers
             }
         }
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PorAsig(int pagina, string Token, string cveEmp, int Buscar, int NumTicket, int ClaveTipoFalla, DateTime FehTick, int idsub)
+        public IActionResult PorAsig(int pagina, string Token, string cveEmp, DateTime FehTick, int idsub)
         {
             try
             {
@@ -58,53 +53,24 @@ namespace ConectDB.Controllers
                 model.Token = Token;
                 model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
-                if (Buscar == 0)
+                
+                if (FehTick == null || FehTick == DateTime.MinValue)
                 {
-                    if (FehTick == null || FehTick == DateTime.MinValue)
-                    {
-                        FehTick = DateTime.Now;
-                    }
-                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (controlFal.status == 200)
-                    {
-                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        ViewBag.CurrentPage = pagina;
-                        TempData["Buscar"] = 0;
-                    }
-                    else
-                    {
-                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
-                    }
-
+                    FehTick = DateTime.Now;
                 }
-                else if (Convert.ToInt32(Buscar) == 1)
+                controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, 0, 0, idsub, pagina, pageSize);
+                if (controlFal.status == 200)
                 {
-                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (controlFal.status == 200)
-                    {
-                        ViewBag.totalpages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        ViewBag.currentpage = pagina;
-                        TempData["Buscar"] = 1;
-                        TempData["NumTicket"] = NumTicket;
-                        TempData["ClaveTipoFalla"] = ClaveTipoFalla;
-                        TempData["FehTick"] = FehTick;
-                    }
-                    else
-                    {
-                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
-                    }
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                    ViewBag.CurrentPage = pagina;
+                    TempData["Buscar"] = 0;
                 }
-                if (controlFal.status == 400)
+                else
                 {
-                    if (controlFal.Solicitudes.Count != 0)
-                    {
-                        msj.status = controlFal.status;
-                        msj.message = controlFal.message;
-                        return View("Error", msj);
-                    }
+                    TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                 }
-                TempData["FehTick"] = FehTick;
                 ViewData["Title"] = "Por Asignar";
+                TempData["FehTick"] = FehTick;
                 return View("PorAsignar", controlFal);
             }
             catch (Exception e)
@@ -116,7 +82,7 @@ namespace ConectDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult BuscarPorAsig(string Token, string cveEmp, int NumTicket, int ClaveTipoFalla, DateTime FehTick, int pagina, int idsub)
+        public IActionResult BuscarPorAsig(string Token, string cveEmp, int NumTicket, int ClaveTipoFalla, DateTime? FehTick, int pagina, int idsub)
         {
             try
             {
@@ -129,11 +95,11 @@ namespace ConectDB.Controllers
                 ViewData["UsuarioModel"] = model;
                 if (NumTicket == 0)
                 {
-                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick?.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, ClaveTipoFalla, 0, 0, idsub, pagina, pageSize);
                 }
                 else
                 {
-                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, ClaveTipoFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, 0, 0, 0, idsub, pagina, pageSize);
                 }
                 if (controlFal.status == 200)
                 {
@@ -161,9 +127,9 @@ namespace ConectDB.Controllers
                 {
                     if (controlFal.Solicitudes.Count != 0)
                     {
-                        msj.status = controlFal.status;
-                        msj.message = controlFal.message;
-                        return View("Error", msj);
+                        TempData["Mensaje"] = controlFal.status + ' ' +controlFal.message;
+                        return RedirectToAction("PorAsig", new { pagina, Token, cveEmp, FehTick, idsub });
+                        //return View("Error", msj);
                     }
                 }
                 ViewData["Title"] = "Por Asignar";
@@ -207,19 +173,21 @@ namespace ConectDB.Controllers
                 }
                 else
                 {
-                    controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehAsignatiempo.ToString("yyyy-MM-dd"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (controlFal.status == 200)
-                    {
-                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        ViewBag.CurrentPage = pagina;
-                        TempData["Buscar"] = 0;
-                        TempData["FehTick"] = FehAsignatiempo;
-                        TempData["guardado"] = controlFal.status + "¡ \r\n" + controlFal.message + "\r\n!";
-                    }
-                    else
-                    {
-                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
-                    }
+                    return RedirectToAction("PorAsig", new { pagina, Token, cveEmp, DateTime.Now,idsub,  });
+                    //PorAsig(int pagina, string Token, string cveEmp, DateTime FehTick, int idsub)
+                    //controlFal = con.PrimerCarga(1, model.Data[0].EmpS[0].cveEmp.ToString(), FehAsignatiempo.ToString("yyyy-MM-dd"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    //if (controlFal.status == 200)
+                    //{
+                    //    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                    //    ViewBag.CurrentPage = pagina;
+                    //    TempData["Buscar"] = 0;
+                    //    TempData["FehTick"] = FehAsignatiempo;
+                    //    TempData["guardado"] = controlFal.status + "¡ \r\n" + controlFal.message + "\r\n!";
+                    //}
+                    //else
+                    //{
+                    //    TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
+                    //}
                 }
                 if (controlFal.status != 200)
                 {
@@ -274,19 +242,7 @@ namespace ConectDB.Controllers
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
-                    if (controlFal.status != 200)
-                    {
-                        TempData["Mensaje"] = "¡" + controlFal.status + " " + controlFal.message + "!";
-                    }
-                    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                    ViewBag.CurrentPage = pagina;
-                    TempData["Buscar"] = 1;
-                    TempData["UsAsignado"] = UsAsignado;
-                    TempData["FehTick"] = FehTick;
-                    TempData["NumTicket"] = NumTicket;
-                    ViewData["Title"] = "Asignados";
-                    return View("Asignados", controlFal);
+                    return RedirectToAction("BuscarAsignados", new { Token, cveEmp, UsAsignado, NumTicket, FehTick, pagina, idsub });
                 }
                 if (controlFal.status != 200)
                 {
@@ -307,7 +263,7 @@ namespace ConectDB.Controllers
                 return View("Error", msj);
             }
         }
-        [HttpPost]
+        [HttpGet, HttpPost]
         public IActionResult BuscarAsignados(string Token, string cveEmp, int UsAsignado, int NumTicket, DateTime FehTick, int pagina, int idsub)
         {
             try
@@ -500,25 +456,27 @@ namespace ConectDB.Controllers
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (controlFal.status == 200)
-                    {
-                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        ViewBag.CurrentPage = pagina;
-                        TempData["Buscar"] = 1;
-                        TempData["NumTicket"] = NumTicket;
-                        ViewData["ClaveTipoFalla"] = TipFalla;
-                        ViewData["TipTicket"] = TipTicket;
-                    }
-                    if (controlFal.status != 200)
-                    {
-                        if (controlFal.Solicitudes.Count != 0)
-                        {
-                            msj.status = controlFal.status;
-                            msj.message = controlFal.message;
-                            return View("Error", msj);
-                        }
-                    }
+                    return RedirectToAction("BuscarReparacion", new { Token, cveEmp, FehTick, TipTicket, TipFalla, NumTicket, pagina, pageSize , idsub });
+                    //(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
+                    //controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    //if (controlFal.status == 200)
+                    //{
+                    //    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                    //    ViewBag.CurrentPage = pagina;
+                    //    TempData["Buscar"] = 1;
+                    //    TempData["NumTicket"] = NumTicket;
+                    //    ViewData["ClaveTipoFalla"] = TipFalla;
+                    //    ViewData["TipTicket"] = TipTicket;
+                    //}
+                    //if (controlFal.status != 200)
+                    //{
+                    //    if (controlFal.Solicitudes.Count != 0)
+                    //    {
+                    //        msj.status = controlFal.status;
+                    //        msj.message = controlFal.message;
+                    //        return View("Error", msj);
+                    //    }
+                    //}
                 }
                 ViewData["Title"] = "Reparacion";
                 return View("Reparacion", controlFal);
@@ -531,7 +489,7 @@ namespace ConectDB.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet,HttpPost]
         public IActionResult BuscarReparacion(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
         {
             try
@@ -709,38 +667,40 @@ namespace ConectDB.Controllers
                 }
                 else if (Convert.ToInt32(Buscar) == 1)
                 {
-                    if (FehTick == null || FehTick == DateTime.MinValue)
-                    {
-                        FehTick = DateTime.Now;
-                        TempData["FehTick"] = FehTick;
-                    }
-                    else
-                    {
-                        TempData["FehTick"] = FehTick;
-                    }
-                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    return RedirectToAction("BuscarFinalizados", new { Token, cveEmp, FehTick, TipTicket, TipFalla, NumTicket, pagina, pageSize , idsub });
+                    //BuscarFinalizados(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
+                    //if (FehTick == null || FehTick == DateTime.MinValue)
+                    //{
+                    //    FehTick = DateTime.Now;
+                    //    TempData["FehTick"] = FehTick;
+                    //}
+                    //else
+                    //{
+                    //    TempData["FehTick"] = FehTick;
+                    //}
+                    //controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
                     //oLista = con.Primer_crga_con_Catalogos(5, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, FehTick.ToString("yyyy-MM-dd HH:mm:ss"), model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    if (controlFal.status == 200)
-                    {
-                        ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        ViewBag.CurrentPage = pagina;
-                        TempData["Buscar"] = 1;
-                        ViewData["TipTicket"] = TipTicket;
-                        ViewData["TipFalla"] = TipFalla;
-                    }
-                    else
-                    {
-                        TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
-                    }
+                    //if (controlFal.status == 200)
+                    //{
+                    //    ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
+                    //    ViewBag.CurrentPage = pagina;
+                    //    TempData["Buscar"] = 1;
+                    //    ViewData["TipTicket"] = TipTicket;
+                    //    ViewData["TipFalla"] = TipFalla;
+                    //}
+                    //else
+                    //{
+                    //    TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
+                    //}
                 }
-                if (controlFal.status > 400)
-                {
-                    msj.status = controlFal.status;
-                    msj.message = controlFal.message;
-                    return View("Error", msj);
-                }
-                else
-                {
+                //if (controlFal.status > 400)
+                //{
+                //    msj.status = controlFal.status;
+                //    msj.message = controlFal.message;
+                //    return View("Error", msj);
+                //}
+                //else
+                //{
                     if (controlFal.Solicitudes.Count == 0)
                     {
                         TempData["Mensaje"] = controlFal.status + " !" + controlFal.message + "¡";
@@ -752,7 +712,7 @@ namespace ConectDB.Controllers
                         ViewData["Title"] = "Finalizado";
                         return View("Finalizado", controlFal);
                     }
-                }
+                //}
             }
             catch (Exception e)
             {
@@ -761,7 +721,7 @@ namespace ConectDB.Controllers
                 return View("Error", msj);
             }
         }
-        [HttpPost]
+        [HttpGet,HttpPost]
         public IActionResult BuscarFinalizados(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
         {
             try
@@ -941,7 +901,7 @@ namespace ConectDB.Controllers
 
                 foreach (var fileName in fileNames)
                 {
-                    listarch.Add(new archivo { carpet = numTicket, exte = Path.GetExtension(fileName).ToString() , rutFile = numTicket.ToString() + "/" + Path.GetFileName(fileName) });
+                    listarch.Add(new archivo { carpet = numTicket, exte = Path.GetExtension(fileName).ToString(), rutFile = numTicket.ToString() + "/" + Path.GetFileName(fileName) });
                 }
             }
             return listarch;
