@@ -368,3 +368,13 @@ FodyWeavers.xsd
 /wwwroot/favicon.ico
 /wwwroot/imag/baner_camiones.png
 /wwwroot/js/site.js
+/Controllers/FlotaSepomexController.cs
+/Controllers/AgenciasController.cs
+/Controllers/HeadCountController.cs
+/Controllers/ReclutadorController.cs
+/Controllers/PuestosController.cs
+/Controllers/TiposdeOperaciónController.cs
+/Controllers/UnidaddeNegocioController.cs
+/Controllers/ViajesSepomexController.cs
+/Views/ControlReparaciones/Index.cshtml
+/ConectDB.csproj
