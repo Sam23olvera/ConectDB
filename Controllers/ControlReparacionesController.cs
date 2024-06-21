@@ -582,15 +582,13 @@ namespace ConectDB.Controllers
                     TempData["FehTick"] = FehTick;
                 }
                 controlFal = con.CargarCat(cveEmp, 5);
-                if (controlFal.status == 200)
-                {
-                    ViewData["Title"] = "Finalizado";
+                
                     return View("Finalizado", controlFal);
-                }
-                else {
-                    ViewData["Title"] = "Finalizado";
-                    return View("Finalizado", controlFal);
-                }
+                //}
+                //else {
+                //    ViewData["Title"] = "Finalizado";
+                //    return View("Finalizado", controlFal);
+                //}
             }
             catch (Exception e)
             {
