@@ -126,22 +126,11 @@
                                                         <input type="hidden" value="@usuarioModel.Token" id="Tok" name="Tok" />
                                                         <input type="hidden" value="@usuarioModel.Data[0].EmpS[0].cveEmp" id="cveEmp" name="cveEmp" />
                                                         <input type="hidden" value="@usuarioModel.idsub" id="idsub" name="idsub" />
-                                                            @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
-                                                            {
-                                                            <input type="hidden" value="@DateTime.Now.ToString("yyyy/MM/dd")" name="FehInicio" />
-                                                            }
-                                                            else
-                                                            {
+                                                           
                                                             <input type="hidden" value="@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")" name="FehInicio" />
-                                                            }
-                                                            @if (@TempData["FehInicio"] == null || @Convert.ToDateTime(@TempData["FehInicio"]) == DateTime.MinValue)
-                                                            {
-                                                            <input type="hidden" value="" name="FehFin" />
-                                                            }
-                                                            else
-                                                            {
+                                                            
                                                             <input type="hidden" value="@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")" name="FehFin" />
-                                                            }
+                                                            
                                                             @for (int i = 1; i <= ViewBag.TotalPages; i++)
                                                             {
                                                                 @if (ViewBag.CurrentPage == @i)
@@ -168,7 +157,10 @@
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="evidenciasModalLabel-@solicitude.NumTicket">Evidencias del Ticket @solicitude.NumTicket</h5>
-                                                                <button id="CloseX" type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                                                @* <button id="CloseX" type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button> *@
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CloseModal('@solicitude.NumTicket')">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
@@ -219,7 +211,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Consul?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&FehInicio=@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")&FehFin=@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="BusConsul?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&FehInicio=@Convert.ToDateTime(@TempData["FehInicio"]).ToString("yyyy/MM/dd")&FehFin=@Convert.ToDateTime(@TempData["FehFin"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

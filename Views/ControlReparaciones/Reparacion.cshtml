@@ -149,7 +149,7 @@
                                                     <textarea class="form-control ComeMotvAsig" aria-label="With textarea" id="ComeMotvAsig" name="ComeMotvAsig"></textarea>
                                                 </td>
                                                 <td class="text-center">
-                                                    <button type="submit" id="asigna" class="btn btn-sm">
+                                                    <button type="submit" id="asigna" class="btn btn-sm ">
                                                         <img src="~/imag/cheque.png" alt="Agregar" />
                                                     </button>
                                                 </td>
@@ -333,7 +333,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Repara?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&TipTicket=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="BuscarReparacion?pagina=@i&k=si&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&TipTicket=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>

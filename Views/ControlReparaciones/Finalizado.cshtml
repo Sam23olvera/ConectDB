@@ -68,7 +68,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control filtros" placeholder="# Ticket" id="NumTicket" />
+                            <input type="number" class="form-control filtros" placeholder="# Ticket" id="NumTicket" name="NumTicket" />
                         </div>
                         <div class="col-md-2">
                             <button class="btn btn-primary carga" type="submit" id="btnBusFalReg">Buscar</button>
@@ -288,7 +288,7 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="Fin?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&TipTicket=@TempData["TipTicket"]&TipFalla=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="BuscarFinalizados?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@TempData["Buscar"]&NumTicket=@TempData["NumTicket"]&TipTicket=@TempData["TipTicket"]&TipFalla=@TempData["TipTicket"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
                                                 @i
                                             </a>
                                         </li>
