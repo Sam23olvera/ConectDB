@@ -75,20 +75,30 @@ $(document).ready(function () {
     });
     $('#FehFin').datetimepicker({
         format: 'Y/m/d',
-        maxDate: "1M",
+        timepicker: false,
+        maxDate: new Date(),
         onClose: function (selectedDate) {
             var endDate = new Date(selectedDate);
             endDate.setDate(endDate.getDate() - 31);
-            $('#FehInicio').datetimepicker('option', 'maxDate', endDate);
 
-            var FehFin = document.getElementById('FehInicio');
-            let fechaprueba = new Date(endDate);
-            FehFin.value = fechaprueba.getFullYear() + '/' + (fechaprueba.getMonth() + 1) + '/' + fechaprueba.getDate();
+            $('#FehInicio').datetimepicker('setOptions', {
+                maxDate: endDate
+            });
+
+            var formattedDate = endDate.getFullYear() + '/' +
+                ('0' + (endDate.getMonth() + 1)).slice(-2) + '/' +
+                ('0' + endDate.getDate()).slice(-2);
+
+            $('#FehInicio').val(formattedDate);
         }
     });
-    //$('#FehFin').datetimepicker({
+
+    //$('#FehInicio').datetimepicker({
     //    format: 'Y/m/d',
-    //    minDate: "-1M"
+    //    timepicker: false,
+    //    onShow: function () {
+    //        $(this).datetimepicker('hide');
+    //    }
     //});
 });
 function cal(numTicket) {
@@ -138,7 +148,10 @@ function mostrarModal(numTicket) {
     var modal = document.getElementById('evidenciasModal-' + numTicket);
     $(modal).modal('show');
 }
-
+function CloseModal(numTicket) {
+    var modal = document.getElementById('evidenciasModal-' + numTicket);
+    $(modal).modal('hide');
+}
 $(document).ready(function () {
     $(".owl-carousel").owlCarousel({
         items: 1,
