@@ -11,10 +11,10 @@ namespace ConectDB.Controllers
         private string url = "https://webportal.tum.com.mx/wsstmdv/api/accesyst";
         DataApi data = new DataApi();
         ConectApi con = new ConectApi();
-        ConectMenuUser menu = new ConectMenuUser();
+        //ConectMenuUser menu = new ConectMenuUser();
         UsuarioModel model = new UsuarioModel();
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public ActionResult Index(int cveEmp, string XT)
+        public ActionResult Index(int cveEmp, string XT, string menu)
         {
             try
             {
@@ -24,7 +24,7 @@ namespace ConectDB.Controllers
                 string desusuario = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]);
                 string descontraseña = UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]);
 
-                model = menu.RegresMenu(desusuario, descontraseña, cveEmp, url, XT);
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 model.Token = XT;
                 ViewData["UsuarioModel"] = model;
                 var oLista = con.ListarRutas();

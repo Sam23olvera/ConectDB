@@ -1,9 +1,11 @@
 ﻿@using ConectDB.Models;
 @model ControlFalla;
+@using Newtonsoft.Json;
 @{
     string? title = ViewData["Title"] as string;
     Layout = "~/Views/Shared/_Layout_ControlReparaciones.cshtml";
     var usuarioModel = ViewData["UsuarioModel"] as UsuarioModel;
+    string userDataJson = JsonConvert.SerializeObject(usuarioModel);
 }
 <div class="container-fluid">
     <br />
@@ -14,19 +16,19 @@
                     <a asp-action="Index" asp-controller="ControlReparaciones" asp-route-XT="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link active seccion carga">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Por Asignar</a>
+                    <a asp-action="PorAsig" asp-controller="ControlReparaciones" asp-route-menu="@userDataJson" asp-route-idsub="@usuarioModel.idsub" class="nav-link activo carga">Por Asignar</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Asignados</a>
+                    <a asp-action="Asignacion" asp-controller="ControlReparaciones" asp-route-menu="@userDataJson" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Asignados</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">En Reparación</a>
+                    <a asp-action="Repara" asp-controller="ControlReparaciones" asp-route-menu="@userDataJson" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">En Reparación</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
+                    <a asp-action="Fin" asp-controller="ControlReparaciones" asp-route-menu="@userDataJson" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Finalizado</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Consulta</a>
+                    <a asp-action="Consul" asp-controller="ControlReparaciones" asp-route-menu="@userDataJson" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Consulta</a>
                 </li>
                 <li class="nav-item">
                     <a asp-action="Indica" asp-controller="ControlReparaciones" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" class="nav-link seccion carga">Indicadores</a>
@@ -64,9 +66,10 @@
                             <button class="btn btn-primary carga" type="submit" id="btnBusFalReg carga">Buscar</button>
                         </div>
                     </div>
-                    <input type="hidden" name="idsub" id="idsub" value="@usuarioModel.idsub" />
+                    @* <input type="hidden" name="idsub" id="idsub" value="@usuarioModel.idsub" />
                     <input type="hidden" name="Token" id="Token" value="@usuarioModel.Token" />
-                    <input type="hidden" name="cveEmp" id="cveEmp" value="@usuarioModel.Data[0].EmpS?[0].cveEmp" />
+                    <input type="hidden" name="cveEmp" id="cveEmp" value="@usuarioModel.Data[0].EmpS?[0].cveEmp" /> *@
+                    <input type="hidden" name="UsDat" id="UsDat" value="@userDataJson" />
                 </form>
 
                 <br />
@@ -91,7 +94,7 @@
                                     @foreach (var solicitude in Model.Solicitudes)
                                     {
                                         <tr>
-                                            <form id="buscarForm" method="post" asp-controller="ControlReparaciones" asp-action="AsignacionTicket" asp-route-Token="@usuarioModel.Token" asp-route-cveEmp="@usuarioModel.Data[0].EmpS[0].cveEmp" asp-route-idsub="@usuarioModel.idsub" asp-route-ticket="@solicitude.NumTicket" asp-route-idsub="@usuarioModel.idsub">
+                                            <form id="buscarForm" method="post" asp-controller="ControlReparaciones" asp-action="AsignacionTicket" asp-route-UsDat="@userDataJson" asp-route-ticket="@solicitude.NumTicket" asp-route-idsub="@usuarioModel.idsub">
                                             <td scope="col" class="text-center">
                                                 <p>@solicitude.NumTicket</p>
                                                 <input type="hidden" value="@solicitude.NumTicket" id="NumTicket" name="NumTicket" />
@@ -279,10 +282,15 @@
                                     else
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" href="BuscarPorAsig?pagina=@i&Token=@usuarioModel.Token&cveEmp=@usuarioModel.Data[0].EmpS[0].cveEmp&Buscar=@Convert.ToInt16(@TempData["Buscar"])&NumTicket=@Convert.ToInt16(@TempData["NumTicket"])&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")&idsub=@usuarioModel.idsub">
+                                            <a class="page-link" href="@Url.Action("BuscarPorAsig", new { UsDat = userDataJson, NumTicket = TempData["NumTicket"], ClaveTipoFalla = TempData["ClaveTipoFalla"], FehTick = Convert.ToDateTime(TempData["FehTick"]).ToString("yyyy/MM/dd"), pagina = i })">
                                                 @i
                                             </a>
                                         </li>
+                                        @* <li class="page-item">
+                                            <a class="page-link" href="BuscarPorAsig?pagina=@i&UsDat&=@userDataJson.ToString()&NumTicket=@Convert.ToInt16(@TempData["NumTicket"])&ClaveTipoFalla=@TempData["ClaveTipoFalla"]&FehTick=@Convert.ToDateTime(@TempData["FehTick"]).ToString("yyyy/MM/dd")">
+                                                @i
+                                            </a>
+                                        </li> *@
                                     }
                                 </ul>
                             }

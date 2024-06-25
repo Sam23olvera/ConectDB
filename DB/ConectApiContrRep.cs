@@ -173,22 +173,6 @@ namespace ConectDB.DB
                 {
                     controlFalla.status = Convert.ToInt32(json["status"]);
                     controlFalla.message = json["message"].ToString();
-
-                    //controlFalla = PrimerCarga(CveEstatus, empresa, Fecha, 0, 0, 0, CveUser, 0, idsub, pagina, tamañomuestra);
-                    //jsdat = JObject.Parse("{\"data\":{\"bdCc\":5,\"bdSch\":\"dbo\",\"bdSp\":\"SPQRY_CatalogosMantto\"},\"filter\":[{\"property\": \"ClaveEmpresa\",\"value\":\"" + empresa + "\"}]}");
-                    //if (CarCata(jsdat, CveEstatus).status == 200)
-                    //{
-                    //if (controlFalla.status == 200)
-                    //{
-                    //    controlFalla.status = Convert.ToInt32(json["status"]);
-                    //    controlFalla.message = Mensaje;
-                    //}
-                    //else
-                    //{
-                    //    controlFalla.Solicitudes = new List<Solicitude>();
-                    //    controlFalla.status = Convert.ToInt32(json["status"]);
-                    //    controlFalla.message = json["message"].ToString();
-                    //}
                 }
                 else
                 {

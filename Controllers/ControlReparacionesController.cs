@@ -1,8 +1,10 @@
 ﻿using ConectDB.DB;
 using ConectDB.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System.Reflection;
 
 namespace ConectDB.Controllers
 {
@@ -42,25 +44,19 @@ namespace ConectDB.Controllers
             }
         }
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult PorAsig(int pagina, string Token, string cveEmp, DateTime FehTick, int idsub)
+        public IActionResult PorAsig(string menu, int idsub)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
-                ViewData["UsuarioModel"] = model;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
 
-                if (FehTick == null || FehTick == DateTime.MinValue)
-                {
-                    FehTick = DateTime.Now;
-                }
-                controlFal = con.CargarCat(cveEmp, 1);
+                controlFal = con.CargarCat(model.Data[0].EmpS[0].cveEmp.ToString(), 1);
+                ViewData["UsuarioModel"] = model;
                 ViewData["Title"] = "Por Asignar";
-                TempData["FehTick"] = FehTick;
+                TempData["FehTick"] = DateTime.Now;
                 return View("PorAsignar", controlFal);
             }
             catch (Exception e)
@@ -72,16 +68,16 @@ namespace ConectDB.Controllers
         }
 
         [HttpGet, HttpPost]
-        public IActionResult BuscarPorAsig(string Token, string cveEmp, int NumTicket, int ClaveTipoFalla, DateTime? FehTick, int pagina, int idsub)
+        public IActionResult BuscarPorAsig(string UsDat, int NumTicket, int ClaveTipoFalla, DateTime? FehTick, int pagina)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                model = JsonConvert.DeserializeObject<UsuarioModel>(UsDat);
+                model.Token = model.Token;
                 ViewData["UsuarioModel"] = model;
                 if (NumTicket == 0)
                 {
@@ -106,25 +102,18 @@ namespace ConectDB.Controllers
                 }
                 else
                 {
-                    if (FehTick == null || FehTick == DateTime.MinValue)
-                    {
-                        FehTick = DateTime.Now;
-                        TempData["FehTick"] = FehTick;
-                    }
-                    else
-                    {
-                        TempData["FehTick"] = FehTick;
-                    }
                     TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
+                    TempData["FehTick"] = DateTime.Now;
                 }
                 if (controlFal.status != 200)
                 {
                     if (controlFal.Solicitudes.Count != 0)
                     {
                         TempData["Mensaje"] = controlFal.status + ' ' + controlFal.message;
-                        return RedirectToAction("PorAsig", new { pagina, Token, cveEmp, FehTick, idsub });
+                        return RedirectToAction("PorAsig", new { menu, model.idsub });
                     }
                 }
+                ViewData["UsuarioModel"] = model;
                 ViewData["Title"] = "Por Asignar";
                 return View("PorAsignar", controlFal);
             }
@@ -136,16 +125,17 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult AsignacionTicket(string Token, string cveEmp, string Asigna, string ticket, int pagina, int idsub, int Diesel, int Grua)
+        public IActionResult AsignacionTicket(string UsDat, string Asigna, string ticket, int pagina, int idsub, int Diesel, int Grua)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                model = JsonConvert.DeserializeObject<UsuarioModel>(UsDat);
+                //model.Token = Token;
+                //model.idsub = idsub;
                 ViewData["UsuarioModel"] = model;
                 DateTime FehAsignatiempo = DateTime.Now;
                 if (Asigna != "[Selecciona]")
@@ -154,17 +144,17 @@ namespace ConectDB.Controllers
                     if (controlFal.status == 200)
                     {
                         TempData["guardado"] = controlFal.status + "¡ \r\n" + controlFal.message + "\r\n!";
-                        return RedirectToAction("BuscarPorAsig", new { Token, cveEmp, ticket, ClaveTipoFalla = 0, DateTime.Now, pagina, idsub, });
+                        return RedirectToAction("BuscarPorAsig", new { UsDat, ticket, ClaveTipoFalla = 0, DateTime.Now, pagina });
                     }
                     else
                     {
                         TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
-                        return RedirectToAction("PorAsig", new { pagina, Token, cveEmp, DateTime.Now, idsub, });
+                        return RedirectToAction("PorAsig", new { UsDat, model.idsub, DateTime.Now, pagina });
                     }
                 }
                 else
                 {
-                    return RedirectToAction("PorAsig", new { pagina, Token, cveEmp, DateTime.Now, idsub, });
+                    return RedirectToAction("PorAsig", new { UsDat, model.idsub, DateTime.Now, pagina });
 
                 }
             }
@@ -176,45 +166,29 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult Asignacion(int pagina, string Token, string cveEmp, string Buscar, int NumTicket, DateTime FehTick, int UsAsignado, int idsub)
+        public IActionResult Asignacion(string menu, int idsub)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
-                if (FehTick == null || FehTick == DateTime.MinValue)
-                {
-                    FehTick = DateTime.Now;
-                    TempData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
-                }
-                else
-                {
-                    TempData["FehTick"] = FehTick;
-                }
-                if (Convert.ToInt32(Buscar) == 0)
-                {
-                    controlFal = con.CargarCat(cveEmp, 2);
-                    TempData["Buscar"] = 0;
-                    if (controlFal.status == 200)
-                    {
-                        ViewData["Title"] = "Asignados";
 
-                    }
-                    else if (controlFal.Solicitudes.Count != 0)
-                    {
-                        msj.status = controlFal.status;
-                        msj.message = controlFal.message;
-                        //return View("Error", msj);
-                    }
-                }
-                else
+                controlFal = con.CargarCat(model.Data[0].EmpS[0].cveEmp.ToString(), 2);
+                TempData["Buscar"] = 0;
+                TempData["FehTick"] = DateTime.Now;
+                if (controlFal.status == 200)
                 {
-                    return RedirectToAction("BuscarAsignados", new { Token, cveEmp, UsAsignado, NumTicket, FehTick, pagina, idsub });
+                    ViewData["Title"] = "Asignados";
+
+                }
+                else if (controlFal.Solicitudes.Count != 0)
+                {
+                    msj.status = controlFal.status;
+                    msj.message = controlFal.message;
                 }
                 return View("Asignados", controlFal);
             }
@@ -226,24 +200,21 @@ namespace ConectDB.Controllers
             }
         }
         [HttpGet, HttpPost]
-        public IActionResult BuscarAsignados(string Token, string cveEmp, int UsAsignado, int NumTicket, DateTime FehTick, int pagina, int idsub)
+        public IActionResult BuscarAsignados(string menu, int UsAsignado, int NumTicket, DateTime FehTick, int pagina)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
-
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
                 if (NumTicket == 0)
                 {
-                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, 0, 0, model.Data[0].idus, UsAsignado, model.idsub.Value, pagina, pageSize);
                 }
                 else
                 {
-                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, 0, model.Data[0].idus, UsAsignado, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(2, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, 0, 0, model.Data[0].idus, UsAsignado, model.idsub.Value, pagina, pageSize);
                 }
                 if (controlFal.status != 200)
                 {
@@ -278,27 +249,25 @@ namespace ConectDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult AsigTiempApoyClasif(string XT, string cveEmp, DateTime? TiempAsig, int Apooyo_Asigna, int Clasif_Asigna, int NumTicket, int pagina, int idsub, int CheckDisel, int CheckGrua, string Dot, string Marca, string Medida, int Posis)
+        public IActionResult AsigTiempApoyClasif(string menu, DateTime? TiempAsig, int Apooyo_Asigna, int Clasif_Asigna, int NumTicket, int pagina, int CheckDisel, int CheckGrua, string Dot, string Marca, string Medida, int Posis)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, XT);
-                model.Token = XT;
-                model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
                 TempData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                 if (Apooyo_Asigna == 0)
                 {
                     TempData["Mensaje"] = "¡Seleccione un Apoyo!";
-                    return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                    return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                 }
                 if (!TiempAsig.HasValue || TiempAsig <= DateTime.Now)
                 {
                     TempData["Mensaje"] = "¡La fecha de asignación no puede ser nulla o anterior.!";
-                    return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                    return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                 }
                 else
                 {
@@ -314,30 +283,30 @@ namespace ConectDB.Controllers
                         if (string.IsNullOrEmpty(Dot))
                         {
                             TempData["Mensaje"] = "¡Debes de llenar el Dot!";
-                            return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                            return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                         }
                         else if (string.IsNullOrEmpty(Marca))
                         {
                             TempData["Mensaje"] = "¡Debes de llenar la Marca!";
-                            return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                            return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                         }
                         else if (string.IsNullOrEmpty(Medida))
                         {
                             TempData["Mensaje"] = "¡Debes de llenar el Medida!";
-                            return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                            return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                         }
                         else if (Posis == 0)
                         {
                             TempData["Mensaje"] = "¡Debes de tener una Posición!";
-                            return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                            return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                         }
                     }
-                    controlFal = con.ModificadorFall(2, 4, model.Data?[0].EmpS?[0].cveEmp.ToString(), NumTicket.ToString(), 0.ToString(), Convert.ToInt32(Apooyo_Asigna), Clasif_Asigna, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), "", model.Data[0].idus, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), 0, idsub, pagina, pageSize, CheckDisel, CheckGrua, Dot, Marca, Medida, Posis);
+                    controlFal = con.ModificadorFall(2, 4, model.Data?[0].EmpS?[0].cveEmp.ToString(), NumTicket.ToString(), 0.ToString(), Convert.ToInt32(Apooyo_Asigna), Clasif_Asigna, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), "", model.Data[0].idus, TiempAsig?.ToString("yyyy-MM-dd HH:mm"), 0, model.idsub.Value, pagina, pageSize, CheckDisel, CheckGrua, Dot, Marca, Medida, Posis);
                     if (controlFal.status == 200)
                     {
                         TempData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
                         TempData["guardado"] = "¡Se Guardado Correctamenre!" + controlFal.status + " " + controlFal.message;
-                        return RedirectToAction("BuscarAsignados", new { Token = XT, cveEmp, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina, idsub });
+                        return RedirectToAction("BuscarAsignados", new { menu, UsAsignado = 0, NumTicket = 0, FehTick = DateTime.Now, pagina });
                     }
                     else
                     {
@@ -364,35 +333,17 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult Repara(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
+        public IActionResult Repara(string menu, int idsub)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
-                if (FehTick == null || FehTick == DateTime.MinValue)
-                {
-                    FehTick = DateTime.Now;
-                    TempData["FehTick"] = FehTick.ToString("yyyy-MM-dd");
-                }
-                else
-                {
-                    TempData["FehTick"] = FehTick;
-                }
-                if (Convert.ToInt32(Buscar) == 0)
-                {
-                    controlFal = con.CargarCat(cveEmp, 4);
-                    ViewData["Title"] = "Reparacion";
-                }
-                else if (Convert.ToInt32(Buscar) == 1)
-                {
-                    return RedirectToAction("BuscarReparacion", new { Token, cveEmp, FehTick, TipTicket, TipFalla, NumTicket, pagina, pageSize, idsub });
-                }
+                TempData["FehTick"] = DateTime.Now.ToString("yyyy-MM-dd");
+                controlFal = con.CargarCat(model.Data[0].EmpS[0].cveEmp.ToString(), 4);
                 ViewData["Title"] = "Reparacion";
                 return View("Reparacion", controlFal);
             }
@@ -405,16 +356,14 @@ namespace ConectDB.Controllers
         }
 
         [HttpGet, HttpPost]
-        public IActionResult BuscarReparacion(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
+        public IActionResult BuscarReparacion(string menu, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
 
                 if (FehTick == null || FehTick == DateTime.MinValue)
@@ -428,11 +377,11 @@ namespace ConectDB.Controllers
                 }
                 if (NumTicket == 0)
                 {
-                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, model.idsub.Value, pagina, pageSize);
                 }
                 else
                 {
-                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, model.idsub.Value, pagina, pageSize);
                 }
                 if (controlFal.status == 200)
                 {
@@ -443,9 +392,7 @@ namespace ConectDB.Controllers
                 else if (controlFal.status == 400)
                 {
                     TempData["Mensaje"] = "¡" + controlFal.status + " " + controlFal.message + "!";
-                    TempData["NumTicket"] = NumTicket;
-                    TempData["ClaveTipoFalla"] = TipFalla;
-                    TempData["TipTicket"] = TipTicket;
+                    
                 }
                 if (controlFal.status > 400)
                 {
@@ -457,6 +404,9 @@ namespace ConectDB.Controllers
                     }
                 }
                 ViewData["Title"] = "Reparacion";
+                TempData["NumTicket"] = NumTicket;
+                TempData["ClaveTipoFalla"] = TipFalla;
+                TempData["TipTicket"] = TipTicket;
                 return View("Reparacion", controlFal);
             }
             catch (Exception e)
@@ -467,89 +417,60 @@ namespace ConectDB.Controllers
             }
         }
         [HttpPost]
-        public IActionResult AsigRepa(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina, int Diesel, int Grua)
+        public IActionResult AsigRepa(string menu, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int pagina, int Diesel, int Grua)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Tok);
-                model.Token = Tok;
-                model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
 
                 if (FechEstima > FechEstimaComparar && FechEstima > DateTime.Now)
                 {
-                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, Diesel, Grua, "", "", "", 0);
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, model.idsub.Value, pagina, pageSize, Diesel, Grua, "", "", "", 0);
                     if (controlFal.status == 200)
                     {
-                        //ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        //ViewBag.CurrentPage = pagina;
                         TempData["Buscar"] = 0;
                         ViewData["Title"] = "Reparacion";
                         TempData["guardado"] = controlFal.status + "\r\n¡" + controlFal.message + "!";
                         TempData["FehTick"] = FechEstima;
-                        //BuscarReparacion(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
-                        //(string Tok, string cveEmp, string NumTicket, DateTime FechEstima, DateTime FechEstimaComparar, string ComeMotvAsig, int idsub, int pagina, int Diesel, int Grua)
-                        return RedirectToAction("BuscarReparacion", new { Token = Tok, cveEmp, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina, idsub });
-                        //return View("Reparacion", controlFal);
+                        return RedirectToAction("BuscarReparacion", new { menu, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina });
                     }
                     else
                     {
                         TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                         ViewData["Title"] = "Reparacion";
                         TempData["FehTick"] = FechEstima;
-                        return RedirectToAction("BuscarReparacion", new { Token = Tok, cveEmp, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina, idsub });
-                        //return View("Reparacion", controlFal);
+                        return RedirectToAction("BuscarReparacion", new { menu, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina });
                     }
                 }
                 if (FechEstima == FechEstimaComparar)
                 {
-                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, idsub, pagina, pageSize, Diesel, Grua, "", "", "", 0);
+                    controlFal = con.ModificadorFall(4, 5, model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, "0", 0, 0, FechEstima.ToString("yyyy-MM-dd HH:mm:ss"), ComeMotvAsig, model.Data[0].idus, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, model.idsub.Value, pagina, pageSize, Diesel, Grua, "", "", "", 0);
                     if (controlFal.status == 200)
                     {
-                        //ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                        //ViewBag.CurrentPage = pagina;
                         TempData["Buscar"] = 0;
                         ViewData["Title"] = "Reparacion";
                         TempData["guardado"] = controlFal.status + "\r\n¡" + controlFal.message + "!";
                         TempData["FehTick"] = FechEstima;
-                        return RedirectToAction("BuscarReparacion", new { Token = Tok, cveEmp, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina, idsub });
-                        //return View("Reparacion", controlFal);
+                        return RedirectToAction("BuscarReparacion", new { menu, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina });
                     }
                     else
                     {
                         TempData["Mensaje"] = controlFal.status + " ¡" + controlFal.message + "\r\n Intenta mas Tarde! \r\n ";
                         ViewData["Title"] = "Reparacion";
                         TempData["FehTick"] = FechEstima;
-                        return RedirectToAction("BuscarReparacion", new { Token = Tok, cveEmp, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina, idsub });
-                        //return View("Reparacion", controlFal);
+                        return RedirectToAction("BuscarReparacion", new { menu, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina });
                     }
                 }
                 else
                 {
-                    //controlFal = con.PrimerCarga(4, model.Data[0].EmpS[0].cveEmp.ToString(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, model.Data[0].idus, 0, idsub, pagina, pageSize);
-                    //if (controlFal.status != 200)
-                    //{
-                    //    TempData["Mensaje"] = "¡No se encuentran datos! " + controlFal.status + " " + controlFal.message;
-                    //}
-                    //if (controlFal.status > 400)
-                    //{
-                    //    if (controlFal.Solicitudes.Count != 0)
-                    //    {
-                    //        msj.status = controlFal.status;
-                    //        msj.message = controlFal.message;
-                    //        return View("Error", msj);
-                    //    }
-                    //}
-                    //ViewBag.TotalPages = (int)Math.Ceiling((double)controlFal.TotalSolicitudes / pageSize);
-                    //ViewBag.CurrentPage = pagina;
                     TempData["Buscar"] = 0;
                     TempData["FehTick"] = DateTime.Now;
                     TempData["Mensaje"] = "¡Seleccione una fecha mayor que la registrada " + FechEstima.ToString("yyyy-MM-dd HH:mm:ss") + " !";
-                    return RedirectToAction("BuscarReparacion", new { Token = Tok, cveEmp, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina, idsub });
-                    //return View("Reparacion", controlFal);
+                    return RedirectToAction("BuscarReparacion", new { menu, FehTick = DateTime.Now, TipTicket = 0, TipFalla = 0, NumTicket = 0, pagina });
                 }
             }
             catch (Exception e)
@@ -560,35 +481,22 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult Fin(int pagina, string Token, string cveEmp, string Buscar, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int idsub)
+        public IActionResult Fin(string menu, int idsub)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                //model.Token = Token;
+                //model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
-
-                if (FehTick == null || FehTick == DateTime.MinValue)
-                {
-                    FehTick = DateTime.Now;
-                    TempData["FehTick"] = FehTick;
-                }
-                else
-                {
-                    TempData["FehTick"] = FehTick;
-                }
-                controlFal = con.CargarCat(cveEmp, 5);
-                
-                    return View("Finalizado", controlFal);
-                //}
-                //else {
-                //    ViewData["Title"] = "Finalizado";
-                //    return View("Finalizado", controlFal);
-                //}
+                TempData["FehTick"] = DateTime.Now;
+                controlFal = con.CargarCat(model.Data[0].EmpS[0].cveEmp.ToString(), 5);
+                ViewData["Title"] = "Finalizado";
+                return View("Finalizado", controlFal);
             }
             catch (Exception e)
             {
@@ -598,16 +506,17 @@ namespace ConectDB.Controllers
             }
         }
         [HttpGet, HttpPost]
-        public IActionResult BuscarFinalizados(string Token, string cveEmp, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina, int idsub)
+        public IActionResult BuscarFinalizados(string menu, DateTime FehTick, int TipTicket, int TipFalla, int NumTicket, int pagina)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                //model.Token = Token;
+                //model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
                 if (FehTick == null || FehTick == DateTime.MinValue)
                 {
@@ -620,11 +529,11 @@ namespace ConectDB.Controllers
                 }
                 if (NumTicket == 0)
                 {
-                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), FehTick.ToString("yyyy-MM-dd HH:mm:ss"), NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, model.idsub.Value, pagina, pageSize);
                 }
                 else
                 {
-                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, idsub, pagina, pageSize);
+                    controlFal = con.PrimerCarga(5, model.Data[0].EmpS[0].cveEmp.ToString(), null, NumTicket, TipTicket, TipFalla, model.Data[0].idus, 0, model.idsub.Value, pagina, pageSize);
                 }
                 if (controlFal.status == 200)
                 {
@@ -657,17 +566,18 @@ namespace ConectDB.Controllers
             }
         }
 
-        public IActionResult Consul(string Token, string cveEmp, int NumTicket, DateTime FehInicio, DateTime FehFin, int idsub, int pagina)
+        public IActionResult Consul(string menu, int NumTicket, DateTime FehInicio, DateTime FehFin, int idsub, int pagina)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
-                
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                //model.Token = Token;
+                //model.idsub = idsub;
+
                 if (NumTicket == 0)
                 {
                     NumTicket = 0;
@@ -680,7 +590,7 @@ namespace ConectDB.Controllers
                 {
                     FehFin = DateTime.Now;
                 }
-                controlFal = con.ConsultaGeneral(cveEmp, NumTicket, FehFin.ToString("yyyy-MM-dd HH:mm:ss"), FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
+                controlFal = con.ConsultaGeneral(model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, FehFin.ToString("yyyy-MM-dd HH:mm:ss"), FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
                 if (controlFal.Solicitudes.Count == 0)
                 {
                     if (controlFal.TotalSolicitudes == null) { controlFal.TotalSolicitudes = 0; }
@@ -711,16 +621,17 @@ namespace ConectDB.Controllers
         }
 
         [HttpGet, HttpPost]
-        public IActionResult BusConsul(string Token, DateTime FehInicio, DateTime FehFin, int NumTicket, string cveEmp, int idsub, int pagina)
+        public IActionResult BusConsul(string menu, DateTime FehInicio, DateTime FehFin, int NumTicket, int pagina)
         {
             try
             {
                 if (string.IsNullOrEmpty(HttpContext.Request.Cookies["usuario"]) || string.IsNullOrEmpty(HttpContext.Request.Cookies["contra"]))
                     return RedirectToAction("Index", "Loging");
 
-                model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
-                model.Token = Token;
-                model.idsub = idsub;
+                //model = menu.RegresMenu(UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["usuario"]), UrlEncryptor.DecryptUrl(HttpContext.Request.Cookies["contra"]), Convert.ToInt32(cveEmp), url, Token);
+                //model.Token = Token;
+                //model.idsub = idsub;
+                model = JsonConvert.DeserializeObject<UsuarioModel>(menu);
                 ViewData["UsuarioModel"] = model;
                 if (NumTicket == 0)
                 {
@@ -730,12 +641,12 @@ namespace ConectDB.Controllers
                     }
                     else
                     {
-                        controlFal = con.ConsultaGeneral(cveEmp, NumTicket, FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), FehFin.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
+                        controlFal = con.ConsultaGeneral(model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, FehInicio.ToString("yyyy-MM-dd HH:mm:ss"), FehFin.ToString("yyyy-MM-dd HH:mm:ss"), pagina, pageSize);
                     }
                 }
                 else
                 {
-                    controlFal = con.ConsultaGeneral(cveEmp, NumTicket, null, null, pagina, pageSize);
+                    controlFal = con.ConsultaGeneral(model.Data[0].EmpS[0].cveEmp.ToString(), NumTicket, null, null, pagina, pageSize);
                 }
                 if (controlFal.status == 200)
                 {

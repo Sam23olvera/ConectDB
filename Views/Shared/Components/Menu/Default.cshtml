@@ -1,6 +1,8 @@
 @{
+    @using Newtonsoft.Json
     @using ConectDB.Models;
     @model UsuarioModel;
+    var userDataJson = JsonConvert.SerializeObject(Model);
 
 }
 <header>
@@ -48,7 +50,7 @@
                                             @foreach (var submodulo in modulo.submods)
                                             {
                                                 <li>
-                                                    <a asp-action="Index" asp-controller="@submodulo.nomsub.Replace(" ", "")" asp-route-cveEmp="@Model.Data[0].EmpS[0].cveEmp" asp-route-XT="@Model.Token" asp-route-idsub="@submodulo.idsub" class="dropdown-item text-dark carga">
+                                                    <a asp-action="Index" asp-controller="@submodulo.nomsub.Replace(" ", "")" asp-route-cveEmp="@Model.Data[0].EmpS[0].cveEmp" asp-route-XT="@Model.Token" asp-route-idsub="@submodulo.idsub" asp-route-menu="@userDataJson" class="dropdown-item text-dark carga">
                                                         @submodulo.nomsub
                                                     </a>
                                                 </li>
